@@ -1,0 +1,7 @@
+services:
+  backend:
+  frontend:
+  db:
+    image: postgres:latest
+  redis:
+    image: redis:latest
