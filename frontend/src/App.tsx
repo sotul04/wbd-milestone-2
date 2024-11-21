@@ -28,6 +28,11 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      <div className='p-2 rounded-md border border-red-300'>
+        <p>
+          Hello
+        </p>
+      </div>
     </>
   )
 }
