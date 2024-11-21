@@ -20,6 +20,11 @@ services:
       - redis
     networks:
       - app_network
+    command: >
+      sh -c "npx prisma migrate deploy && 
+             npx prisma generate && 
+             npm run seed &&
+             npm run dev"
 
   frontend:
     build:
@@ -43,10 +48,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
     ports:
       - "5432:5432"
-    volumes:
-      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app_network
 
