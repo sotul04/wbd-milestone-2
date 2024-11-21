@@ -1,3 +1,3 @@
 ## LinkinPurry Jr
 
-> Please use Linux OS or WSL to run the docker properly.
+> To run the project on dev mode ```docker compose up --build```
