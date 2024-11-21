@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+# Create and set working directory
+WORKDIR /home/node/app
+
+# Install dependencies
+COPY --chown=node:node package*.json ./
+RUN npm ci
+
+# Set environment variables
+ENV PORT=3000
+
+# Expose the application port
+EXPOSE 3000
+
+# Use the dev script for development
+CMD ["npm", "run", "dev"]
