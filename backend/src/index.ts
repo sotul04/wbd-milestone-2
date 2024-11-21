@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import { prisma } from './db';
 
 // Load environment variables from .env file
 dotenv.config();
