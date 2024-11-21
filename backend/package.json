@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "seed": "tsx scripts/seed.ts"
   },
   "author": "WBD",
   "license": "ISC",

@@ -6,12 +6,18 @@
         "strict": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "declaration": true
     },
     "include": [
-        "src"
+        "src",
+        "scripts"  // Add this to include seed scripts
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "dist"
     ]
 }
