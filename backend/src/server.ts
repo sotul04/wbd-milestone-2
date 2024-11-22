@@ -3,7 +3,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import router from './routes';
-import { authJWT } from './middleware/auth';
+import path from 'path';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 dotenv.config();
 
@@ -18,10 +20,8 @@ app.use(cors({
 
 app.use(express.urlencoded({extended: true}));
 
-app.use('/api', router);
+app.use("/storage", express.static(path.join(__dirname, '../storage')));
 
-app.get('/protected', authJWT, (req, res) => {
-    res.json({ message: 'You have access to this route', user: req.body.user });
-});
+app.use('/api', router);
 
 export default app;
