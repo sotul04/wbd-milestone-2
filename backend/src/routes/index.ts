@@ -1,7 +1,9 @@
 import { Router } from "express";
 import multer from "multer";
-import { UserController, upload } from "../controller/UserController";
 import { authJWT } from "../middleware/auth";
+
+import { UserController } from "../controller/UserController";
+import { ProfileController, upload } from "../controller/ProfileController";
 
 const uploads = multer();
 
@@ -10,6 +12,9 @@ const router: Router = Router();
 // user route
 router.post('/login', uploads.none(), UserController.login);
 router.post('/register', uploads.none(), UserController.register);
-router.put('/profil/:userId', authJWT, upload.single('profile_photo'), UserController.profilUpdate);
+
+// profile routes
+router.get('/profile/:userId', ProfileController.getProfile); 
+router.put('/profile/:userId', authJWT, upload.single('profile_photo'), ProfileController.profilUpdate);
 
 export default router;

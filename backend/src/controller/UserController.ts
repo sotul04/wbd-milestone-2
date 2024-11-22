@@ -2,20 +2,6 @@ import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { generateToken } from "../utils/jwtHelper";
 import { response } from '../utils/response';
-import multer from "multer";
-
-export const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => {
-        const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        if (!allowedImageTypes.includes(file.mimetype)) {
-            const errorResponse = response(false, 'Invalid file type. Only JPEG, PNG, and JPG are allowed.', null);
-            cb(new Error(JSON.stringify(errorResponse)));
-        }
-        cb(null, true);
-    }
-});
 
 export const UserController = {
     login: async (req: Request, res: Response) => {
@@ -34,8 +20,7 @@ export const UserController = {
             const token = generateToken({
                 userId: user.id.toString(),
                 email: user.email,
-                name: user.username,
-                role: 'jobseeker'
+                name: user.username
             });
             res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
             res.status(200).json(response(true, 'Login successfull', { token: token }));
@@ -44,61 +29,21 @@ export const UserController = {
         }
     },
 
-    profilUpdate: async (req: Request, res: Response) => {
-        try {
-            const userId = req.params.userId;
-
-            if (!userId) {
-                res.status(400).json(response(false, 'ID for user is required', 'User ID required'));
-                return;
-            }
-
-            const { email, name, description } = req.body;
-            
-            if (!req.user || req.user.userId !== userId) {
-                res.status(401).json(response(false, 'Unauthorized', null));
-                return;
-            }
-
-            const data = {
-                id: BigInt(userId),
-                email,
-                name,
-                description,
-                profile_photo: req.file
-            };
-
-            const result = await UserService.updateUser(data);
-
-            // Send success response
-            if (result) {
-                res.status(200).json({ message: 'User profile updated successfully' });
-            } else {
-                res.status(500).json({ error: 'Failed to update user profile' });
-            }
-
-        } catch (error) {
-            console.error('Error in profilUpdate:', error);
-            res.status(500).json(response(false, 'Internal server error', error));
-        }
-    },
-
     register: async (req: Request, res: Response) => {
-        const { username, email, password } = req.body;
+        const { username, email, password, name } = req.body;
         console.log(req.body);
         try {
             console.log(username, email, password);
             const user = await UserService.createUser({
                 username: username,
                 email: email,
-                name: username,
+                name: name,
                 password: password
             });
             const token = generateToken({
                 userId: user.id.toString(),
                 email: user.email,
-                name: user.username,
-                role: 'jobseeker'
+                name: user.username
             });
             res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
             res.status(200).json(response(true, 'Login successfull', { token: token }));

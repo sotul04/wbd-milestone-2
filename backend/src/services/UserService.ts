@@ -7,14 +7,13 @@ import bcrypt from 'bcrypt';
 import { prisma } from '../db';
 import { User } from '@prisma/client';
 
-import fs from 'fs';
 import path from 'path';
 import { createImageFile, deleteFile } from '../utils/file';
 
 export const UserService = {
     createUser: async (data: UserModel.UserCreate) => {
         try {
-            if (!data.email || !data.username || !data.password) throw new Error('Missing required value for registration');
+            if (!data.email || !data.username || !data.password || !data.name) throw new Error('Missing required value for registration');
             if (!validator.isEmail(data.email)) {
                 throw new Error('Invalid email address');
             }
@@ -48,12 +47,10 @@ export const UserService = {
     },
     updateUser: async (data: UserModel.UserUpdate) => {
         try {
-            // validate the email
             if (data.email && !validator.isEmail(data.email)) {
                 throw new Error('Invalid email');
             }
 
-            // check if the email has been used by other user
             if (data.email) {
                 const existedEmail = await prisma.user.findUnique({
                     where: {
@@ -65,7 +62,6 @@ export const UserService = {
                 }
             }
 
-            // if the photo url is included, check the valid extension type 
             if (data.profile_photo) {
                 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!allowedImageTypes.includes(data.profile_photo.mimetype)) {
@@ -73,11 +69,11 @@ export const UserService = {
                 }
             }
 
-            // sanitize the name, and description
             const name = data.name && xss(data.name);
             const description = data.description && xss(data.description);
+            const skills = data.skills && xss(data.skills);
+            const experiences = data.experiences && xss(data.experiences);
 
-            // checking for the current user
             const user = await prisma.user.findUnique({
                 where: { id: data.id },
                 include: { profile: true }
@@ -116,9 +112,11 @@ export const UserService = {
                     updated_at: new Date(),
                     profile: {
                         update: {
-                            name: name,
-                            description: description,
-                            photo_url: filename
+                            name,
+                            description,
+                            photo_url: filename,
+                            skills,
+                            experiences
                         }
                     }
                 }

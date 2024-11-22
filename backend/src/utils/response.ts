@@ -1,4 +1,4 @@
-export function response(success: boolean, message: string, data: any) {
+export function response(success: boolean, message: string, data: any = null) {
     if (success) {
         return {
             success: success,

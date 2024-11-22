@@ -18,8 +18,7 @@ export const verifyToken = (token: string): CustomJwtPayload => {
         if (
             typeof decoded.userId === 'string' &&
             typeof decoded.email === 'string' &&
-            typeof decoded.name === 'string' &&
-            typeof decoded.role === 'string'
+            typeof decoded.name === 'string'
         ) {
             return decoded;
         }

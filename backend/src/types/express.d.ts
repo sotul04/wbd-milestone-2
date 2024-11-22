@@ -13,5 +13,4 @@ export interface CustomJwtPayload extends JwtPayload {
     userId: string;
     email: string;
     name: string;
-    role: string;
 }

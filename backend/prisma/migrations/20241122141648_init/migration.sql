@@ -16,6 +16,8 @@ CREATE TABLE "Profile" (
     "name" VARCHAR(255) NOT NULL,
     "photo_url" TEXT,
     "description" TEXT NOT NULL,
+    "skills" TEXT,
+    "experiences" TEXT,
 
     CONSTRAINT "Profile_pkey" PRIMARY KEY ("userId")
 );
