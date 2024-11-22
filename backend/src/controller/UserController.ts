@@ -17,8 +17,6 @@ export const upload = multer({
     }
 });
 
-// export const upload = multer({ dest: "uploads/" });
-
 export const UserController = {
     login: async (req: Request, res: Response) => {
         const { username, password } = req.body;
@@ -56,8 +54,11 @@ export const UserController = {
             }
 
             const { email, name, description } = req.body;
-            console.log("After middleware and multer upload",req.user);
-            console.log("Full body", req.body);
+            
+            if (!req.user || req.user.userId !== userId) {
+                res.status(401).json(response(false, 'Unauthorized', null));
+                return;
+            }
 
             const data = {
                 id: BigInt(userId),
@@ -84,12 +85,14 @@ export const UserController = {
 
     register: async (req: Request, res: Response) => {
         const { username, email, password } = req.body;
+        console.log(req.body);
         try {
+            console.log(username, email, password);
             const user = await UserService.createUser({
-                username,
-                email,
+                username: username,
+                email: email,
                 name: username,
-                password
+                password: password
             });
             const token = generateToken({
                 userId: user.id.toString(),

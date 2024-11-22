@@ -11,7 +11,6 @@ export const authJWT = (req: Request, res: Response, next: NextFunction) => {
     try {
         const decoded = verifyToken(token);
         req.user = decoded;
-        console.log("Middleware",req.user);
         next();
     } catch (error) {
         res.status(401).json(response(false, 'Invalid or expired token', 'Token is invalid or expired'));
