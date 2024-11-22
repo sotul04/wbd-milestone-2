@@ -8,6 +8,7 @@ const prisma = new PrismaClient()
 async function seedDatabase() {
     // Clear existing data to prevent duplicates
     await prisma.feed.deleteMany();
+    await prisma.profile.deleteMany();
     await prisma.user.deleteMany();
 
     // Array to store created users
@@ -32,12 +33,17 @@ async function seedDatabase() {
                 updated_at: new Date(),
                 feeds: {
                     create: Array.from({ length: 15 }).map(() => ({
-                        content: faker.lorem.paragraph(),
-                        updated_at: new Date()
+                        content: faker.lorem.paragraph()
                     }))
+                },
+                profile: {
+                    create: {
+                        name: username,
+                        description: faker.lorem.paragraph()
+                    }
                 }
             }
-        })
+        });
 
         users.push(user);
     }
