@@ -147,5 +147,27 @@ export const UserService = {
             }
         })
     },
+    userProfile: async (data: UserModel.UserFindId) => {
+        const user =  await prisma.user.findUnique({
+            where: {
+                id: data.id
+            },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                profile: {
+                    select: {
+                        name: true,
+                        photo_url: true
+                    }
+                }
+            }
+        });
+        return {
+            ...user,
+            id: user?.id.toString()
+        }
+    }
 
 }

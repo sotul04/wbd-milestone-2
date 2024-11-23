@@ -17,9 +17,10 @@ const router: Router = Router();
 // user route
 router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserController.login);
 router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), UserController.register);
+router.get('/verify', authJWT, UserController.verify);
 
 // profile routes
-router.get('/profile/:userId', ProfileController.getProfile); 
+router.get('/profile/:userId', ProfileController.getProfile);
 router.put('/profile/:userId', authJWT, upload.single('profile_photo'), validateRequestParams(userUpdateParams), validateRequestBody(userUpdateSchema), ProfileController.profilUpdate);
 
 // connection routes

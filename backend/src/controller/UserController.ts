@@ -53,5 +53,23 @@ export const UserController = {
                 res.status(500).json(response(false, 'Internal server error', error));
             }
         }
+    },
+
+    verify: async (req: Request, res: Response) => {
+        try {
+            if (!req.user) {
+                res.status(200).json(response(false, 'Unauthenticated'));
+                return;
+            }
+            const userData = await UserService.userProfile({id:BigInt(req.user.userId)});
+            if (userData) {
+                res.status(200).json(response(true, 'Authenticated', userData));
+            } else {
+                res.status(401).json(response(false, "Unauthenticated"));
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json(response(false, "Internal server error"))
+        }
     }
 }
