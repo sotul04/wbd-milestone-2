@@ -31,9 +31,7 @@ export const UserController = {
 
     register: async (req: Request, res: Response) => {
         const { username, email, password, name } = req.body;
-        console.log(req.body);
         try {
-            console.log(username, email, password);
             const user = await UserService.createUser({
                 username: username,
                 email: email,

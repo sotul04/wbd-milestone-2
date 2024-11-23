@@ -28,6 +28,10 @@ export const ConnectionController = {
                 return;
             }
             const { to } = connectionSendSchema.parse(req.body);
+            if (to === BigInt(req.user.userId)) {
+                res.status(StatusCodes.BAD_REQUEST).json(response(false, 'User ID is invalid'));
+                return;
+            }
             const message = await ConnectionService.connectionSend({ from: BigInt(req.user.userId), to });
             res.status(200).json(response(true, message));
         } catch (error) {
@@ -94,6 +98,10 @@ export const ConnectionController = {
             const users = await ConnectionService.connectionList({id: data.userId});
             res.status(StatusCodes.OK).json(response(true, 'Successfully retrieved the data', users));
         } catch (error) {
+            if (error instanceof Error) {
+                res.status(StatusCodes.BAD_REQUEST).json(response(false, error.message, error));
+                return;
+            }
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, 'Internal server error', error));
         }
     },

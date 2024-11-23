@@ -7,10 +7,14 @@ export const ConnectionService = {
         try {
             const users = await prisma.user.findMany({
                 where: param.search ? {
-                    username: {
-                        contains: param.search,
-                        mode: 'insensitive'
-                    }
+                    OR: [
+                        { username: { contains: param.search, mode: 'insensitive' } },
+                        {
+                            profile: {
+                                name: { contains: param.search, mode: 'insensitive' }
+                            }
+                        }
+                    ]
                 } : {},
                 select: {
                     id: true,
@@ -23,9 +27,12 @@ export const ConnectionService = {
                         }
                     }
                 },
-                take: 20
+                take: 20,
+                orderBy: {
+                    created_at: 'desc'
+                }
             });
-    
+
             return users.map(user => {
                 return {
                     ...user,
@@ -248,6 +255,14 @@ export const ConnectionService = {
 
     connectionList: async (data: ConnectionModel.ConnectionList) => {
         try {
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+            if (!user) {
+                throw new Error('User not found.');
+            }
             const list = await prisma.user.findMany({
                 where: {
                     sent_connections: {

@@ -77,7 +77,6 @@ export const ProfileController = {
 
             const token = req.cookies.jwt ?? req.headers.authorization?.split(' ')[1];
             if (!token) {
-                console.log('Unauthenticated user access');
                 const profile = await ProfileService.publicAccess({id: BigInt(userId)});
                 if (!profile) {
                     res.status(404).json(response(false, 'User not found', null));
@@ -90,7 +89,6 @@ export const ProfileController = {
             const decoded = jwt.verify(token, SECRET_KEY) as CustomJwtPayload;
             
             if (typeof decoded.userId !== 'string') {
-                console.log('Unauthenticated user access');
                 const profile = await ProfileService.publicAccess({id: BigInt(userId)});
                 if (!profile) {
                     res.status(404).json(response(false, 'User not found', null));
@@ -101,10 +99,8 @@ export const ProfileController = {
             }
             
             if (userId === decoded.userId) {
-                console.log('Owner access');
                 const profile = await ProfileService.selfAccess({id: BigInt(userId)});
                 if (!profile) {
-                    console.log("USER ID:",userId);
                     res.status(404).json(response(false, 'User not found'));
                     return;
                 }
@@ -112,7 +108,6 @@ export const ProfileController = {
                 return;
             }
             
-            console.log('Authenticated access');
             const profile = await ProfileService.authenticatedAccess({idClient: BigInt(decoded.userId), idTarget: BigInt(userId)});
                 if (!profile) {
                     res.status(404).json(response(false, 'User not found'));

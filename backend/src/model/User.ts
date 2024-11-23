@@ -1,5 +1,5 @@
 import { FeedSerializable } from "./Feed";
-import { bigint, z, ZodError } from 'zod';
+import { z } from 'zod';
 
 export type User = {
     id: bigint;

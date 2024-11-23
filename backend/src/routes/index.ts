@@ -27,7 +27,7 @@ router.get('/connection', validateQueryParams(usersGetQuery), ConnectionControll
 router.post('/connection/send', authJWT, uploads.none(), validateRequestBody(connectionSendSchema), ConnectionController.connectionSend);
 router.get('/connection/requests', authJWT, ConnectionController.connectionRequests);
 router.post('/connection/connect', authJWT, uploads.none(), validateRequestBody(connectionConnectSchema), ConnectionController.connectionConnect);
-router.get('/connection/list/:userId', validateQueryParams(connectionListParams), ConnectionController.connectionList);
-router.get('/connection/delete/:to', authJWT, validateQueryParams(connectionDeleteParams), ConnectionController.connectionDelete);
+router.get('/connection/list/:userId', validateRequestParams(connectionListParams), ConnectionController.connectionList);
+router.delete('/connection/delete/:to', authJWT, validateRequestParams(connectionDeleteParams), ConnectionController.connectionDelete);
 
 export default router;

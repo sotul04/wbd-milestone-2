@@ -1,4 +1,4 @@
-import { bigint, z } from 'zod';
+import { z } from 'zod';
 
 // /api/connection?search=:query
 export type UsersGet = {
@@ -16,7 +16,7 @@ export type ConnectionSend = {
 }
 
 export const connectionSendSchema = z.object({
-    to: z.union([z.bigint(), z.string().refine(
+    to: z.union([z.number().transform(val => BigInt(val)), z.string().refine(
         (val) => {
             try {
                 BigInt(val);
@@ -42,7 +42,7 @@ export type ConnectionConnect = {
 }
 
 export const connectionConnectSchema = z.object({
-    to: z.union([z.bigint(), z.string().refine(
+    to: z.union([z.number().transform(val => BigInt(val)), z.string().refine(
         (val) => {
             try {
                 BigInt(val);
