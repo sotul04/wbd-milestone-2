@@ -1,4 +1,3 @@
-
 export type FeedSerializable = {
     id: string;
     created_at: Date;

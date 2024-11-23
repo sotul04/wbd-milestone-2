@@ -47,10 +47,6 @@ export const UserService = {
     },
     updateUser: async (data: UserModel.UserUpdate) => {
         try {
-            if (data.email && !validator.isEmail(data.email)) {
-                throw new Error('Invalid email');
-            }
-
             if (data.email) {
                 const existedEmail = await prisma.user.findUnique({
                     where: {
@@ -62,14 +58,14 @@ export const UserService = {
                 }
             }
 
-            if (data.profile_photo) {
+            if (data.profile_photo && !data.delete_photo) {
                 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!allowedImageTypes.includes(data.profile_photo.mimetype)) {
                     throw new Error('Profile photo must be an image (JPEG, PNG, or JPG)');
                 }
             }
 
-            const name = data.name && xss(data.name);
+            const name = data.name && xss(data.name.trim());
             const description = data.description && xss(data.description);
             const skills = data.skills && xss(data.skills);
             const experiences = data.experiences && xss(data.experiences);
@@ -83,9 +79,9 @@ export const UserService = {
                 throw new Error('User not found');
             }
 
-            let filename: string | undefined = undefined;
+            let filename: string | undefined | null = undefined;
 
-            if (data.profile_photo) {
+            if (data.profile_photo && !data.delete_photo) {
                 const mimeToExtension: Record<string, string> = {
                     'image/jpeg': '.jpeg',
                     'image/png': '.png',
@@ -101,6 +97,11 @@ export const UserService = {
 
                 const fileBuffer = await data.profile_photo.buffer;
                 await createImageFile(filename, Buffer.from(fileBuffer));
+            } else if (data.delete_photo) {
+                if (user.profile?.photo_url) {
+                    const oldFileName = path.basename(user.profile.photo_url);
+                    await deleteFile(oldFileName);
+                }
             }
 
             const updatedUser = await prisma.user.update({
@@ -108,13 +109,13 @@ export const UserService = {
                     id: data.id
                 },
                 data: {
-                    email: data.email,
+                    email: data.email?.trim(),
                     updated_at: new Date(),
                     profile: {
                         update: {
                             name,
                             description,
-                            photo_url: filename,
+                            photo_url: data.delete_photo ? null : filename,
                             skills,
                             experiences
                         }

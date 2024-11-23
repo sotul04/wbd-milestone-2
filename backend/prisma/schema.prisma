@@ -35,7 +35,7 @@ model Profile {
   id            BigInt    @id @default(autoincrement()) @map("userId")
   name          String    @db.VarChar(255)
   photo_url     String?   @db.Text
-  description   String    @db.Text
+  description   String?   @db.Text
   skills        String?   @db.Text
   experiences   String?   @db.Text
   user          User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)

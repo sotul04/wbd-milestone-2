@@ -1,11 +1,6 @@
-import validator from 'validator';
-import xss from 'xss';
-
 import * as UserModel from '../model/User';
-import bcrypt from 'bcrypt';
 
 import { prisma } from '../db';
-import { User } from '@prisma/client';
 
 export const ProfileService = {
     publicAccess: async (data: UserModel.UserFindId): Promise<UserModel.UserProfile | null> => {

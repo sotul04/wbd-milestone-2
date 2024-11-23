@@ -30,12 +30,7 @@ export const ProfileController = {
         try {
             const userId = req.params.userId;
 
-            if (!userId) {
-                res.status(400).json(response(false, 'ID for user is required', 'User ID required'));
-                return;
-            }
-
-            const { email, name, description, skills, experiences } = req.body;
+            const { email, name, description, skills, experiences, delete_photo } = req.body;
             
             if (!req.user || req.user.userId !== userId) {
                 res.status(401).json(response(false, 'Unauthorized', null));
@@ -49,7 +44,8 @@ export const ProfileController = {
                 description,
                 profile_photo: req.file,
                 skills,
-                experiences
+                experiences,
+                delete_photo
             };
 
             const result = await UserService.updateUser(data);
@@ -62,6 +58,10 @@ export const ProfileController = {
 
         } catch (error) {
             console.error('Error in profilUpdate:', error);
+            if (error instanceof Error) {
+                res.status(400).json(response(false, error.message, error));
+                return;
+            }
             res.status(500).json(response(false, 'Internal server error', error));
         }
     },

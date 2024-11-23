@@ -15,7 +15,7 @@ CREATE TABLE "Profile" (
     "userId" BIGSERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "photo_url" TEXT,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "skills" TEXT,
     "experiences" TEXT,
 
