@@ -1,19 +1,26 @@
-import { Outlet, RouteObject, createBrowserRouter } from "react-router-dom";
+import { Outlet, RouteObject, createBrowserRouter, useLocation } from "react-router-dom";
 
-import { 
+import {
     Login,
-    Home, 
+    Home,
+    NotFound,
+    Unauthorized,
+    Register
 } from "@/pages";
 
 import { AuthProvider } from "@/context/AuthContext";
-import React from "react";
 import Header from "@/components/nav/Header";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const AuthProviderLayout = () => {
+    const location = useLocation();
+    const hideHeaderRoutes = ["/unauthorized", "/login", "/register"];
+    const hideHeader = hideHeaderRoutes.includes(location.pathname);
+
     return <>
         <AuthProvider>
-            <Header/>
-            <Outlet/>
+            {!hideHeader && <Header />}
+            <Outlet />
         </AuthProvider>
     </>
 }
@@ -22,14 +29,27 @@ const routes: RouteObject[] = [
     {
         path: "/",
         element: <AuthProviderLayout />,
+        errorElement: <NotFound />,
         children: [
             {
                 path: "/",
-                element: <Home />
+                element: <Home/>
             },
             {
                 path: "/login",
-                element: <Login/>
+                element: <ProtectedRoute redirectTo="/" invert>
+                    <Login />
+                </ProtectedRoute>
+            },
+            {
+                path: "/register",
+                element: <ProtectedRoute redirectTo="/" invert>
+                    <Register />
+                </ProtectedRoute>
+            },
+            {
+                path: '/unauthorized',
+                element: <Unauthorized />
             }
         ],
     }

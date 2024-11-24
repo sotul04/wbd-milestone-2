@@ -5,7 +5,7 @@ export type Response = {
 
 export type AuthCheckResponse = Response & {
     body: {
-        id: bigint;
+        id: number;
         username: string;
         email: string;
         profile: {
@@ -29,4 +29,11 @@ export type LoginResponse = Response & {
     body: {
         token: string
     }
+}
+
+export type RegisterPayload = {
+    username: string;
+    email: string;
+    name: string;
+    password: string;
 }

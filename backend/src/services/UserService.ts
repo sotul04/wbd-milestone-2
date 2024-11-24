@@ -17,14 +17,25 @@ export const UserService = {
             if (!validator.isEmail(data.email)) {
                 throw new Error('Invalid email address');
             }
-            const existed = await prisma.user.findUnique({
-                where: { email: data.email }
-            });
-            if (existed) {
-                throw new Error('Email has been used');
-            }
             const username = xss(data.username);
             const password = xss(data.password);
+            const existedUsername = await prisma.user.findUnique({
+                where: {
+                    username: username
+                }
+            });
+            if (existedUsername) {
+                throw new Error('Username has been used');
+            }
+
+            const existedEmail = await prisma.user.findUnique({
+                where: {
+                    email: data.email
+                }
+            })
+            if (existedEmail) {
+                throw new Error('Email has been used');
+            }
             const password_hash = await bcrypt.hash(password, 10);
             const newUser = await prisma.user.create({
                 data: {
@@ -33,7 +44,7 @@ export const UserService = {
                     password_hash: password_hash,
                     profile: {
                         create: {
-                            name: data.name,
+                            name: xss(data.name),
                             description: ''
                         }
                     }

@@ -8,10 +8,11 @@ type AuthCtx = {
     authenticated: boolean;
     login: (payload: LoginRequest) => void;
     logout: () => void;
-    userId?: bigint;
-    username?: string;
-    name?: string;
-    photoUrl?: string | null;
+    userId: number;
+    username: string;
+    name: string;
+    email: string;
+    photoUrl: string | null;
     update: boolean;
     setUpdate: (prop: boolean) => void
 }
@@ -20,9 +21,10 @@ const AuthContext = createContext<AuthCtx>({
     authenticated: false,
     login: () => { },
     logout: () => { },
-    userId: undefined,
-    username: undefined,
-    name: undefined,
+    userId: 0,
+    username: '',
+    name: '',
+    email: '',
     photoUrl: null,
     update: false,
     setUpdate: () => { }
@@ -31,11 +33,12 @@ const AuthContext = createContext<AuthCtx>({
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [authenticated, setAuthenticated] = useState(false);
-    const [userId, setUserId] = useState<bigint>();
-    const [username, setUsername] = useState<string>();
-    const [name, setName] = useState<string>();
-    const [photoUrl, setPhotoUrl] = useState<string | null>();
+    const [userId, setUserId] = useState<number>(0);
+    const [username, setUsername] = useState<string>('');
+    const [name, setName] = useState<string>('');
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
     const [update, setUpdate] = useState(false);
+    const [email, setEmail] = useState<string>('');
 
     useEffect(() => {
         const verifyUser = async () => {
@@ -46,10 +49,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     const user = await AuthApi.checkAuth();
                     if (user) {
                         setAuthenticated(true);
-                        setName(user.body.profile?.name);
+                        setName(user.body.profile?.name ?? '');
                         setUserId(user.body.id);
                         setUsername(user.body.username);
-                        setPhotoUrl(user.body.profile?.photo_url);
+                        setPhotoUrl(user.body.profile?.photo_url ?? null);
+                        setEmail(user.body.email);
                     }
                 } catch (error) {
                     Auth.logout();
@@ -65,11 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = async (payload: LoginRequest) => {
         try {
             const auth = await AuthApi.login(payload);
-
-            if (auth && auth.success) {
-                setAuthenticated(true);
-                Auth.login(auth.body.token);
-            }
+            setUpdate(false);
+            Auth.login(auth.body.token);
         } catch (error) {
             throw error;
         }
@@ -84,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return <>
         <AuthContext.Provider
-            value={{ authenticated, userId, username, name, photoUrl, login, logout, setUpdate, update }}
+            value={{ authenticated, userId, username, name, email, photoUrl, login, logout, setUpdate, update }}
         >
             {children}
         </AuthContext.Provider>

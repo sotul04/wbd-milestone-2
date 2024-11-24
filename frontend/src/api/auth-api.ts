@@ -3,7 +3,8 @@ import { BaseApi } from "./base-api";
 import {
     AuthCheckResponse,
     LoginPayload,
-    LoginResponse
+    LoginResponse,
+    RegisterPayload
 } from "@/types";
 
 export class AuthApi extends BaseApi {
@@ -23,7 +24,16 @@ export class AuthApi extends BaseApi {
             const response = await this.client.post<LoginResponse>("/login", payload);
             return response.data;
         } catch (error) {
-            throw error;
+            throw (error as any)?.response?.data;
+        }
+    }
+
+    public static async register(payload: RegisterPayload) {
+        try {
+            const response = await this.client.post<LoginResponse>("/register", payload);
+            return response.data;
+        } catch (error) {
+            throw (error as any)?.response?.data;
         }
     }
 }
