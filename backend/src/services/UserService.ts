@@ -42,12 +42,7 @@ export const UserService = {
                     username: username,
                     email: data.email,
                     password_hash: password_hash,
-                    profile: {
-                        create: {
-                            name: xss(data.name),
-                            description: ''
-                        }
-                    }
+                    full_name: xss(data.name),
                 }
             });
             return newUser;
@@ -58,17 +53,6 @@ export const UserService = {
     },
     updateUser: async (data: UserModel.UserUpdate) => {
         try {
-            if (data.email) {
-                const existedEmail = await prisma.user.findUnique({
-                    where: {
-                        email: data.email
-                    }
-                });
-                if (existedEmail && existedEmail.id !== data.id) {
-                    throw new Error('Email has been used.');
-                }
-            }
-
             if (data.profile_photo && !data.delete_photo) {
                 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!allowedImageTypes.includes(data.profile_photo.mimetype)) {
@@ -77,13 +61,11 @@ export const UserService = {
             }
 
             const name = data.name && xss(data.name.trim());
-            const description = data.description && xss(data.description);
             const skills = data.skills && xss(data.skills);
-            const experiences = data.experiences && xss(data.experiences);
+            const work_history = data.work_history && xss(data.work_history);
 
             const user = await prisma.user.findUnique({
-                where: { id: data.id },
-                include: { profile: true }
+                where: { id: data.id }
             });
 
             if (!user) {
@@ -101,16 +83,16 @@ export const UserService = {
                 const fileExtension = mimeToExtension[data.profile_photo.mimetype];
                 filename = `profile-${data.id.toString()}${fileExtension}`;
 
-                if (user.profile?.photo_url) {
-                    const oldFileName = path.basename(user.profile.photo_url);
+                if (user.profile_photo_path) {
+                    const oldFileName = path.basename(user.profile_photo_path);
                     await deleteFile(oldFileName);
                 }
 
                 const fileBuffer = await data.profile_photo.buffer;
                 await createImageFile(filename, Buffer.from(fileBuffer));
             } else if (data.delete_photo) {
-                if (user.profile?.photo_url) {
-                    const oldFileName = path.basename(user.profile.photo_url);
+                if (user.profile_photo_path) {
+                    const oldFileName = path.basename(user.profile_photo_path);
                     await deleteFile(oldFileName);
                 }
             }
@@ -120,17 +102,11 @@ export const UserService = {
                     id: data.id
                 },
                 data: {
-                    email: data.email?.trim(),
+                    full_name: name,
+                    work_history: work_history,
+                    skills: skills,
                     updated_at: new Date(),
-                    profile: {
-                        update: {
-                            name,
-                            description,
-                            photo_url: data.delete_photo ? null : filename,
-                            skills,
-                            experiences
-                        }
-                    }
+                    profile_photo_path: data.delete_photo ? null : filename
                 }
             });
             if (updatedUser) return true;
@@ -167,12 +143,8 @@ export const UserService = {
                 id: true,
                 username: true,
                 email: true,
-                profile: {
-                    select: {
-                        name: true,
-                        photo_url: true
-                    }
-                }
+                full_name: true,
+                profile_photo_path: true
             }
         });
         return {

@@ -11,12 +11,11 @@ export type User = {
 
 export type UserProfile = {
     name: string;
-    description: string | null;
+    work_history?: string | null;
+    skills?: string | null;
     profile_photo?: string | null;
     relevant_posts?: FeedSerializable[] | null;
     connection_count: number;
-    experiences?: string | null;
-    skills?: string | null;
     connect_status?: boolean | null;
 }
 
@@ -36,12 +35,10 @@ export const userCreateSchema = z.object({
 
 export type UserUpdate = {
     id: bigint;
-    email?: string;
     name?: string;
-    description?: string | null;
     profile_photo?: Express.Multer.File;
+    work_history?: string | null;
     skills?: string | null;
-    experiences?: string | null;
     delete_photo?: boolean;
 }
 
@@ -60,12 +57,10 @@ export const userUpdateParams = z.object({
 });
 
 export const userUpdateSchema = z.object({
-    email: z.string().trim().email().optional(),
     name: z.string().trim().min(3).optional(),
-    description: z.string().nullable().optional(),
     profile_photo: z.any().optional(),
+    work_history: z.string().nullable().optional(),
     skills: z.string().nullable().optional(),
-    experiences: z.string().nullable().optional(),
     delete_photo: z
         .union([z.boolean(), z.string().refine(val => val === 'true' || val === 'false' || val === undefined || val === '', {
             message: "delete_photo must be 'true' or 'false' as string"

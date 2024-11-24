@@ -5,29 +5,24 @@ import { prisma } from '../db';
 export const ProfileService = {
     publicAccess: async (data: UserModel.UserFindId): Promise<UserModel.UserProfile | null> => {
         try {
-            const profile = await prisma.profile.findUnique({
+            const profile = await prisma.user.findUnique({
                 where: {
                     id: data.id
                 },
                 include: {
-                    user: {
-                        include: {
-                            sent_connections: true,
-                            received_connections: true
-                        }
-                    }
+                    sent_connections: true,
+                    received_connections: true
                 }
             });
             if (!profile) {
                 return null;
             } 
 
-            const connection_count = Math.min(profile.user.sent_connections.length, profile.user.received_connections.length);
+            const connection_count = Math.min(profile.sent_connections.length, profile.received_connections.length);
 
             return {
-                name: profile.name,
-                profile_photo: profile.photo_url,
-                description: profile.description,
+                name: profile.full_name,
+                profile_photo: profile.profile_photo_path,
                 connection_count
             }
 
@@ -39,21 +34,17 @@ export const ProfileService = {
 
     authenticatedAccess: async (data: UserModel.UserFindConnection): Promise<UserModel.UserProfile | null> => {
         try {
-            const profile = await prisma.profile.findUnique({
+            const profile = await prisma.user.findUnique({
                 where: {
                     id: data.idTarget
                 },
                 include: {
-                    user: {
-                        include: {
-                            sent_connections: true,
-                            received_connections: true,
-                            feeds: {
-                                take: 10,
-                                orderBy: {
-                                    updated_at: 'desc'
-                                }
-                            }
+                    sent_connections: true,
+                    received_connections: true,
+                    feeds: {
+                        take: 10,
+                        orderBy: {
+                            updated_at: 'desc'
                         }
                     }
                 }
@@ -62,17 +53,16 @@ export const ProfileService = {
                 return null;
             } 
 
-            const connection_count = Math.min(profile.user.sent_connections.length, profile.user.received_connections.length);
-            const connect_status = profile.user.sent_connections.find(connection => connection.to_id === data.idClient) ? true : false;
+            const connection_count = Math.min(profile.sent_connections.length, profile.received_connections.length);
+            const connect_status = profile.sent_connections.find(connection => connection.to_id === data.idClient) ? true : false;
 
             return {
-                name: profile.name,
-                profile_photo: profile.photo_url,
-                description: profile.description,
+                name: profile.full_name,
+                profile_photo: profile.profile_photo_path,
                 connection_count,
-                experiences: profile.experiences,
+                work_history: profile.work_history,
                 connect_status,
-                relevant_posts: connect_status ? profile.user.feeds.map(item => {
+                relevant_posts: connect_status ? profile.feeds.map(item => {
                     return {
                         ...item,
                         id: item.id.toString(),
@@ -90,21 +80,17 @@ export const ProfileService = {
 
     selfAccess: async (data: UserModel.UserFindId): Promise<UserModel.UserProfile | null> => {
         try {
-            const profile = await prisma.profile.findUnique({
+            const profile = await prisma.user.findUnique({
                 where: {
                     id: data.id
                 },
                 include: {
-                    user: {
-                        include: {
-                            sent_connections: true,
-                            received_connections: true,
-                            feeds: {
-                                take: 10,
-                                orderBy: {
-                                    updated_at: 'desc'
-                                }
-                            }
+                    sent_connections: true,
+                    received_connections: true,
+                    feeds: {
+                        take: 10,
+                        orderBy: {
+                            updated_at: 'desc'
                         }
                     }
                 }
@@ -113,13 +99,12 @@ export const ProfileService = {
                 return null;
             } 
 
-            const connection_count = Math.min(profile.user.sent_connections.length, profile.user.received_connections.length);
+            const connection_count = Math.min(profile.sent_connections.length, profile.received_connections.length);
 
             return {
-                name: profile.name,
-                description: profile.description,
-                profile_photo: profile.photo_url,
-                relevant_posts: profile.user.feeds.map(item => {
+                name: profile.full_name,
+                profile_photo: profile.profile_photo_path,
+                relevant_posts: profile.feeds.map(item => {
                     return {
                         ...item,
                         id: item.id.toString(),
@@ -127,7 +112,7 @@ export const ProfileService = {
                     }
                 }),
                 connection_count,
-                experiences: profile.experiences,
+                work_history: profile.work_history,
                 skills: profile.skills,
             }
 

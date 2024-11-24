@@ -14,76 +14,69 @@ datasource db {
 }
 
 model User {
-  id                 BigInt               @id @default(autoincrement())
-  username           String               @unique @db.VarChar(255)
-  email              String               @unique @db.VarChar(255)
-  password_hash      String               @db.VarChar(255)
-  created_at         DateTime             @default(now()) @db.Timestamptz
-  updated_at         DateTime             @default(now()) @db.Timestamptz
-  profile            Profile?
-  feeds              Feed[]
-  sent_chats         Chat[]               @relation("SentChats")
-  received_chats     Chat[]               @relation("ReceivedChats")
-  sent_connection_requests ConnectionRequest[] @relation("SentConnectionRequests")
+  id                           BigInt              @id @default(autoincrement())
+  username                     String              @unique @db.VarChar(255)
+  email                        String              @unique @db.VarChar(255)
+  password_hash                String              @db.VarChar(255)
+  full_name                    String              @db.VarChar(255)
+  work_history                 String?              @db.Text
+  skills                       String?              @db.Text
+  profile_photo_path           String?              @db.VarChar(255)
+  created_at                   DateTime            @default(now()) @db.Timestamptz
+  updated_at                   DateTime            @default(now()) @db.Timestamptz
+  feeds                        Feed[]
+  sent_chats                   Chat[]              @relation("SentChats")
+  received_chats               Chat[]              @relation("ReceivedChats")
+  sent_connection_requests     ConnectionRequest[] @relation("SentConnectionRequests")
   received_connection_requests ConnectionRequest[] @relation("ReceivedConnectionRequests")
-  sent_connections   Connection[]          @relation("SentConnections")
-  received_connections Connection[]        @relation("ReceivedConnections")
-  push_subscriptions PushSubscription[]
-}
-
-model Profile {
-  id            BigInt    @id @default(autoincrement()) @map("userId")
-  name          String    @db.VarChar(255)
-  photo_url     String?   @db.Text
-  description   String?   @db.Text
-  skills        String?   @db.Text
-  experiences   String?   @db.Text
-  user          User      @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sent_connections             Connection[]        @relation("SentConnections")
+  received_connections         Connection[]        @relation("ReceivedConnections")
+  push_subscriptions           PushSubscription[]
 }
 
 model Feed {
-  id         BigInt    @id @default(autoincrement())
-  created_at DateTime  @default(now()) @db.Timestamptz
-  updated_at DateTime  @default(now()) @db.Timestamptz
-  content    String    @db.Text
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz
+  updated_at DateTime @default(now()) @db.Timestamptz
+  content    String   @db.Text
   user_id    BigInt
-  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Chat {
-  id         BigInt    @id @default(autoincrement())
-  timestamp  DateTime  @default(now()) @db.Timestamptz
-  from_id    BigInt
-  to_id      BigInt
-  message    String    @db.Text
-  from_user  User      @relation("SentChats", fields: [from_id], references: [id], onDelete: Cascade)
-  to_user    User      @relation("ReceivedChats", fields: [to_id], references: [id], onDelete: Cascade)
+  id        BigInt   @id @default(autoincrement())
+  timestamp DateTime @default(now()) @db.Timestamptz
+  from_id   BigInt
+  to_id     BigInt
+  message   String   @db.Text
+  from_user User     @relation("SentChats", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user   User     @relation("ReceivedChats", fields: [to_id], references: [id], onDelete: Cascade)
 }
 
 model ConnectionRequest {
-  from_id     BigInt
-  to_id       BigInt
-  created_at  DateTime @db.Timestamptz
-  from_user   User     @relation("SentConnectionRequests", fields: [from_id], references: [id], onDelete: Cascade)
-  to_user     User     @relation("ReceivedConnectionRequests", fields: [to_id], references: [id], onDelete: Cascade)
+  from_id    BigInt
+  to_id      BigInt
+  created_at DateTime @db.Timestamptz
+  from_user  User     @relation("SentConnectionRequests", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user    User     @relation("ReceivedConnectionRequests", fields: [to_id], references: [id], onDelete: Cascade)
 
   @@id([from_id, to_id])
 }
 
 model Connection {
-  from_id     BigInt
-  to_id       BigInt
-  created_at  DateTime @db.Timestamptz
-  from_user   User     @relation("SentConnections", fields: [from_id], references: [id], onDelete: Cascade)
-  to_user     User     @relation("ReceivedConnections", fields: [to_id], references: [id], onDelete: Cascade)
+  from_id    BigInt
+  to_id      BigInt
+  created_at DateTime @db.Timestamptz
+  from_user  User     @relation("SentConnections", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user    User     @relation("ReceivedConnections", fields: [to_id], references: [id], onDelete: Cascade)
 
   @@id([from_id, to_id])
 }
 
 model PushSubscription {
-  endpoint    String    @id @db.Text
-  user_id     BigInt?
-  keys        Json
-  created_at  DateTime  @default(now()) @db.Timestamptz
-  user        User?     @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  endpoint   String   @id @db.Text
+  user_id    BigInt?
+  keys       Json
+  created_at DateTime @default(now()) @db.Timestamptz
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
 }
