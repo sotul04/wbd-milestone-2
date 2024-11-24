@@ -7,7 +7,7 @@ import { ProfileController, upload } from "../controller/ProfileController";
 import { ConnectionController } from "../controller/ConnectionController";
 
 import { validateRequestBody, validateRequestParams, validateQueryParams } from "../middleware/validation";
-import { userAuthSchema, userCreateSchema, userUpdateParams, userUpdateSchema } from "../model/User";
+import { getProfileParams, userAuthSchema, userCreateSchema, userUpdateParams, userUpdateSchema } from "../model/User";
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
 
 const uploads = multer();
@@ -20,7 +20,7 @@ router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), 
 router.get('/verify', authJWT, UserController.verify);
 
 // profile routes
-router.get('/profile/:userId', ProfileController.getProfile);
+router.get('/profile/:userId', validateRequestParams(getProfileParams), ProfileController.getProfile);
 router.put('/profile/:userId', authJWT, upload.single('profile_photo'), validateRequestParams(userUpdateParams), validateRequestBody(userUpdateSchema), ProfileController.profilUpdate);
 
 // connection routes

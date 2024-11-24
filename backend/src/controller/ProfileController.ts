@@ -8,6 +8,8 @@ import jwt from 'jsonwebtoken';
 import { UserService } from "../services/UserService";
 import { ProfileService } from "../services/ProfileService";
 import { CustomJwtPayload } from "../types/express";
+import { UserUpdate, userUpdateSchema } from "../model/User";
+import xss from "xss";
 
 dotenv.config();
 const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET ?? "secret_key";
@@ -30,22 +32,20 @@ export const ProfileController = {
         try {
             const userId = req.params.userId;
 
-            const { email, name, description, skills, experiences, delete_photo } = req.body;
+            const updateData = userUpdateSchema.parse(req.body);
             
             if (!req.user || req.user.userId !== userId) {
                 res.status(401).json(response(false, 'Unauthorized', null));
                 return;
             }
 
-            const data = {
+            const data: UserUpdate = {
                 id: BigInt(userId),
-                email,
-                name,
-                description,
+                name: updateData.name && xss(updateData.name),
                 profile_photo: req.file,
-                skills,
-                experiences,
-                delete_photo
+                skills: updateData.skills && xss(updateData.skills),
+                work_history: updateData.work_history && xss(updateData.work_history),
+                delete_photo: updateData.delete_photo
             };
 
             const result = await UserService.updateUser(data);

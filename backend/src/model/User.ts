@@ -64,6 +64,10 @@ export const userUpdateSchema = z.object({
     delete_photo: z
         .union([z.boolean(), z.string().refine(val => val === 'true' || val === 'false' || val === undefined || val === '', {
             message: "delete_photo must be 'true' or 'false' as string"
+        }).transform(val => {
+            if (val === 'true') return true;
+            if (val === 'false') return false;
+            return Boolean(val);
         })]).optional()
 });
 
@@ -89,4 +93,18 @@ export type UserAuth = {
 export const userAuthSchema = z.object({
     username: z.string(),
     password: z.string().min(8)
+});
+
+export const getProfileParams = z.object({
+    userId: z.string().refine(
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch {
+                return false;
+            }
+        },
+        { message: 'userId must be a valid bigint' }
+    )
 });

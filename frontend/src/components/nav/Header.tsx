@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthContext"
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChatLink, ConnectionsLink, FeedLink, HomeLink, LoginLink, ProfileLink, RegisterLink, RequestsLink, UserProfile, UsersLink } from "../link";
 import { useEffect, useState } from "react";
-import { GripIcon, SidebarOpen, XIcon } from "lucide-react";
+import { GripIcon, XIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button, buttonVariants } from "../ui/button";
 
@@ -16,7 +16,7 @@ export default function Header() {
         setSideBarOpen(prev => !prev);
     }
     return <>
-        <header className="flex justify-center bg-white border-b-[1px] sticky top-0">
+        <header className="flex justify-center bg-white border-b-[1px] sticky top-0 z-30">
             <nav className="container my-1 flex justify-between items-center py-1 px-2">
                 <Link to="/">
                     <img src="/purry.ico" width={40} height={40} />
@@ -33,7 +33,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
     const auth = useAuth();
     const navigate = useNavigate();
     return <>
-        <div className={`fixed inset-y-0 left-0 md:hidden transform ${props.sideBarOpen ? "translate-x-0" : "-translate-x-full"} items-center transition flex flex-col duration-200 px-2 ease-in-out bg-white w-full space-y-6 h-screen z-20`}>
+        <div className={`fixed inset-y-0 left-0 md:hidden transform ${props.sideBarOpen ? "translate-x-0" : "-translate-x-full"} items-center transition flex flex-col duration-200 px-2 ease-in-out bg-white w-full space-y-6 h-screen z-50`}>
             <div className="flex container justify-between my-1 py-1 items-center">
                 <Link to="/">
                     <img src="/purry.ico" width={40} height={40} />
@@ -43,13 +43,13 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                 </div>
             </div>
             <div className="flex container flex-col gap-3 items-start">
-                <HomeLink current={location.pathname.startsWith('/')} />
-                <FeedLink current={location.pathname.startsWith('/feed')} />
-                <ProfileLink id={props.id} />
-                <UsersLink current={location.pathname.startsWith('/users')} />
-                <RequestsLink current={location.pathname.startsWith('/requests')} />
-                <ConnectionsLink current={location.pathname.startsWith('/connection')} />
-                <ChatLink current={location.pathname.startsWith('/chat')} />
+                <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
+                <FeedLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/feed')} />
+                <ProfileLink onClick={props.toggleSideBar} current={location.pathname.startsWith("/profile")} id={props.id} />
+                <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
+                <RequestsLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/requests')} />
+                <ConnectionsLink id={props.id} onClick={props.toggleSideBar} current={location.pathname.startsWith('/connection')} />
+                <ChatLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/chat')} />
                 <div className="w-full border-t-[1px] flex justify-center">
                     <div className="py-3">
                         <div className="flex gap-2">
@@ -77,13 +77,13 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
             <GripIcon className="w-8 h-8" />
         </div>
         <div className="gap-2 hidden md:flex">
-            <HomeLink current={location.pathname.startsWith('/')} />
-            <FeedLink current={location.pathname.startsWith('/feed')} />
-            <ProfileLink id={props.id} />
-            <UsersLink current={location.pathname.startsWith('/users')} />
-            <RequestsLink current={location.pathname.startsWith('/requests')} />
-            <ConnectionsLink current={location.pathname.startsWith('/connection')} />
-            <ChatLink current={location.pathname.startsWith('/chat')} />
+            <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
+            <FeedLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/feed')} />
+            <ProfileLink onClick={props.toggleSideBar} current={location.pathname.startsWith("/profile")} id={props.id} />
+            <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
+            <RequestsLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/requests')} />
+            <ConnectionsLink id={props.id} onClick={props.toggleSideBar} current={location.pathname.startsWith('/connection')} />
+            <ChatLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/chat')} />
             <UserProfile {...props} />
         </div>
     </>
@@ -102,8 +102,8 @@ function UnauthenticatedNav(props: { sideBarOpen: boolean, toggleSideBar: () => 
                 </div>
             </div>
             <div className="flex container flex-col gap-3 items-start">
-                <HomeLink current={location.pathname.startsWith('/')} />
-                <UsersLink current={location.pathname.startsWith('/users')} />
+                <HomeLink onClick={props.toggleSideBar} current={location.pathname === "/"} />
+                <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
                 <LoginLink />
                 <RegisterLink />
             </div>
@@ -112,8 +112,8 @@ function UnauthenticatedNav(props: { sideBarOpen: boolean, toggleSideBar: () => 
             <GripIcon className="w-8 h-8" />
         </div>
         <div className="gap-3 hidden md:flex">
-            <HomeLink current={location.pathname.startsWith('/')} />
-            <UsersLink current={location.pathname.startsWith('/users')} />
+            <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
+            <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
             <LoginLink />
             <RegisterLink />
         </div>

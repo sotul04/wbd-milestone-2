@@ -9,23 +9,15 @@ export const ConnectionService = {
                 where: param.search ? {
                     OR: [
                         { username: { contains: param.search, mode: 'insensitive' } },
-                        {
-                            profile: {
-                                name: { contains: param.search, mode: 'insensitive' }
-                            }
-                        }
+                        { full_name: {contains: param.search, mode: 'insensitive'} }
                     ]
                 } : {},
                 select: {
                     id: true,
-                    username: true,
+                    full_name: true,
                     email: true,
-                    profile: {
-                        select: {
-                            name: true,
-                            photo_url: true
-                        }
-                    }
+                    profile_photo_path: true,
+                    work_history: true
                 },
                 take: 20,
                 orderBy: {
@@ -229,12 +221,8 @@ export const ConnectionService = {
                         select: {
                             username: true,
                             email: true,
-                            profile: {
-                                select: {
-                                    name: true,
-                                    photo_url: true
-                                }
-                            }
+                            profile_photo_path: true,
+                            full_name: true
                         }
                     },
                 },
@@ -275,12 +263,8 @@ export const ConnectionService = {
                     id: true,
                     username: true,
                     email: true,
-                    profile: {
-                        select: {
-                            photo_url: true,
-                            name: true,
-                        }
-                    }
+                    profile_photo_path: true,
+                    full_name: true
                 }
             });
 

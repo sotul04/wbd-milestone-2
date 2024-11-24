@@ -24,7 +24,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { AuthApi } from "@/api/auth-api";
 import { login } from "@/lib/cookies";
-import { useState } from "react";
 
 const formSchema = z
     .object({

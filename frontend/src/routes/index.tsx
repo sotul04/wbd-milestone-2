@@ -5,7 +5,13 @@ import {
     Home,
     NotFound,
     Unauthorized,
-    Register
+    Register,
+    Chat,
+    Connections,
+    Feed,
+    Profile,
+    Requests,
+    Users
 } from "@/pages";
 
 import { AuthProvider } from "@/context/AuthContext";
@@ -46,6 +52,36 @@ const routes: RouteObject[] = [
                 element: <ProtectedRoute redirectTo="/" invert>
                     <Register />
                 </ProtectedRoute>
+            },
+            {
+                path: "/chat",
+                element: <ProtectedRoute redirectTo="/login">
+                    <Chat/>
+                </ProtectedRoute>
+            },
+            {
+                path: "/connections/:userId",
+                element: <Connections/>
+            },
+            {
+                path: "/feed",
+                element: <ProtectedRoute redirectTo="/login">
+                    <Feed/>
+                </ProtectedRoute>
+            },
+            {
+                path: "/profile/:userId",
+                element: <Profile/>
+            },
+            {
+                path: "/requests",
+                element: <ProtectedRoute redirectTo="/login">
+                    <Requests/>
+                </ProtectedRoute>
+            },
+            {
+                path: "/users",
+                element: <Users />
             },
             {
                 path: '/unauthorized',

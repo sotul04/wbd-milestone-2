@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { response } from '../utils/response';
 
-import multer from "multer";
-import jwt from 'jsonwebtoken';
-
 import { ConnectionService } from "../services/ConnectionService";
 import { StatusCodes } from 'http-status-codes';
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";

@@ -7,6 +7,10 @@ export default {
 	],
 	theme: {
     	extend: {
+			container: {
+				center: true,
+				padding: '1rem',
+			},
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',
@@ -54,7 +58,14 @@ export default {
     				'5': 'hsl(var(--chart-5))'
     			}
     		}
-    	}
+    	},
+		container: {
+			screens: {
+				sm: '640px',
+				md: '768px',
+				lg: '1024px',
+			}
+		}
     },
 	plugins: [require("tailwindcss-animate")],
 }
