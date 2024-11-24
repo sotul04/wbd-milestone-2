@@ -49,17 +49,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     const user = await AuthApi.checkAuth();
                     if (user) {
                         setAuthenticated(true);
-                        setName(user.body.profile?.name ?? '');
+                        setName(user.body.full_name ?? '');
                         setUserId(user.body.id);
                         setUsername(user.body.username);
-                        setPhotoUrl(user.body.profile?.photo_url ?? null);
+                        setPhotoUrl(user.body.profile_photo_path ?? null);
                         setEmail(user.body.email);
                     }
                 } catch (error) {
                     Auth.logout();
                 }
             }
-
             setLoading(false);
         }
 

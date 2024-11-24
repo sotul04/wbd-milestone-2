@@ -5,13 +5,11 @@ export type Response = {
 
 export type AuthCheckResponse = Response & {
     body: {
-        id: number;
         username: string;
         email: string;
-        profile: {
-            name: string;
-            photo_url: string | null;
-        } | null;
+        id: number;
+        full_name: string;
+        profile_photo_path: string | null;
     }
 }
 
