@@ -33,7 +33,6 @@ export default function Users() {
         try {
             const response = await ConnectionApi.getUsers({ search: query === "" ? undefined : query });
             setUsers(response.body);
-            console.log(response.body);
         } catch (error) {
             console.log((error as any)?.message);
         }
