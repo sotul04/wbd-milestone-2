@@ -55,7 +55,18 @@ export const ProfileService = {
             } 
 
             const connection_count = Math.min(profile.sent_connections.length, profile.received_connections.length);
-            const connect_status = profile.sent_connections.find(connection => connection.to_id === data.idClient) ? true : false;
+            let connect_status = profile.sent_connections.find(connection => connection.to_id === data.idClient) ? 'connected' : 'disconnected';
+
+            const requests = await prisma.connectionRequest.findUnique({
+                where: {
+                    from_id_to_id: {
+                        from_id: data.idClient,
+                        to_id: data.idTarget
+                    }
+                }
+            });
+
+            if (requests) connect_status = 'waiting';
 
             return {
                 name: profile.full_name,

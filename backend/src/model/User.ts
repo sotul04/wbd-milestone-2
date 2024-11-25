@@ -17,7 +17,7 @@ export type UserProfile = {
     profile_photo: string;
     relevant_posts?: FeedSerializable[] | null;
     connection_count: number;
-    connect_status?: boolean | null;
+    connect_status?: string | null;
 }
 
 export type UserCreate = {
