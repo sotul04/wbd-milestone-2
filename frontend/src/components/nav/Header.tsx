@@ -63,7 +63,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                             </div>
                         </div>
                         <div className="flex items-center justify-between flex-col">
-                            <Link className={`${buttonVariants({ variant: "outline" })} mt-2 h-7 rounded-[999px] border-blue-700 text-blue-700 font-semibold bg-white hover:border-2 hover:text-blue-800 hover:bg-blue-50 `} to={`/profile/${props.id}`}>Show Profile</Link>
+                            <Link onClick={props.toggleSideBar} className={`${buttonVariants({ variant: "outline" })} mt-2 h-7 rounded-[999px] border-blue-700 text-blue-700 font-semibold bg-white hover:border-2 hover:text-blue-800 hover:bg-blue-50 `} to={`/profile/${props.id}`}>Show Profile</Link>
                             <Button className="h-4 mt-2 px-1" variant={"link"} onClick={() => {
                                 auth.logout();
                                 navigate("/");
