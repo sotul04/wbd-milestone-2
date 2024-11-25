@@ -1,12 +1,12 @@
 import { ProfileApi } from "@/api/profile-api";
 import { AvatarImage, Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useToast } from "@/hooks/use-toast";
@@ -351,24 +351,28 @@ export default function Profile() {
                                     {profile.name}
                                 </h1>
                                 <p className="text-sm text-[#808080]">{profile.username}</p>
-                                <div className="py-1">
-                                    <Label>Work History</Label>
-                                    <ReactQuill
-                                        ref={workHistoryRef}
-                                        readOnly
-                                        modules={{ toolbar: null }}
-                                        value={profile.work_history ?? ""}
-                                    />
-                                </div>
-                                <div className="py-1">
-                                    <Label>Skills</Label>
-                                    <ReactQuill
-                                        ref={skillsRef}
-                                        readOnly
-                                        modules={{ toolbar: null }}
-                                        value={profile.skills ?? ""}
-                                    />
-                                </div>
+                                {profile.work_history?.trim().length !== 0 &&
+                                    <div className="py-1">
+                                        <Label>Work History</Label>
+                                        <ReactQuill
+                                            ref={workHistoryRef}
+                                            readOnly
+                                            modules={{ toolbar: null }}
+                                            value={profile.work_history ?? ""}
+                                        />
+                                    </div>
+                                }
+                                {profile.skills?.trim().length !== 0 &&
+                                    <div className="py-1">
+                                        <Label>Skills</Label>
+                                        <ReactQuill
+                                            ref={skillsRef}
+                                            readOnly
+                                            modules={{ toolbar: null }}
+                                            value={profile.skills ?? ""}
+                                        />
+                                    </div>
+                                }
                                 <div className="flex justify-end mt-2">
                                     <Button
                                         className="rounded-full h-8"
@@ -382,8 +386,8 @@ export default function Profile() {
                         )}
                     </div>
                     <div className="flex justify-end py-2 pr-[5%] mb-2 text-sm text-[#808080]">
-                        <p>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
-                            }`}</p>
+                        <Link className={`${buttonVariants({ variant: "link" })} px-0`} to={`/connections/${userId}`}>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
+                            }`}</Link>
                     </div>
                 </Card>
             </section>
@@ -467,8 +471,8 @@ export default function Profile() {
                     }
                 </div>
                 <div className="flex justify-end py-2 pr-[5%] text-sm mb-2 text-[#808080]">
-                    <p>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
-                        }`}</p>
+                    <Link className={`${buttonVariants({ variant: "link" })} px-0`} to={`/connections/${userId}`}>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
+                        }`}</Link>
                 </div>
             </Card>
         </section >

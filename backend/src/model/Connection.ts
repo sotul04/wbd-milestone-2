@@ -3,6 +3,16 @@ import { z } from 'zod';
 // /api/connection?search=:query
 export type UsersGet = {
     search?: string;
+    id?: string;
+}
+
+export type UsersGetReturned = {
+    id: string;
+    can_connect?: boolean;
+    email: string;
+    full_name: string | null;
+    work_history: string | null;
+    profile_photo_path: string;
 }
 
 export const usersGetQuery = z.object({

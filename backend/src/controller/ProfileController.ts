@@ -1,18 +1,14 @@
 import { Request, Response } from "express";
 import { response } from '../utils/response';
-import dotenv from 'dotenv';
 
 import multer from "multer";
-import jwt from 'jsonwebtoken';
 
 import { UserService } from "../services/UserService";
 import { ProfileService } from "../services/ProfileService";
 import { GenerateTokenPayload } from "../types/express";
 import { UserUpdate, userUpdateSchema } from "../model/User";
 import xss from "xss";
-
-dotenv.config();
-const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET ?? "secret_key";
+import { verifyToken } from "../utils/jwtHelper";
 
 export const upload = multer({
     storage: multer.memoryStorage(),
@@ -87,7 +83,7 @@ export const ProfileController = {
                 return;
             }
             
-            const decoded = jwt.verify(token, SECRET_KEY) as GenerateTokenPayload;
+            const decoded = verifyToken(token) as GenerateTokenPayload;
             
             if (typeof decoded.userId !== 'string') {
                 const profile = await ProfileService.publicAccess({id: BigInt(userId)});

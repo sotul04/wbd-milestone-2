@@ -5,32 +5,104 @@ import { prisma } from '../db';
 export const ConnectionService = {
     getUsers: async (param: ConnectionModel.UsersGet) => {
         try {
-            const users = await prisma.user.findMany({
-                where: param.search ? {
-                    OR: [
-                        { username: { contains: param.search, mode: 'insensitive' } },
-                        { full_name: {contains: param.search, mode: 'insensitive'} }
-                    ]
-                } : {},
-                select: {
-                    id: true,
-                    full_name: true,
-                    email: true,
-                    profile_photo_path: true,
-                    work_history: true
-                },
-                take: 20,
-                orderBy: {
-                    created_at: 'desc'
-                }
-            });
+            if (param.id) {
+                const id = BigInt(param.id);
+                const users = await prisma.user.findMany({
+                    where: param.search ? {
+                        OR: [
+                            { username: { contains: param.search, mode: 'insensitive' } },
+                            { full_name: { contains: param.search, mode: 'insensitive' } }
+                        ],
+                    } : {},
+                    select: {
+                        id: true,
+                        full_name: true,
+                        email: true,
+                        work_history: true,
+                        profile_photo_path: true,
+                    },
+                    take: 20,
+                    orderBy: {
+                        created_at: 'desc'
+                    }
+                });
 
-            return users.map(user => {
-                return {
-                    ...user,
-                    id: user.id.toString()
+                const user = await prisma.user.findUnique({
+                    where: {
+                        id: id
+                    },
+                    select: {
+                        id: true,
+                        received_connections: {
+                            select: {
+                                from_id: true
+                            }
+                        },
+                        sent_connection_requests: {
+                            select: {
+                                to_id: true
+                            }
+                        }
+                    }
+                });
+
+                if (user) {
+                    let filtered = users.map(item => {
+                        return {
+                            ...item,
+                            id: item.id.toString(),
+                            can_connect: user.received_connections.reduce((acc, val) => acc && val.from_id !== item.id, true) && id !== item.id
+                        }
+                    })
+
+                    filtered = filtered.map(item => {
+                        if (!item.can_connect) return item;
+                        return {
+                            ...item,
+                            can_connect: user.sent_connection_requests.reduce((acc, val) => acc && val.to_id !== BigInt(item.id), true)
+                        }
+                    });
+
+                    return filtered;
+                } else {
+                    return users.map(user => {
+                        return {
+                            ...user,
+                            id: user.id.toString(),
+                            can_connect: false
+                        }
+                    });
                 }
-            });
+
+            } else {
+                const users = await prisma.user.findMany({
+                    where: param.search ? {
+                        OR: [
+                            { username: { contains: param.search, mode: 'insensitive' } },
+                            { full_name: { contains: param.search, mode: 'insensitive' } }
+                        ],
+                    } : {},
+                    select: {
+                        id: true,
+                        full_name: true,
+                        email: true,
+                        work_history: true,
+                        profile_photo_path: true,
+                    },
+                    take: 20,
+                    orderBy: {
+                        created_at: 'desc'
+                    }
+                });
+
+                return users.map(user => {
+                    return {
+                        ...user,
+                        id: user.id.toString(),
+                        can_connect: false
+                    }
+                });
+            }
         } catch (error) {
             console.error(error);
             throw error;

@@ -12,6 +12,7 @@ type User = {
     full_name: string;
     work_history: string | null;
     profile_photo_path: string | null;
+    can_connect?: boolean;
 };
 
 export default function Users() {
@@ -32,6 +33,7 @@ export default function Users() {
         try {
             const response = await ConnectionApi.getUsers({ search: query === "" ? undefined : query });
             setUsers(response.body);
+            console.log(response.body);
         } catch (error) {
             console.log((error as any)?.message);
         }
@@ -67,11 +69,7 @@ export default function Users() {
                             users.map((user) => (
                                 <UserCard
                                     key={user.id}
-                                    id={user.id}
-                                    email={user.email}
-                                    full_name={user.full_name}
-                                    work_history={user.work_history}
-                                    profile_photo_path={user.profile_photo_path}
+                                    {...user}
                                 />
                             ))}
                         {users.length <= 0 && (

@@ -46,6 +46,7 @@ export type GetUsersResponse = Response & {
         email: string;
         full_name: string;
         work_history: string | null;
+        can_connect?: boolean;
         profile_photo_path: string | null;
     }[]
 }
@@ -78,8 +79,8 @@ export type ConnectionRequestsResponse = Response & {
         from_user: {
             username: string;
             email: string;
-            full_name: string;
-            profile_photo_path: string | null;
+            full_name: string | null;
+            profile_photo_path: string;
         };
         created_at: Date;
     }[];
@@ -94,8 +95,8 @@ export type ConnectionListResponse = Response & {
         id: string;
         username: string;
         email: string;
-        full_name: string;
-        profile_photo_path: string | null;
+        full_name: string | null;
+        profile_photo_path: string;
     }[];
 }
 

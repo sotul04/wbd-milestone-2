@@ -4,13 +4,17 @@ import { response } from '../utils/response';
 import { ConnectionService } from "../services/ConnectionService";
 import { StatusCodes } from 'http-status-codes';
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
+import { verifyToken } from "../utils/jwtHelper";
+import { GenerateTokenPayload } from "../types/express";
 
 export const ConnectionController = {
     getUsers: async (req: Request, res: Response) => {
         try {
+            const token = req.cookies.jwt ?? req.headers.authorization?.split(' ')[1];
+            const decoded = token && verifyToken(token) as GenerateTokenPayload;
             const { search } = usersGetQuery.parse(req.query);
             const userSearch = typeof search === 'string' ? search : undefined;
-            const users = await ConnectionService.getUsers({ search: userSearch });
+            const users = await ConnectionService.getUsers({ search: userSearch, id: decoded?.userId });
             res.status(200).json(response(true, 'Successfully retrieved the data', users));
         } catch (error) {
             console.error(error);
