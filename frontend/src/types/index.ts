@@ -9,7 +9,7 @@ export type AuthCheckResponse = Response & {
         email: string;
         id: number;
         full_name: string;
-        profile_photo_path: string | null;
+        profile_photo_path: string;
     }
 }
 
@@ -101,7 +101,8 @@ export type ConnectionListResponse = Response & {
 
 export type ProfileUpdatePayload = {
     userId: string;
-    name?: string;
+    username?: string;
+    name?: string | null;
     skills?: string | null;
     work_history?: string | null;
     delete_photo?: boolean;
@@ -117,6 +118,7 @@ export type GetProfilePayload = {
 export type GetProfileResponse = Response & {
     body: {
         name: string;
+        username: string;
         work_history?: string | null;
         skills?: string | null;
         profile_photo?: string | null;
@@ -128,6 +130,6 @@ export type GetProfileResponse = Response & {
             user_id: string;
         }[] | null;
         connection_count: number;
-        connect_status?: boolean | null;
+        connect_status?: string | null;
     }
 }

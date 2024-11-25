@@ -1,10 +1,12 @@
 import {
     Card,
-    CardDescription,
     CardHeader,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useRef } from "react";
 
 interface Props {
     id: string;
@@ -15,6 +17,7 @@ interface Props {
 }
 
 export function UserCard(props: Props) {
+    const desRef = useRef<ReactQuill | null>(null);
     const navigate = useNavigate();
     return <Card className="cursor-pointer space-y-0 gap-0" onClick={() => {
         navigate(`/profile/${props.id}`);
@@ -31,9 +34,12 @@ export function UserCard(props: Props) {
                 </div>
             </div>
             {props.work_history && props.work_history.length > 0 &&
-                <CardDescription>
-                    {props.work_history}
-                </CardDescription>
+                <ReactQuill
+                    ref={desRef}
+                    readOnly
+                    modules={{ toolbar: null }}
+                    value={props.work_history}
+                />
             }
         </CardHeader>
     </Card>

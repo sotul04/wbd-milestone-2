@@ -62,7 +62,7 @@ export default function Users() {
 
                 {/* Bagian kanan: Hasil Pencarian */}
                 <main className="w-full md:w-3/4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                         {users.length > 0 &&
                             users.map((user) => (
                                 <UserCard

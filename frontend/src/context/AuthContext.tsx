@@ -12,7 +12,7 @@ type AuthCtx = {
     username: string;
     name: string;
     email: string;
-    photoUrl: string | null;
+    photoUrl: string;
     update: boolean;
     setUpdate: (prop: boolean) => void
 }
@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthCtx>({
     username: '',
     name: '',
     email: '',
-    photoUrl: null,
+    photoUrl: '',
     update: false,
     setUpdate: () => { }
 });
@@ -36,28 +36,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [userId, setUserId] = useState<number>(0);
     const [username, setUsername] = useState<string>('');
     const [name, setName] = useState<string>('');
-    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+    const [photoUrl, setPhotoUrl] = useState<string>('');
     const [update, setUpdate] = useState(false);
     const [email, setEmail] = useState<string>('');
 
     useEffect(() => {
         const verifyUser = async () => {
             setLoading(true);
-
-            if (Auth.getToken()) {
-                try {
-                    const user = await AuthApi.checkAuth();
-                    if (user) {
-                        setAuthenticated(true);
-                        setName(user.body.full_name ?? '');
-                        setUserId(user.body.id);
-                        setUsername(user.body.username);
-                        setPhotoUrl(user.body.profile_photo_path ?? null);
-                        setEmail(user.body.email);
-                    }
-                } catch (error) {
-                    Auth.logout();
+            try {
+                const user = await AuthApi.checkAuth();
+                if (user) {
+                    setAuthenticated(true);
+                    setName(user.body.full_name ?? '');
+                    setUserId(user.body.id);
+                    setUsername(user.body.username);
+                    setPhotoUrl(user.body.profile_photo_path);
+                    setEmail(user.body.email);
                 }
+            } catch (error) {
+                Auth.logout();
             }
             setLoading(false);
         }
@@ -67,9 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (payload: LoginRequest) => {
         try {
-            const auth = await AuthApi.login(payload);
+            await AuthApi.login(payload);
             setUpdate(false);
-            Auth.login(auth.body.token);
         } catch (error) {
             throw error;
         }
