@@ -105,7 +105,6 @@ export default function Profile() {
 
     async function getProfile() {
         try {
-            console.log("Fetching profile");
             const response = await ProfileApi.getProfile({
                 userId: userId!,
             });
@@ -126,7 +125,6 @@ export default function Profile() {
             work_history: profile.work_history ?? "",
             skills: profile.skills ?? "",
         });
-        console.log("import change foto");
     }, [profile]);
 
     async function saveEdit(foto?: boolean, deletePhoto?: boolean) {
@@ -159,6 +157,7 @@ export default function Profile() {
                         delete_photo: true
                     });
                     await getProfile();
+                    auth.setUpdate(prev => !prev);
                     toast({
                         title: "Success",
                         description: response.message,
@@ -171,6 +170,7 @@ export default function Profile() {
                         profilePhotoFile: photo!
                     });
                     await getProfile();
+                    auth.setUpdate(prev => !prev);
                     toast({
                         title: "Success",
                         description: response.message,

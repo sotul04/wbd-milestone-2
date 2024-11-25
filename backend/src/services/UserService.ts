@@ -96,7 +96,8 @@ export const UserService = {
                     'image/jpg': '.jpg'
                 };
                 const fileExtension = mimeToExtension[data.profile_photo.mimetype];
-                filename = `profile-${data.id.toString()}${fileExtension}`;
+                const timestamp = Date.now()
+                filename = `profile-${data.id.toString()}-${timestamp}${fileExtension}`;
 
                 if (user.profile_photo_path) {
                     const oldFileName = path.basename(user.profile_photo_path);
