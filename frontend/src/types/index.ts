@@ -122,7 +122,7 @@ export type GetProfileResponse = Response & {
         username: string;
         work_history?: string | null;
         skills?: string | null;
-        profile_photo?: string | null;
+        profile_photo?: string;
         relevant_posts?: {
             id: string;
             created_at: Date;

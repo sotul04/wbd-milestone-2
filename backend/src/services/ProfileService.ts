@@ -35,6 +35,7 @@ export const ProfileService = {
 
     authenticatedAccess: async (data: UserModel.UserFindConnection): Promise<UserModel.UserProfile | null> => {
         try {
+
             const profile = await prisma.user.findUnique({
                 where: {
                     id: data.idTarget
@@ -75,7 +76,7 @@ export const ProfileService = {
                 connection_count,
                 work_history: profile.work_history,
                 connect_status,
-                relevant_posts: connect_status ? profile.feeds.map(item => {
+                relevant_posts: connect_status === 'connected' ? profile.feeds.map(item => {
                     return {
                         ...item,
                         id: item.id.toString(),

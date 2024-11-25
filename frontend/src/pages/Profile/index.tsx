@@ -13,13 +13,14 @@ import { useToast } from "@/hooks/use-toast";
 import { ConnectionApi } from "@/api/connection-api";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { PenIcon } from "lucide-react";
+import { FeedCard } from "@/components/feed/feed";
 
 type UserProfile = {
     name: string;
     username: string;
     work_history?: string | null;
     skills?: string | null;
-    profile_photo?: string | null;
+    profile_photo?: string;
     relevant_posts?: {
         id: string;
         created_at: Date;
@@ -390,6 +391,25 @@ export default function Profile() {
                             }`}</Link>
                     </div>
                 </Card>
+                {profile.relevant_posts && profile.relevant_posts.length > 0 &&
+                    <>
+                        <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h3>
+                        <div className="w-full container grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                            {profile.relevant_posts.map(item => (
+                                <FeedCard
+                                    key={item.id}
+                                    {...item}
+                                    profile_photo={profile.profile_photo}
+                                    name={profile.name}
+                                    username={profile.username}
+                                />
+                            ))}
+                        </div>
+                    </>
+                }
+                {profile.relevant_posts && profile.relevant_posts.length <= 0 &&
+                    <p className="text-center text-sm text-[#808080]">No Feed</p>
+                }
             </section>
         );
     }
@@ -475,6 +495,25 @@ export default function Profile() {
                         }`}</Link>
                 </div>
             </Card>
+            {profile.relevant_posts && profile.relevant_posts.length > 0 &&
+                <>
+                    <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h3>
+                    <div className="w-full container grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                        {profile.relevant_posts.map(item => (
+                            <FeedCard
+                                key={item.id}
+                                {...item}
+                                profile_photo={profile.profile_photo}
+                                name={profile.name}
+                                username={profile.username}
+                            />
+                        ))}
+                    </div>
+                </>
+            }
+            {profile.relevant_posts && profile.relevant_posts.length <= 0 &&
+                <p className="text-center text-sm text-[#808080]">No Feed</p>
+            }
         </section >
     );
 }
