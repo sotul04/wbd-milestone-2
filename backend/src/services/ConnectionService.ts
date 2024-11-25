@@ -298,6 +298,9 @@ export const ConnectionService = {
                         }
                     },
                 },
+                orderBy: {
+                    created_at: 'desc'
+                }
             });
 
             return requests.map(req => {
