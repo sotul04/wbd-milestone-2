@@ -105,6 +105,7 @@ export default function Profile() {
 
     async function getProfile() {
         try {
+            console.log("Fetching profile");
             const response = await ProfileApi.getProfile({
                 userId: userId!,
             });
@@ -125,6 +126,7 @@ export default function Profile() {
             work_history: profile.work_history ?? "",
             skills: profile.skills ?? "",
         });
+        console.log("import change foto");
     }, [profile]);
 
     async function saveEdit(foto?: boolean, deletePhoto?: boolean) {
@@ -156,6 +158,7 @@ export default function Profile() {
                         userId: userId!,
                         delete_photo: true
                     });
+                    await getProfile();
                     toast({
                         title: "Success",
                         description: response.message,
@@ -167,6 +170,7 @@ export default function Profile() {
                         delete_photo: false,
                         profilePhotoFile: photo!
                     });
+                    await getProfile();
                     toast({
                         title: "Success",
                         description: response.message,
@@ -239,7 +243,7 @@ export default function Profile() {
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="py-2 px-3">
-                                <Label>New Photo</Label>
+                                <Label>{`New Photo (Max 5MB)`}</Label>
                                 <Input
                                     type="file"
                                     accept="image/jpeg, image/png, image/jpg"
@@ -251,7 +255,6 @@ export default function Profile() {
                                         className="h-8 rounded-full"
                                         onClick={async () => {
                                             await saveEdit(true, photo === null);
-                                            getProfile();
                                             setPopoverOpen(false);
                                         }}
                                     >
@@ -262,7 +265,6 @@ export default function Profile() {
                                         className="h-8 rounded-full"
                                         onClick={async () => {
                                             await saveEdit(true, true);
-                                            getProfile();
                                             setPopoverOpen(false);
                                         }}
                                     >

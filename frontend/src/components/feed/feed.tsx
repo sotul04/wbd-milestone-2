@@ -23,8 +23,6 @@ export function FeedCard(props: Props) {
     const desRef = useRef<ReactQuill | null>(null);
     const navigate = useNavigate();
 
-    console.log(props.created_at, props.updated_at);
-
     const created = new Date(props.created_at);
     const updated = new Date(props.updated_at);
 

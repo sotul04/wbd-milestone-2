@@ -14,7 +14,7 @@ type AuthCtx = {
     email: string;
     photoUrl: string;
     update: boolean;
-    setUpdate: (prop: boolean) => void
+    setUpdate: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const AuthContext = createContext<AuthCtx>({
