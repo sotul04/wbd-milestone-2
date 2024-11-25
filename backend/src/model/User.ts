@@ -10,10 +10,10 @@ export type User = {
 }
 
 export type UserProfile = {
-    name: string;
+    name: string | null;
     work_history?: string | null;
     skills?: string | null;
-    profile_photo?: string | null;
+    profile_photo: string;
     relevant_posts?: FeedSerializable[] | null;
     connection_count: number;
     connect_status?: boolean | null;
@@ -35,7 +35,8 @@ export const userCreateSchema = z.object({
 
 export type UserUpdate = {
     id: bigint;
-    name?: string;
+    name?: string | null;
+    username?: string;
     profile_photo?: Express.Multer.File;
     work_history?: string | null;
     skills?: string | null;
@@ -57,18 +58,11 @@ export const userUpdateParams = z.object({
 });
 
 export const userUpdateSchema = z.object({
-    name: z.string().trim().min(3).optional(),
-    profile_photo: z.any().optional(),
+    username: z.string().trim().min(3).optional(),
+    name: z.string().trim().min(3).nullable().optional(),
+    profile_photo: z.any().nullable().optional(),
     work_history: z.string().nullable().optional(),
     skills: z.string().nullable().optional(),
-    delete_photo: z
-        .union([z.boolean(), z.string().refine(val => val === 'true' || val === 'false' || val === undefined || val === '', {
-            message: "delete_photo must be 'true' or 'false' as string"
-        }).transform(val => {
-            if (val === 'true') return true;
-            if (val === 'false') return false;
-            return Boolean(val);
-        })]).optional()
 });
 
 export type UserFindUnique = {

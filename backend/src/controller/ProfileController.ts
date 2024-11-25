@@ -42,10 +42,11 @@ export const ProfileController = {
             const data: UserUpdate = {
                 id: BigInt(userId),
                 name: updateData.name && xss(updateData.name),
+                username: updateData.username && xss(updateData.username),
                 profile_photo: req.file,
                 skills: updateData.skills && xss(updateData.skills),
                 work_history: updateData.work_history && xss(updateData.work_history),
-                delete_photo: updateData.delete_photo
+                delete_photo: updateData.profile_photo === null
             };
 
             const result = await UserService.updateUser(data);

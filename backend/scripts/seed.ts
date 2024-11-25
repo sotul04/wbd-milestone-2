@@ -31,6 +31,9 @@ async function seedDatabase() {
                 full_name: username,
                 password_hash,
                 updated_at: new Date(),
+                work_history: '',
+                skills: '',
+                profile_photo_path: '',
                 feeds: {
                     create: Array.from({ length: 15 }).map(() => ({
                         content: faker.lorem.paragraph()

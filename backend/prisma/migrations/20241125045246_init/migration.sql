@@ -4,10 +4,10 @@ CREATE TABLE "User" (
     "username" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "password_hash" VARCHAR(255) NOT NULL,
-    "full_name" VARCHAR(255) NOT NULL,
+    "full_name" VARCHAR(255),
     "work_history" TEXT,
     "skills" TEXT,
-    "profile_photo_path" VARCHAR(255),
+    "profile_photo_path" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

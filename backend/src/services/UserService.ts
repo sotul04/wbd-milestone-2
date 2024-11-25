@@ -43,6 +43,9 @@ export const UserService = {
                     email: data.email,
                     password_hash: password_hash,
                     full_name: xss(data.name),
+                    work_history: '',
+                    skills: '',
+                    profile_photo_path: '',
                 }
             });
             return newUser;
@@ -53,6 +56,18 @@ export const UserService = {
     },
     updateUser: async (data: UserModel.UserUpdate) => {
         try {
+
+            if (data.username) {
+                const existed = await prisma.user.findUnique({
+                where: {
+                    username: data.username
+                    }
+                });
+                if (existed && existed.id !== data.id) {
+                    throw new Error('Username has been used by another user');
+                }
+            }
+
             if (data.profile_photo && !data.delete_photo) {
                 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
                 if (!allowedImageTypes.includes(data.profile_photo.mimetype)) {
@@ -88,7 +103,7 @@ export const UserService = {
                     await deleteFile(oldFileName);
                 }
 
-                const fileBuffer = await data.profile_photo.buffer;
+                const fileBuffer = data.profile_photo.buffer;
                 await createImageFile(filename, Buffer.from(fileBuffer));
             } else if (data.delete_photo) {
                 if (user.profile_photo_path) {
@@ -104,9 +119,10 @@ export const UserService = {
                 data: {
                     full_name: name,
                     work_history: work_history,
+                    username: data.username,
                     skills: skills,
                     updated_at: new Date(),
-                    profile_photo_path: data.delete_photo ? null : filename
+                    profile_photo_path: data.delete_photo ? '': filename
                 }
             });
             if (updatedUser) return true;
