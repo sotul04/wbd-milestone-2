@@ -28,11 +28,11 @@ async function seedDatabase() {
             data: {
                 username,
                 email,
-                full_name: username,
+                full_name: faker.name.fullName(),
                 password_hash,
                 updated_at: new Date(),
-                work_history: '',
-                skills: '',
+                work_history: faker.lorem.paragraphs(),
+                skills: faker.lorem.paragraphs(),
                 profile_photo_path: '',
                 feeds: {
                     create: Array.from({ length: 15 }).map(() => ({
