@@ -11,6 +11,7 @@ export type User = {
 
 export type UserProfile = {
     name: string | null;
+    username: string;
     work_history?: string | null;
     skills?: string | null;
     profile_photo: string;

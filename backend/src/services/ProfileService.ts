@@ -23,6 +23,7 @@ export const ProfileService = {
             return {
                 name: profile.full_name,
                 profile_photo: profile.profile_photo_path,
+                username: profile.username,
                 connection_count
             }
 
@@ -58,6 +59,7 @@ export const ProfileService = {
 
             return {
                 name: profile.full_name,
+                username: profile.username,
                 profile_photo: profile.profile_photo_path,
                 connection_count,
                 work_history: profile.work_history,
@@ -103,6 +105,7 @@ export const ProfileService = {
 
             return {
                 name: profile.full_name,
+                username: profile.username,
                 profile_photo: profile.profile_photo_path,
                 relevant_posts: profile.feeds.map(item => {
                     return {

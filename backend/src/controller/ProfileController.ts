@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 
 import { UserService } from "../services/UserService";
 import { ProfileService } from "../services/ProfileService";
-import { CustomJwtPayload } from "../types/express";
+import { GenerateTokenPayload } from "../types/express";
 import { UserUpdate, userUpdateSchema } from "../model/User";
 import xss from "xss";
 
@@ -87,7 +87,7 @@ export const ProfileController = {
                 return;
             }
             
-            const decoded = jwt.verify(token, SECRET_KEY) as CustomJwtPayload;
+            const decoded = jwt.verify(token, SECRET_KEY) as GenerateTokenPayload;
             
             if (typeof decoded.userId !== 'string') {
                 const profile = await ProfileService.publicAccess({id: BigInt(userId)});

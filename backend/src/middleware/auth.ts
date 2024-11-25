@@ -5,7 +5,7 @@ import { response } from '../utils/response';
 export const authJWT = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.jwt ?? req.headers.authorization?.split(' ')[1];
     if (!token) {
-        res.status(401).json(response(false, 'You are unauthenticated', 'Unauthorized access'));
+        res.status(401).json(response(false, 'Authentication required', 'Unauthorized access'));
         return;
     }
     try {

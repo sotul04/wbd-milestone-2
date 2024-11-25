@@ -4,13 +4,22 @@ import { JwtPayload } from 'jsonwebtoken';
 declare global {
     namespace Express {
         interface Request {
-            user?: CustomJwtPayload;
+            user?: DecodedJwtPayload;
         }
     }
 }
 
-export interface CustomJwtPayload extends JwtPayload {
+export interface JwtPayloadBase {
     userId: string;
     email: string;
     name: string;
 }
+
+export interface JwtPayload extends JwtPayloadBase {
+    iat: number;
+    exp: number;
+}
+
+export type GenerateTokenPayload = JwtPayloadBase;
+
+export type DecodedJwtPayload = JwtPayload;
