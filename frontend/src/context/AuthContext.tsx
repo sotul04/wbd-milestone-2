@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 import { LoginRequest } from "@/types";
-import * as Auth from "@/lib/cookies";
 import { AuthApi } from "@/api/auth-api";
 
 type AuthCtx = {
@@ -54,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setEmail(user.body.email);
                 }
             } catch (error) {
-                Auth.logout();
+                console.error(error);
             }
             setLoading(false);
         }
@@ -65,15 +64,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = async (payload: LoginRequest) => {
         try {
             await AuthApi.login(payload);
-            setUpdate(false);
+            setUpdate(prev => !prev);
         } catch (error) {
             throw error;
         }
     }
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            await AuthApi.logout();
+        } catch (error) {
+            console.error(error);
+        }
         setAuthenticated(false);
-        Auth.logout();
     }
 
     if (loading) return null;

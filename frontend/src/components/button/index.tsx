@@ -19,7 +19,7 @@ export const buttonStyles = cva(
                 default: "h-8 px-3 ",
                 sm: "text-sm h-6 px-2 ",
                 lg: "h-10 px-5 ",
-                xl: "h-11 px-5 "
+                xl: "h-11 px-5 text-lg"
             },
         },
         defaultVariants: {

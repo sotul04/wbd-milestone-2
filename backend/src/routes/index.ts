@@ -18,6 +18,7 @@ const router: Router = Router();
 router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserController.login);
 router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), UserController.register);
 router.get('/verify', authJWT, UserController.verify);
+router.get('/logout', UserController.logout);
 
 // profile routes
 router.get('/profile/:userId', validateRequestParams(getProfileParams), ProfileController.getProfile);

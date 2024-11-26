@@ -22,7 +22,7 @@ export const UserController = {
                 email: user.email,
                 name: user.username
             });
-            res.cookie('jwt', token, { maxAge: 3600000, sameSite: true });
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000, sameSite: true });
             res.status(200).json(response(true, 'Login successfull', { token: token }));
         } catch (error) {
             res.status(500).json(response(false, 'Internal server error', error));
@@ -43,7 +43,7 @@ export const UserController = {
                 email: user.email,
                 name: user.username
             });
-            res.cookie('jwt', token, { maxAge: 3600000, sameSite: true });
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000, sameSite: true });
             res.status(200).json(response(true, 'Login successfull', { token: token }));
         } catch (error) {
             console.error('Error creating user', error);
@@ -52,6 +52,15 @@ export const UserController = {
             } else {
                 res.status(500).json(response(false, 'Internal server error', error));
             }
+        }
+    },
+
+    logout: async (_: Request, res: Response) => {
+        try {
+            res.clearCookie('jwt', { httpOnly: true, sameSite: true });
+            res.status(200).json(response(true, 'Logout successful'));
+        } catch (error) {
+            res.status(500).json(response(false, 'Internal server error', error));
         }
     },
 
