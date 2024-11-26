@@ -74,7 +74,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
             </div>
         </div>
         <div onClick={() => props.toggleSideBar()} className="md:hidden text-[#808080] hover:text-[#191919]">
-            <GripIcon className="w-8 h-8" />
+            <GripIcon className="w-8 h-8"/>
         </div>
         <div className="gap-2 hidden md:flex">
             <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
@@ -114,8 +114,8 @@ function UnauthenticatedNav(props: { sideBarOpen: boolean, toggleSideBar: () => 
         <div className="gap-3 hidden md:flex">
             <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
             <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
-            <LoginLink />
             <RegisterLink />
+            <LoginLink />
         </div>
     </>
 }

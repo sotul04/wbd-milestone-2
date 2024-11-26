@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ConnectionApi } from "@/api/connection-api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
+import { buttonStyles } from "../button";
 
 interface Props {
     id: string;
@@ -56,8 +57,7 @@ export function UserCard(props: Props) {
             </div>
             {canConnect && <div className="flex justify-end my-2">
                     <Button
-                        className="h-8"
-                        variant={"outline"}
+                        className={buttonStyles()}
                         onClick={() => {
                             handleConnect();
                         }}

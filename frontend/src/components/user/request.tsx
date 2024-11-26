@@ -1,12 +1,12 @@
 import {
     Card,
-    CardHeader,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ConnectionApi } from "@/api/connection-api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
+import { buttonStyles } from "../button";
 
 interface Props {
     from_id: string;
@@ -42,8 +42,7 @@ export function RequestCard(props: Props) {
         }
     }
 
-    return <Card className="space-y-0 gap-0" >
-        <CardHeader className="px-3 pt-3 pb-3">
+    return <Card className="px-3 pt-3 pb-3 flex flex-col justify-between">
             <div className="flex gap-2">
                 <Avatar className="w-12 h-12">
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.from_user.profile_photo_path ? props.from_user.profile_photo_path : ''}`} />
@@ -56,22 +55,19 @@ export function RequestCard(props: Props) {
                     <p className="text-gray-500 text-sm">{props.from_user.email}</p>
                 </div>
             </div>
-            <div className="flex gap-2 justify-end">
+            <div className="flex gap-2 mt-2 justify-end grid-flow-col items-end">
                 <Button
-                    variant={"destructive"}
-                    className="h-8 rounded-full"
+                    className={buttonStyles({variant:"destructive"})}
                     onClick={() => handleConnect(false)}
                 >
                     Reject
                 </Button>
                 <Button
-                    variant={"outline"}
-                    className="h-8 rounded-full"
+                    className={buttonStyles()}
                     onClick={() => handleConnect(true)}
                 >
                     Accept
                 </Button>
             </div>
-        </CardHeader>
     </Card>
 }

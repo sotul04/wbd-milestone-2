@@ -1,4 +1,4 @@
-import { ClipboardListIcon, HouseIcon, LogInIcon, MessageCircleIcon, NewspaperIcon, UserCheckIcon, UserPenIcon, UserPlusIcon, UsersIcon } from "lucide-react"
+import { ClipboardListIcon, LogInIcon } from "lucide-react"
 import { IconLink } from "./link-header"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
@@ -10,24 +10,35 @@ import { Button, buttonVariants } from "../ui/button"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
 import { useState } from "react"
+import { 
+    HomeIcon,
+    FeedIcon,
+    ProfileIcon,
+    ConnectionsIcon,
+    ChatIcon,
+    UsersIcon,
+    RequestsIcon 
+
+} from "./svgs"
+import { buttonStyles } from "../button"
 
 export function HomeLink({ current = false, onClick = () => {} }: { current?: boolean, onClick?: () => void  }) {
     return <IconLink onClick={onClick} to="/">
-        <HouseIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
+        <HomeIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
         <p className={`text-sm ${current ? 'text-black' : ''}`}>Home</p>
     </IconLink>
 }
 
 export function FeedLink({ current = false, onClick = () => {} }: { current?: boolean, onClick?: () => void }) {
     return <IconLink onClick={onClick} to="/feed">
-        <NewspaperIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
+        <FeedIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
         <p className={`text-sm ${current ? 'text-black' : ''}`}>Feed</p>
     </IconLink>
 }
 
 export function ProfileLink({ id, current= false, onClick = () => {} }: { id: string, current?: boolean, onClick?: () => void }) {
     return <IconLink onClick={onClick} to={`/profile/${id}`}>
-        <UserPenIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`}/>
+        <ProfileIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`}/>
         <p className={`text-sm ${current ? 'text-black' : ''}`}>Profile</p>
     </IconLink>
 }
@@ -41,7 +52,7 @@ export function UsersLink({ current = false, onClick = () => {} }: { current?: b
 
 export function RequestsLink({ notif = false, current = false, onClick = () => {} }: { notif?: boolean, current?: boolean, onClick?: () => void }) {
     return <IconLink onClick={onClick} to="/requests">
-        <UserPlusIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
+        <RequestsIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
         <p className={`text-sm ${current ? 'text-black' : ''}`}>Request</p>
         <div className={`absolute top-0 right-[20%] bg-red-600 ${notif ? '' : 'hidden'} rounded-full w-2 h-2`}></div>
     </IconLink>
@@ -49,7 +60,7 @@ export function RequestsLink({ notif = false, current = false, onClick = () => {
 
 export function ConnectionsLink({ id, notif = false, current = false, onClick = () => {} }: { id: string, notif?: boolean, current?: boolean, onClick?: () => void }) {
     return <IconLink onClick={onClick} to={`/connections/${id}`}>
-        <UserCheckIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
+        <ConnectionsIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
         <p className={`text-sm ${current ? 'text-black' : ''}`}>Connections</p>
         <div className={`absolute top-0 right-[20%] bg-red-600 ${notif ? '' : 'hidden'} rounded-full w-2 h-2`}></div>
     </IconLink>
@@ -57,7 +68,7 @@ export function ConnectionsLink({ id, notif = false, current = false, onClick = 
 
 export function ChatLink({ notif = false, current = false, onClick = () => {} }: { notif?: boolean, current?: boolean, onClick?: () => void }) {
     return <IconLink onClick={onClick} to="/chat">
-        <MessageCircleIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
+        <ChatIcon className={`w-[26px] h-[26px] ${current ? 'text-black' : ''}`} />
         <p className={`text-sm ${current ? 'text-black' : ''}`}>Chat</p>
         <div className={`absolute top-0 right-[20%] bg-red-600 ${notif ? '' : 'hidden'} rounded-full w-2 h-2`}></div>
     </IconLink>
@@ -65,15 +76,17 @@ export function ChatLink({ notif = false, current = false, onClick = () => {} }:
 
 export function LoginLink({onClick = () => {}}: {onClick?: () => void}) {
     return <IconLink onClick={onClick} to="/login">
-        <LogInIcon className="w-[26px] h-[26px]" />
-        <p className="text-sm">Login</p>
+        <button className={buttonStyles({variant: "login", size:"xl"})}>
+            Log in
+        </button>
     </IconLink>
 }
 
 export function RegisterLink({onClick = () => {}}: {onClick?: () => void}) {
     return <IconLink onClick={onClick} to="/register">
-        <ClipboardListIcon className="w-[26px] h-[26px]" />
-        <p className="text-sm">Register</p>
+        <button className={buttonStyles({size:"xl"})}>
+            Join now
+        </button>
     </IconLink>
 }
 
@@ -103,13 +116,15 @@ export function UserProfile({ name, photo_url, email, id }: { name: string, phot
                         <p className="text-gray-500 text-sm">{email}</p>
                     </div>
                 </div>
-                <Link
-                    className={`${buttonVariants({ variant: "outline" })} w-full mt-2 h-7 rounded-[999px] border-blue-700 text-blue-700 font-semibold bg-white hover:border-2 hover:text-blue-800 hover:bg-blue-50 `}
-                    to={`/profile/${id}`}
-                    onClick={() => { setIsOpen(false); }}
+                <button
+                    className={`${buttonStyles({ size: "sm" })} w-full mt-2`}
+                    onClick={() => { 
+                        setIsOpen(false);
+                        navigate(`/profile/${id}`);
+                    }}
                 >
                     Show Profile
-                </Link>
+                </button>
             </div>
             <div>
                 <Button className="h-4 mt-2 px-1" variant={"link"} onClick={() => {
