@@ -1,6 +1,5 @@
 import {
     Card,
-    CardHeader,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
@@ -31,29 +30,31 @@ export function FeedCard(props: Props) {
             className="space-y-0 gap-0 cursor-pointer"
             onClick={() => navigate(`/feed/${props.id}`)}
         >
-            <CardHeader className="px-3 pt-3 pb-3">
-                <div className="flex gap-2">
-                    <Avatar className="w-12 h-12">
-                        <AvatarImage
-                            src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo}`}
-                        />
-                        <AvatarFallback className="font-bold">
-                            {props.name?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="grow flex flex-col gap-0">
-                        <h3 className="text-lg cursor-pointer font-semibold">
-                            {props.name}
-                        </h3>
-                        <p className="text-gray-500 text-sm">{props.username}</p>
+            <div className="px-3 pt-3 pb-3 flex flex-col gap-2 justify-between h-full">
+                <div className="space-y-2">
+                    <div className="flex gap-2">
+                        <Avatar className="w-12 h-12">
+                            <AvatarImage
+                                src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo}`}
+                            />
+                            <AvatarFallback className="font-bold">
+                                {props.name?.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="grow flex flex-col gap-0">
+                            <h3 className="text-lg cursor-pointer font-semibold">
+                                {props.name}
+                            </h3>
+                            <p className="text-gray-500 text-sm">{props.username}</p>
+                        </div>
                     </div>
+                    <ReactQuill
+                        ref={desRef}
+                        readOnly
+                        modules={{ toolbar: null }}
+                        value={props.content}
+                    />
                 </div>
-                <ReactQuill
-                    ref={desRef}
-                    readOnly
-                    modules={{ toolbar: null }}
-                    value={props.content}
-                />
                 <div className="flex justify-end">
                     {created.getTime() >= updated.getTime() ? (
                         <p className="text-xs text-[#808080]">{`Created at: ${created.toLocaleDateString()}`}</p>
@@ -61,7 +62,7 @@ export function FeedCard(props: Props) {
                         <p className="text-xs text-[#808080]">{`Updated at: ${updated.toLocaleDateString()}`}</p>
                     )}
                 </div>
-            </CardHeader>
+            </div>
         </Card>
     );
 }
