@@ -45,7 +45,6 @@ export type GetUsersResponse = Response & {
         id: string;
         email: string;
         full_name: string;
-        work_history: string | null;
         can_connect?: boolean;
         profile_photo_path: string | null;
     }[]

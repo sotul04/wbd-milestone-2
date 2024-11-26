@@ -10,7 +10,6 @@ type User = {
     id: string;
     email: string;
     full_name: string;
-    work_history: string | null;
     profile_photo_path: string | null;
     can_connect?: boolean;
 };

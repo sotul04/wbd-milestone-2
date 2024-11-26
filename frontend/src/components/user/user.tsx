@@ -15,7 +15,6 @@ interface Props {
     id: string;
     email: string;
     full_name: string;
-    work_history: string | null;
     profile_photo_path: string | null;
     can_connect?: boolean;
 }
@@ -58,14 +57,6 @@ export function UserCard(props: Props) {
                     <p className="text-gray-500 text-sm">{props.email}</p>
                 </div>
             </div>
-            {props.work_history && props.work_history.length > 0 &&
-                <ReactQuill
-                    ref={desRef}
-                    readOnly
-                    modules={{ toolbar: null }}
-                    value={props.work_history}
-                />
-            }
             {canConnect && <div className="flex justify-end my-2">
                     <Button
                         className="h-8"

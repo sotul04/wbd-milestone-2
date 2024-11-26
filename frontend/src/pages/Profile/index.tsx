@@ -14,6 +14,7 @@ import { ConnectionApi } from "@/api/connection-api";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { PenIcon } from "lucide-react";
 import { FeedCard } from "@/components/feed/feed";
+import { Validation } from "@/components/alert/alert";
 
 type UserProfile = {
     name: string;
@@ -460,13 +461,15 @@ export default function Profile() {
                     }
                     {profile.connect_status && profile.connect_status === 'connected' &&
                         <div className="flex justify-end mt-2">
-                            <Button
-                                className="rounded-full h-8"
-                                variant="destructive"
-                                onClick={() => handleDisconnect()}
-                            >
-                                Disconnect
-                            </Button>
+                            <Validation
+                                trigger="Disconnect"
+                                actionDesc="Disconnect"
+                                classTrigger={buttonVariants({variant: "destructive"})}
+                                classAction={buttonVariants({variant: "destructive"})}
+                                action={() => handleDisconnect()}
+                                title="Are you sure?"
+                                description="This action cannot be undone. Your connection with this user is going to be deleted."
+                            />
                         </div>
                     }
                     {profile.connect_status && profile.connect_status === 'disconnected' &&
