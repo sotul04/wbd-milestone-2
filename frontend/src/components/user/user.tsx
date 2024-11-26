@@ -4,9 +4,7 @@ import {
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ConnectionApi } from "@/api/connection-api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
@@ -20,7 +18,6 @@ interface Props {
 }
 
 export function UserCard(props: Props) {
-    const desRef = useRef<ReactQuill | null>(null);
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -46,7 +43,7 @@ export function UserCard(props: Props) {
     return <Card className="space-y-0 gap-0" >
         <CardHeader className="px-3 pt-3 pb-3">
             <div className="flex gap-2">
-                <Avatar className="w-14 h-14">
+                <Avatar className="w-12 h-12">
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo_path ? props.profile_photo_path : ''}`} />
                     <AvatarFallback className="font-bold">{props.full_name.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>

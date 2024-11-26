@@ -45,7 +45,7 @@ export function RequestCard(props: Props) {
     return <Card className="space-y-0 gap-0" >
         <CardHeader className="px-3 pt-3 pb-3">
             <div className="flex gap-2">
-                <Avatar className="w-14 h-14">
+                <Avatar className="w-12 h-12">
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.from_user.profile_photo_path ? props.from_user.profile_photo_path : ''}`} />
                     <AvatarFallback className="font-bold">{props.from_user.full_name?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>

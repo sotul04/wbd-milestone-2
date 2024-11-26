@@ -33,7 +33,7 @@ export function FeedCard(props: Props) {
         >
             <CardHeader className="px-3 pt-3 pb-3">
                 <div className="flex gap-2">
-                    <Avatar className="w-14 h-14">
+                    <Avatar className="w-12 h-12">
                         <AvatarImage
                             src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo}`}
                         />
