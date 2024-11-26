@@ -12,8 +12,8 @@ export const buttonStyles = cva(
                     "text-white bg-blue-700 transition-colors hover:bg-blue-900 active:bg-blue-950 active:text-blue-100 ",
                 secondary:
                     "text--[#202020] bg-white border transition-shadow border-[#202020] hover:shadow-[inset_0_0_0_1px_#202020] hover:bg-[#f1f1f1] active:bg-[#dedede] ",
-                ghost: "hover:bg-accent hover:text-accent-foreground ",
-                link: "underline-offset-4 hover:underline ",
+                ghost: "bg-orange-50 text-[#808080] hover:bg-orange-50",
+                link: "underline-offset-4 hover:underline",
             },
             size: {
                 default: "h-8 px-3 ",
