@@ -117,7 +117,7 @@ export default function Profile() {
 
     useEffect(() => {
         getProfile();
-    }, []);
+    }, [userId]);
 
     useEffect(() => {
         setEdited({
@@ -230,7 +230,7 @@ export default function Profile() {
                     </div>
                     <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
                         <AvatarImage
-                            src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
+                            src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo ?? ""}`}
                         />
                         <AvatarFallback className="text-[48px] sm:text-[60px]">
                             {profile.name.substring(0, 1).toUpperCase()}
