@@ -1,4 +1,3 @@
-import { ClipboardListIcon, LogInIcon } from "lucide-react"
 import { IconLink } from "./link-header"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
@@ -6,8 +5,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { Button, buttonVariants } from "../ui/button"
-import { Link, useNavigate } from "react-router-dom"
+import { Button } from "../ui/button"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
 import { useState } from "react"
 import { 
