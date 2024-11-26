@@ -4,7 +4,8 @@ import { ChatLink, ConnectionsLink, FeedLink, HomeLink, LoginLink, ProfileLink, 
 import { useEffect, useState } from "react";
 import { GripIcon, XIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
+import { buttonStyles } from "../button";
 
 export default function Header() {
     const auth = useAuth();
@@ -63,7 +64,15 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                             </div>
                         </div>
                         <div className="flex items-center justify-between flex-col">
-                            <Link onClick={props.toggleSideBar} className={`${buttonVariants({ variant: "outline" })} mt-2 h-7 rounded-[999px] border-blue-700 text-blue-700 font-semibold bg-white hover:border-2 hover:text-blue-800 hover:bg-blue-50 `} to={`/profile/${props.id}`}>Show Profile</Link>
+                            <button
+                                className={`${buttonStyles({ size: "sm" })} px-3 mt-2`}
+                                onClick={() => {
+                                    props.toggleSideBar();
+                                    navigate(`/profile/${props.id}`);
+                                }}
+                            >
+                                Show Profile
+                            </button>
                             <Button className="h-4 mt-2 px-1" variant={"link"} onClick={() => {
                                 auth.logout();
                                 navigate("/");
@@ -74,7 +83,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
             </div>
         </div>
         <div onClick={() => props.toggleSideBar()} className="md:hidden text-[#808080] hover:text-[#191919]">
-            <GripIcon className="w-8 h-8"/>
+            <GripIcon className="w-8 h-8" />
         </div>
         <div className="gap-2 hidden md:flex">
             <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />

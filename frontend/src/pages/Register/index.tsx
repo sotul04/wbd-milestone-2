@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { AuthApi } from "@/api/auth-api";
-import { login } from "@/lib/cookies";
 
 const formSchema = z
     .object({
@@ -62,9 +61,8 @@ export default function Register() {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const { username, email, name, password } = values;
-            const response = await AuthApi.register({ username, name, email, password });
-            login(response.body.token);
-            auth.setUpdate(true);
+            await AuthApi.register({ username, name, email, password });
+            auth.setUpdate(prev => !prev);
             navigate("/");
         } catch (error) {
             if (error instanceof Error) {
