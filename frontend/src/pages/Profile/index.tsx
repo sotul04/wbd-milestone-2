@@ -389,8 +389,8 @@ export default function Profile() {
                             </>
                         )}
                     </div>
-                    <div className="flex justify-end py-2 pr-[5%] mb-2 text-sm text-[#808080]">
-                        <Link className={`${buttonVariants({ variant: "link" })} px-0`} to={`/connections/${userId}`}>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
+                    <div className="flex justify-end pr-[5%] text-sm mb-2 text-[#808080]">
+                        <Link className={`py-2 mr-1 underline-offset-4 hover:underline`} to={`/connections/${userId}`}>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
                             }`}</Link>
                     </div>
                 </Card>
@@ -495,8 +495,8 @@ export default function Profile() {
                         </div>
                     }
                 </div>
-                <div className="flex justify-end py-2 pr-[5%] text-sm mb-2 text-[#808080]">
-                    <Link className={`${buttonVariants({ variant: "link" })} px-0`} to={`/connections/${userId}`}>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
+                <div className="flex justify-end pr-[5%] text-sm mb-2 text-[#808080]">
+                    <Link className={`py-2 mr-1 underline-offset-4 hover:underline`} to={`/connections/${userId}`}>{`${profile.connection_count} Connection${profile.connection_count > 1 ? "s" : ""
                         }`}</Link>
                 </div>
             </Card>
