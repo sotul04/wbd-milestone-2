@@ -1,6 +1,7 @@
 import * as ConnectionModel from '../model/Connection';
 
 import { prisma } from '../db';
+import { ChatService } from './ChatService';
 
 export const ConnectionService = {
     getUsers: async (param: ConnectionModel.UsersGet) => {
@@ -173,6 +174,8 @@ export const ConnectionService = {
                     ],
                 });
 
+                await ChatService.createRoom({first_user_id: data.from, second_user_id: data.to});
+
                 return 'You are now connected';
 
             } else {
@@ -219,6 +222,21 @@ export const ConnectionService = {
                         {
                             from_id: data.to,
                             to_id: data.from
+                        }
+                    ]
+                }
+            });
+
+            await prisma.roomChat.deleteMany({
+                where: {
+                    OR: [
+                        {
+                            first_user_id: data.from,
+                            second_user_id: data.to
+                        },
+                        {
+                            second_user_id: data.from,
+                            first_user_id: data.to
                         }
                     ]
                 }
@@ -272,6 +290,8 @@ export const ConnectionService = {
                         }
                     ],
                 });
+
+                await ChatService.createRoom({first_user_id: data.from, second_user_id: data.to});
             }
 
         } catch (error) {

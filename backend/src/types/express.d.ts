@@ -15,11 +15,11 @@ export interface JwtPayloadBase {
     name: string;
 }
 
-export interface JwtPayload extends JwtPayloadBase {
+export interface JwtPayloadCustom extends JwtPayloadBase {
     iat: number;
     exp: number;
 }
 
 export type GenerateTokenPayload = JwtPayloadBase;
 
-export type DecodedJwtPayload = JwtPayload;
+export type DecodedJwtPayload = JwtPayloadCustom;

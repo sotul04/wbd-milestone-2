@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import crypto from 'crypto';
-import { GenerateTokenPayload, DecodedJwtPayload, JwtPayload } from '../types/express';
+import { GenerateTokenPayload, DecodedJwtPayload, JwtPayloadCustom } from '../types/express';
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ export const generateToken = (payload: GenerateTokenPayload): string => {
     };
 
     const now = Math.floor(Date.now() / 1000);
-    const fullPayload: JwtPayload = {
+    const fullPayload: JwtPayloadCustom = {
         userId: payload.userId,
         email: payload.email,
         name: payload.name,
