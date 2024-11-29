@@ -43,14 +43,14 @@ export const ChatService = {
         try {
             const cleanChat = { ...param };
             cleanChat.message = xss(cleanChat.message);
-            const newChat =  await prisma.chat.create({
+            const newChat = await prisma.chat.create({
                 data: {
                     ...cleanChat,
                 }
             });
 
             await prisma.roomChat.update({
-                where: {id: newChat.room_id},
+                where: { id: newChat.room_id },
                 data: {
                     updated_at: new Date(),
                     last_message: newChat.message,
@@ -67,24 +67,49 @@ export const ChatService = {
 
     roomChatSearch: async (param: ChatModel.RoomChatSearch) => {
         try {
-            const room = await prisma.roomChat.findFirst({
+            const room = await prisma.roomChat.findUnique({
                 where: {
-                    OR: [
-                        {
-                            first_user_id: param.first_user_id,
-                            second_user_id: param.second_user_id
-                        },
-                        {
-                            first_user_id: param.second_user_id,
-                            second_user_id: param.first_user_id
+                    id: param.roomId
+                },
+                select: {
+                    first_user_id: true,
+                    second_user_id: true,
+                    first_user: {
+                        select: {
+                            profile_photo_path: true,
+                            full_name: true,
+                            id: true
                         }
-                    ]
+                    },
+                    second_user: {
+                        select: {
+                            profile_photo_path: true,
+                            full_name: true,
+                            id: true
+                        }
+                    }
                 }
             });
 
-            return room;
+            if (!room) {
+                throw new Error("Room data not found");
+            }
+
+            return {
+                ...room,
+                first_user_id: room.first_user_id.toString(),
+                second_user_id: room.second_user_id.toString(),
+                first_user: {
+                    ...room.first_user,
+                    id: room.first_user.id.toString()
+                },
+                second_user: {
+                    ...room.second_user,
+                    id: room.second_user.id.toString()
+                }
+            };
         } catch (error) {
-            console.error(error)
+            console.error(error);
             throw error;
         }
     },
@@ -95,7 +120,7 @@ export const ChatService = {
                 where: param.cursor ? {
                     room_id: param.roomId,
                     timestamp: {
-                        lte: param.cursor
+                        lte: new Date(param.cursor)
                     }
                 } : {
                     room_id: param.roomId
@@ -109,7 +134,7 @@ export const ChatService = {
                 orderBy: {
                     timestamp: 'desc'
                 },
-                take: 7
+                take: 11
             });
 
             const messages = chats.map(chat => {
@@ -118,12 +143,15 @@ export const ChatService = {
                     from_id: chat.from_id.toString(),
                     to_id: chat.to_id.toString()
                 }
-            })
+            });
 
-            const data = { messages, nextCursor: chats.length > 6 ? chats[6].timestamp : null };
+            const filtered = messages.slice(0, 10);
+
+            const data = { messages: filtered, nextCursor: chats.length > 10 ? chats[10].timestamp : null };
             return data;
+
         } catch (error) {
-            console.error(error)
+            console.error("Error", error)
             throw error;
         }
     },

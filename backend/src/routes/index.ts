@@ -9,7 +9,7 @@ import { ConnectionController } from "../controller/ConnectionController";
 import { validateRequestBody, validateRequestParams, validateQueryParams } from "../middleware/validation";
 import { getProfileParams, userAuthSchema, userCreateSchema, userUpdateParams, userUpdateSchema } from "../model/User";
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
-import { ChatLoadParams, ChatLoadQuery } from "../model/Chat";
+import { ChatLoadParams, ChatLoadQuery, RoomChatSearchParams } from "../model/Chat";
 import { ChatController } from "../controller/ChatController";
 
 const uploads = multer();
@@ -37,5 +37,6 @@ router.delete('/connection/delete/:to', authJWT, validateRequestParams(connectio
 // chat routes
 router.get('/chat/history', authJWT, ChatController.getUserChats);
 router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams), validateQueryParams(ChatLoadQuery), ChatController.loadChat);
+router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSearchParams), ChatController.roomChatSearch);
 
 export default router;

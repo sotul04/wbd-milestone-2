@@ -14,9 +14,22 @@ export type RoomChatCreate = {
 }
 
 export type RoomChatSearch = {
-    first_user_id: bigint;
-    second_user_id: bigint;
+    roomId: bigint;
 }
+
+export const RoomChatSearchParams = z.object({
+    roomId: z.string().refine(
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch {
+                return false;
+            }
+        },
+        { message: 'roomId must be a valid bigint' }
+    ).transform(val => BigInt(val))
+})
 
 export type ChatLoad = {
     cursor?: Date;
@@ -49,3 +62,18 @@ export type ChatUserGet = {
     userId: bigint
 }
 
+export type JoinChatData = {
+    room_id: string;
+}
+
+export type SendMessageData = {
+    message: string;
+    from_id: string;
+    to_id: string;
+    timestamp: Date;
+    room_id: string;
+}
+
+export type SendTyping = {
+    room_id: string;
+}

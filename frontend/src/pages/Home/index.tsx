@@ -66,7 +66,15 @@ export default function HomePage() {
                     <div className="bg-gray-200 h-32 rounded-md"></div>
                     <h2 className="text-lg font-semibold">Selamat datang, Suthasoma Mahardhika!</h2>
                     <p className="text-sm text-gray-600">Koneksi: 7</p>
-                    <button className="px-3 h-8 rounded-full font-semibold text-white bg-red-700 duration-100 transition-colors hover:bg-red-900 active:bg-red-950 active:text-red-100">
+                    <button onClick={
+                        () => {
+                            const data = new Date("2024-11-29T13:10:22.193Z").toLocaleString("en-Gb", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })
+                            console.log(data);
+                        }
+                    } className="px-3 h-8 rounded-full font-semibold text-white bg-red-700 duration-100 transition-colors hover:bg-red-900 active:bg-red-950 active:text-red-100">
                         Kembangkan jaringan
                     </button>
 

@@ -1,48 +1,48 @@
 version: '3.8'
 
 services:
-  backend: # dev mode
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./backend:/home/app
-      - /home/app/node_modules
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: development
-      CHOKIDAR_USEPOLLING: "true"
-    env_file:
-      - ./backend/.env
-    depends_on:
-      - db
-      - redis
-    networks:
-      - app_network
-    command: >
-      sh -c "npx prisma migrate deploy && 
-             npx prisma generate && 
-             npm run seed &&
-             npm run dev"
+  # backend: # dev mode
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - ./backend:/home/app
+  #     - /home/app/node_modules
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     NODE_ENV: development
+  #     CHOKIDAR_USEPOLLING: "true"
+  #   env_file:
+  #     - ./backend/.env
+  #   depends_on:
+  #     - db
+  #     - redis
+  #   networks:
+  #     - app_network
+  #   command: >
+  #     sh -c "npx prisma migrate deploy && 
+  #            npx prisma generate && 
+  #            npm run seed &&
+  #            npm run dev"
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/home/node/app
-      - /home/node/app/node_modules
-    working_dir: /home/node/app
-    command: [ "npm", "run", "dev" ]
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - backend
-    networks:
-      - app_network
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - ./frontend:/home/node/app
+  #     - /home/node/app/node_modules
+  #   working_dir: /home/node/app
+  #   command: [ "npm", "run", "dev" ]
+  #   env_file:
+  #     - ./frontend/.env
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - app_network
 
   db:
     image: postgres:latest

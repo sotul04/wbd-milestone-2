@@ -133,3 +133,70 @@ export type GetProfileResponse = Response & {
         connect_status?: string | null;
     }
 }
+
+export type GetUserChatsPayload = {
+    userId: string
+}
+
+export type GetUserChatsResponse = Response & {
+    body: {
+        first_user: {
+            id: string;
+            full_name: string | null;
+            profile_photo_path: string;
+        };
+        second_user: {
+            id: string;
+            full_name: string | null;
+            profile_photo_path: string;
+        };
+        id: string;
+        updated_at: Date;
+        last_message: string | null;
+    }[]
+}
+
+export type LoadChatPayload = {
+    roomId: string;
+    cursor?: Date | null;
+}
+
+export type LoadChatResponse = {
+    body: {
+        messages: {
+            from_id: string;
+            to_id: string;
+            message: string;
+            timestamp: Date;
+        }[];
+        nextCursor: Date | null;
+    }
+}
+
+export type Message = {
+    from_id: string;
+    to_id: string;
+    message: string;
+    timestamp: Date;
+}
+
+export type RoomChatSearchPayload = {
+    roomId: string
+}
+
+export type RoomChatSearchResponse = Response & {
+    body: {
+        first_user_id: string;
+        second_user_id: string;
+        first_user: {
+            id: string;
+            full_name: string | null;
+            profile_photo_path: string;
+        };
+        second_user: {
+            id: string;
+            full_name: string | null;
+            profile_photo_path: string;
+        };
+    }
+}
