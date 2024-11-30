@@ -1,5 +1,5 @@
 const TypingBubble = () => {
-    const bubbleClasses = `relative text-white max-w-xs p-3 pb-2 rounded-xl text-sm bg-gray-700 self-start`;
+    const bubbleClasses = `relative text-white max-w-xs p-3 pb-1 rounded-2xl text-sm bg-gray-700 self-start`;
 
     return (
         <div

@@ -44,7 +44,7 @@ export function RequestCard(props: Props) {
 
     return <Card className="px-3 pt-3 pb-3 flex flex-col justify-between">
         <div className="flex gap-2">
-            <Avatar className="w-12 h-12">
+            <Avatar className="w-12 h-12 border">
                 {props.from_user.profile_photo_path !== '' &&
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.from_user.profile_photo_path}`} />
                 }

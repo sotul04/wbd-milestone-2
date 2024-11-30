@@ -97,7 +97,7 @@ export function UserProfile({ name, photo_url, email, id }: { name: string, phot
 
     return <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger className="text-[#808080] flex flex-col items-center md:min-w-[30px] hover:text-black">
-            <Avatar className="w-[26px] h-[26px]">
+            <Avatar className="w-[26px] h-[26px] border">
                 {photo_url && photo_url !== '' &&
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${photo_url}`} />
                 }
@@ -108,7 +108,7 @@ export function UserProfile({ name, photo_url, email, id }: { name: string, phot
         <PopoverContent className="p-3 right-0">
             <div className="border-b-[1px] pb-3">
                 <div className="flex gap-2">
-                    <Avatar className="w-14 h-14">
+                    <Avatar className="w-14 h-14 border">
                         {photo_url && photo_url !== '' &&
                             <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${photo_url}`} />
                         }

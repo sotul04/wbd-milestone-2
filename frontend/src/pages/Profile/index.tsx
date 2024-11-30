@@ -16,6 +16,7 @@ import { PenIcon } from "lucide-react";
 import { FeedCard } from "@/components/feed/feed";
 import { Validation } from "@/components/alert/alert";
 import { buttonStyles } from "@/components/button";
+import { isNotEmail } from "@/lib/regex";
 
 type UserProfile = {
     name: string;
@@ -138,6 +139,9 @@ export default function Profile() {
                 }
                 if (data.username.trim().length < 3) {
                     throw new Error("Username must have at least 3 characters");
+                }
+                if (!isNotEmail(data.username.trim())) {
+                    throw new Error("Username cannot be an email or contain '@'");
                 }
                 const response = await ProfileApi.updateProfile({
                     name: data.name,

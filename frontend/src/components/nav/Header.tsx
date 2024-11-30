@@ -53,7 +53,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                 <div className="w-full border-t-[1px] flex justify-center">
                     <div className="py-3">
                         <div className="flex gap-2">
-                            <Avatar className="w-14 h-14">
+                            <Avatar className="w-14 h-14 border">
                                 {props.photo_url !== '' &&
                                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.photo_url}`} />
                                 }

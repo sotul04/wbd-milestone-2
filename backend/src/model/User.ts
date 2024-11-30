@@ -28,11 +28,13 @@ export type UserCreate = {
 }
 
 export const userCreateSchema = z.object({
-    username: z.string().min(3),
+    username: z.string()
+        .min(3)
+        .regex(/^[^\s@]+$/, "Username cannot be an email or contain '@'"),
     email: z.string().email(),
     name: z.string().min(3),
-    password: z.string().min(8)
-})
+    password: z.string().min(8),
+});
 
 export type UserUpdate = {
     id: bigint;
@@ -59,7 +61,12 @@ export const userUpdateParams = z.object({
 });
 
 export const userUpdateSchema = z.object({
-    username: z.string().trim().min(3).optional(),
+    username: z
+        .string()
+        .trim()
+        .min(3)
+        .regex(/^[^\s@]+$/, "Username cannot be an email or contain '@'")
+        .optional(),
     name: z.string().trim().min(3).optional(),
     profile_photo: z.any().nullable().optional(),
     work_history: z.string().nullable().optional(),

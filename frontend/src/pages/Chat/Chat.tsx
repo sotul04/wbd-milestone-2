@@ -150,7 +150,7 @@ export default function UserChat() {
                 <div className="flex items-center gap-2">
                     <Link to='/chat'><ChevronLeftIcon /></Link>
                     {users && users.first_user_id !== auth.userId.toString() && <>
-                        <Avatar className="h-12 w-12">
+                        <Avatar className="h-12 w-12 border">
                             {users.first_user.profile_photo_path !== '' &&
                                 <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.first_user.profile_photo_path}`} />
                             }
@@ -160,7 +160,7 @@ export default function UserChat() {
                     </>
                     }
                     {users && users.second_user_id !== auth.userId.toString() && <>
-                        <Avatar className="h-12 w-12">
+                        <Avatar className="h-12 w-12 border">
                             {users.second_user.profile_photo_path !== '' &&
                                 <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.second_user.profile_photo_path}`} />
                             }
