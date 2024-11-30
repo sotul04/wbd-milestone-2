@@ -34,9 +34,11 @@ export function FeedCard(props: Props) {
                 <div className="space-y-2">
                     <div className="flex gap-2">
                         <Avatar className="w-12 h-12">
-                            <AvatarImage
-                                src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo}`}
-                            />
+                            {props.profile_photo && props.profile_photo !== '' &&
+                                <AvatarImage
+                                    src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo}`}
+                                />
+                            }
                             <AvatarFallback className="font-bold">
                                 {props.name?.charAt(0).toUpperCase()}
                             </AvatarFallback>

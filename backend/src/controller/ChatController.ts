@@ -27,8 +27,13 @@ export const ChatController = {
     },
     roomChatSearch: async (req: Request, res: Response) => {
         try {
+            const userId = req.user!.userId;
             const { roomId } = RoomChatSearchParams.parse(req.params);
             const chats = await ChatService.roomChatSearch({ roomId });
+            if (chats.first_user_id !== userId && chats.second_user_id !== userId) {
+                res.status(StatusCodes.UNAUTHORIZED).json(response(false, 'Unauthorized'));
+                return;
+            }
             res.status(200).json(response(true, "Successfully retrieved the room data", chats));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));

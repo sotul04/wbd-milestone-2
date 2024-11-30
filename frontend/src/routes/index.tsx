@@ -12,7 +12,8 @@ import {
     Profile,
     Requests,
     Users,
-    UserChat
+    UserChat,
+    ChatUnaccessible
 } from "@/pages";
 
 import { AuthProvider } from "@/context/AuthContext";
@@ -68,9 +69,11 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/chat/:roomId",
+                errorElement: <ChatUnaccessible/>,
                 element: <ProtectedRoute redirectTo="/login">
                     <UserChat />
                 </ProtectedRoute>
+                
             },
             {
                 path: "/connections/:userId",

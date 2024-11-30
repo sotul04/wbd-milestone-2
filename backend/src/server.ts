@@ -4,8 +4,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import router from './routes';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config();
 

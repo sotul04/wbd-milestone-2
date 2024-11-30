@@ -37,19 +37,25 @@ export default function Chats() {
 
     return <section className="flex flex-col items-center">
         <div className="flex container flex-col md:flex-row md:gap-8 p-4">
-            <aside className="w-full md:w-1/4 mb-6 hidden md:block">
-                <UserAside />
+            <aside className="w-full md:w-1/4 mb-6 space-y-3 pb-6 border-b-2 md:border-none">
+                <UserAside title="Chat" content="Get to know the people around you better" />
             </aside>
 
             <main className="w-full md:w-3/4">
-                <div className="grid grid-cols-1 gap-3">
-                    {chats.map(chat => 
-                        <ChatCard 
-                            key={chat.id}
-                            {...chat}
-                        />
-                    )}
-                </div>
+                {chats.length <= 0 ? <>
+                    <div className="flex items-center justify-center p-1">
+                        <p className="text-center text-sm text-[#808080]">No Chat</p>
+                    </div>
+                </> : <>
+                    <div className="grid grid-cols-1 gap-3">
+                        {chats.map(chat =>
+                            <ChatCard
+                                key={chat.id}
+                                {...chat}
+                            />
+                        )}
+                    </div>
+                </>}
             </main>
         </div>
     </section>

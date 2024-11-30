@@ -21,7 +21,9 @@ export function FriendsCard(props: Props) {
         <CardHeader className="px-3 pt-3 pb-3">
             <div className="flex gap-2">
                 <Avatar className="w-12 h-12">
-                    <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo_path ? props.profile_photo_path : ''}`} />
+                    {props.profile_photo_path !== '' &&
+                        <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo_path}`} />
+                    }
                     <AvatarFallback className="font-bold">{props.full_name?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="grow flex flex-col gap-0">

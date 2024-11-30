@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { debounce } from "lodash";
 import { ConnectionApi } from "@/api/connection-api";
 import { SearchIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 type User = {
     id: string;
@@ -45,7 +46,7 @@ export default function Users() {
         <section className="flex flex-col items-center">
             <div className="flex container flex-col md:flex-row md:gap-8 p-4">
                 {/* Bagian kiri: Pencarian */}
-                <aside className="w-full md:w-1/4 mb-6">
+                <aside className="w-full md:w-1/4 mb-6 space-y-3">
                     <div className="relative">
                         <Input
                             type="text"
@@ -58,6 +59,12 @@ export default function Users() {
                             className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 pointer-events-none"
                         />
                     </div>
+                    <Card className="hidden md:block">
+                        <div className="space-y-1 py-2">
+                            <h3 className="text-sm font-semibold px-4" >Users</h3>
+                            <p className="text-xs text-[#808080] px-4">Find a partner you like</p>
+                        </div>
+                    </Card>
                 </aside>
 
                 {/* Bagian kanan: Hasil Pencarian */}

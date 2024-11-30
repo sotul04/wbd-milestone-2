@@ -29,7 +29,9 @@ export default function ChatCard(chat: Chat) {
             navigate(`/chat/${chat.id}`);
         }} className="flex gap-2 items-center w-full p-2 cursor-pointer">
             <Avatar className="w-12 h-12">
-                <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${chat.first_user.profile_photo_path ?? ''}`} />
+                {chat.first_user.profile_photo_path !== '' &&
+                    <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${chat.first_user.profile_photo_path}`} />
+                }
                 <AvatarFallback>
                     {chat.first_user.full_name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
@@ -51,7 +53,9 @@ export default function ChatCard(chat: Chat) {
         navigate(`/chat/${chat.id}`);
     }} className="flex gap-2 items-center w-full p-2 cursor-pointer">
         <Avatar className="w-12 h-12">
-            <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${chat.second_user.profile_photo_path ?? ''}`} />
+            {chat.second_user.profile_photo_path !== '' &&
+                <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${chat.second_user.profile_photo_path}`} />
+            }
             <AvatarFallback>
                 {chat.second_user.full_name?.charAt(0).toUpperCase()}
             </AvatarFallback>

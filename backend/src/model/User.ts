@@ -60,7 +60,7 @@ export const userUpdateParams = z.object({
 
 export const userUpdateSchema = z.object({
     username: z.string().trim().min(3).optional(),
-    name: z.string().trim().min(3).nullable().optional(),
+    name: z.string().trim().min(3).optional(),
     profile_photo: z.any().nullable().optional(),
     work_history: z.string().nullable().optional(),
     skills: z.string().nullable().optional(),

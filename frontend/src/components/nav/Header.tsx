@@ -54,7 +54,9 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                     <div className="py-3">
                         <div className="flex gap-2">
                             <Avatar className="w-14 h-14">
-                                <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.photo_url}`} />
+                                {props.photo_url !== '' &&
+                                    <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.photo_url}`} />
+                                }
                                 <AvatarFallback>{props.name.charAt(0).toUpperCase()}</AvatarFallback>
                             </Avatar>
                             <div className="grow flex flex-col gap-0">

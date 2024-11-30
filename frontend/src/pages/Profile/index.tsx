@@ -133,6 +133,12 @@ export default function Profile() {
         try {
             if (!foto) {
                 const data = edited;
+                if (data.name.trim().length < 3) {
+                    throw new Error("Name must have at least 3 characters");
+                }
+                if (data.username.trim().length < 3) {
+                    throw new Error("Username must have at least 3 characters");
+                }
                 const response = await ProfileApi.updateProfile({
                     name: data.name,
                     userId: userId!,
@@ -183,6 +189,12 @@ export default function Profile() {
                 }
             }
         } catch (error) {
+            setEdited({
+                name: profile.name,
+                username: profile.username,
+                work_history: profile.work_history ?? '',
+                skills: profile.skills ?? ''
+            })
             if (error instanceof Error) {
                 toast({
                     title: "Error",
@@ -232,9 +244,11 @@ export default function Profile() {
                         <div className="w-1/2 h-full absolute bg-[#BFD3D6] right-0 top-0 translate-x-[40%]"></div>
                     </div>
                     <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
-                        <AvatarImage
-                            src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo ?? ""}`}
-                        />
+                        {profile.profile_photo && profile.profile_photo !== '' &&
+                            <AvatarImage
+                                src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
+                            />
+                        }
                         <AvatarFallback className="text-[48px] sm:text-[60px]">
                             {profile.name.substring(0, 1).toUpperCase()}
                         </AvatarFallback>
@@ -271,7 +285,7 @@ export default function Profile() {
                                         Save
                                     </Button>
                                     <Button
-                                        className={buttonStyles({variant: "destructive"})}
+                                        className={buttonStyles({ variant: "destructive" })}
                                         onClick={async () => {
                                             await saveEdit(true, true);
                                             setPopoverOpen(false);
@@ -431,9 +445,11 @@ export default function Profile() {
                     <div className="w-1/2 h-full absolute bg-[#BFD3D6] right-0 top-0 translate-x-[40%]"></div>
                 </div>
                 <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
-                    <AvatarImage
-                        src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
-                    />
+                    {profile.profile_photo && profile.profile_photo !== '' &&
+                        <AvatarImage
+                            src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
+                        />
+                    }
                     <AvatarFallback className="text-[48px] sm:text-[60px]">
                         {profile.name.substring(0, 1).toUpperCase()}
                     </AvatarFallback>

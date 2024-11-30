@@ -10,6 +10,7 @@ import Profile from "./Profile";
 import Requests from "./Request";
 import Users from "./Users";
 import UserChat from "./Chat/Chat";
+import ChatUnaccessible from "./Chat/Unaccessible";
 
 export {
     Login,
@@ -24,4 +25,5 @@ export {
     Requests,
     Users,
     UserChat,
+    ChatUnaccessible
 };

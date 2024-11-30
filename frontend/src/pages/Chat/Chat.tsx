@@ -6,7 +6,7 @@ import Messages from "@/components/chat/message";
 import { useAuth } from "@/context/AuthContext";
 import { useSocket } from "@/context/ChatContext";
 import { Card } from "@/components/ui/card";
-import { ArrowLeftIcon, SendHorizonalIcon } from "lucide-react";
+import { ChevronLeftIcon, SendHorizonalIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface UserProps {
@@ -40,7 +40,12 @@ export default function UserChat() {
     const [newMessage, setNewMessage] = useState("");
     const [users, setUsers] = useState<UserProps>();
     const [isTyping, setTyping] = useState(false);
+    const [accessible, setAccessible] = useState(true);
     const typingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    if (!accessible) {
+        throw new Error("Unaccessible");
+    }
 
     const fetchItems = useCallback(
         async ({ pageParam }: { pageParam: Date | null }) => {
@@ -52,8 +57,14 @@ export default function UserChat() {
 
     useEffect(() => {
         async function fetchUsers() {
-            const response = await ChatApi.getRoomChatUsers({ roomId: roomId! });
-            setUsers(response.body);
+            try {
+                const response = await ChatApi.getRoomChatUsers({ roomId: roomId! });
+                setUsers(response.body);
+            } catch (error) {
+                if ((error as any)?.message === 'Unauthorized') {
+                    setAccessible(false);
+                }
+            }
         }
         fetchUsers();
     }, [roomId]);
@@ -134,13 +145,15 @@ export default function UserChat() {
     };
 
     return (
-        <section className="flex flex-col h-[calc(100vh-80px)] items-center">
+        <section className="flex flex-col h-[calc(100vh-80px)] items-center px-2">
             <Card className="container h-[calc(100%-20px)] py-4 my-5 flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                    <Link to='/chat'><ArrowLeftIcon /></Link>
+                    <Link to='/chat'><ChevronLeftIcon /></Link>
                     {users && users.first_user_id !== auth.userId.toString() && <>
                         <Avatar className="h-12 w-12">
-                            <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.first_user.profile_photo_path !== '' ? users.first_user.profile_photo_path : ''}`}/>
+                            {users.first_user.profile_photo_path !== '' &&
+                                <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.first_user.profile_photo_path}`} />
+                            }
                             <AvatarFallback className="font-semibold text-lg">{users.first_user.full_name?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <p className="font-semibold">{users.first_user.full_name}</p>
@@ -148,7 +161,9 @@ export default function UserChat() {
                     }
                     {users && users.second_user_id !== auth.userId.toString() && <>
                         <Avatar className="h-12 w-12">
-                            <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.second_user.profile_photo_path !== '' ? users.second_user.profile_photo_path : ''}`}/>
+                            {users.second_user.profile_photo_path !== '' &&
+                                <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.second_user.profile_photo_path}`} />
+                            }
                             <AvatarFallback className="font-semibold text-lg">{users.second_user.full_name?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <p className="font-semibold">{users.second_user.full_name}</p>
