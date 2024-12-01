@@ -16,7 +16,7 @@ const uploads = multer();
 
 const router: Router = Router();
 
-// user route
+// user routes
 router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserController.login);
 router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), UserController.register);
 router.get('/verify', authJWT, UserController.verify);
@@ -38,5 +38,7 @@ router.delete('/connection/delete/:to', authJWT, validateRequestParams(connectio
 router.get('/chat/history', authJWT, ChatController.getUserChats);
 router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams), validateQueryParams(ChatLoadQuery), ChatController.loadChat);
 router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSearchParams), ChatController.roomChatSearch);
+
+// feeds routes
 
 export default router;

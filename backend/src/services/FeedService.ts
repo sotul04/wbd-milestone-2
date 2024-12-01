@@ -61,13 +61,25 @@ export const FeedService = {
     },
 
     getFeedsByUserID: async (param: FeedModel.FeedsByUserId) => {
-        try{
-            const feeds = await prisma.Feed.findMany({
-                where: {user_id: param.user_id}
-            })
-        } catch (error){
+        try {
+            const feeds = await prisma.feed.findMany({
+                where: {
+                    user_id: param.user_id,
+                },
+                orderBy: {
+                    id: "asc",
+                },
+                cursor: param.cursor
+                    ? { id: param.cursor }
+                    : undefined, 
+                skip: param.cursor ? 1 : 0,
+                take: param.limit || 10,
+            });
+    
+            return feeds;
+        } catch (error) {
             console.error(error);
             throw error;
         }
-    }
+    };    
 }

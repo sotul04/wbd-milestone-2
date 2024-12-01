@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type FeedCreate = {
     id: string;
     created_at: Date;
@@ -8,10 +10,6 @@ export type FeedCreate = {
 
 export type FeedRead = {
     id: string;
-    created_at: Date;
-    updated_at: Date;
-    content: string;
-    user_id: string;
 }
 
 export type FeedUpdate = {
@@ -28,4 +26,15 @@ export type FeedDelete = {
 
 export type FeedsByUserId = {
     user_id: string;
+    cursor?: number;
+    limit: number;
 }
+
+export const FeedReadParams = z.object({
+    id: z.string().refine(
+        (val) => 
+            !isNaN(Number(val)
+        ), 
+        {message: "id must be a valid number"}
+    ).transform((val) => Number(val))
+});
