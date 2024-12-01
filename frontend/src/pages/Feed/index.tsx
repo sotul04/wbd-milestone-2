@@ -1,7 +1,33 @@
-import { useState } from "react";
-
+import { ProfileApi } from "@/api/profile-api";
+import { useAuth } from "@/context/AuthContext";
+import { UserProfile } from "@/types";
+import { useEffect, useState } from "react";
 
 export default function FeedPage() {
+    const auth = useAuth();
+
+    const [profile, setProfile] = useState<UserProfile>({
+        name: "",
+        connection_count: 0,
+        username: "",
+    });
+
+    async function getProfile() {
+        try {
+            if (!auth.userId) return; // Ensure userId is available
+            const response = await ProfileApi.getProfile({
+                userId: auth.userId.toString(), // Use auth.userId instead of params userId if relevant
+            });
+            setProfile(response.body); // Update state with API response
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+        }
+    }
+
+    useEffect(() => {
+        getProfile();
+    }, [auth.userId]); // Trigger only when auth.userId changes
+
     const [isModalOpen, setModalOpen] = useState(false);
 
     // Dummy data for the feed
@@ -60,8 +86,8 @@ export default function FeedPage() {
             <aside className="w-full md:w-1/4 p-4 bg-white shadow-lg">
                 <div className="space-y-4">
                     <div className="bg-gray-200 h-32 rounded-md"></div>
-                    <h2 className="text-lg font-semibold">Selamat datang, Suthasoma Mahardhika!</h2>
-                    <p className="text-sm text-gray-600">Koneksi: 7</p>
+                    <h2 className="text-lg font-semibold">Selamat datang, {auth.name}!</h2>
+                    <p className="text-sm text-gray-600">Koneksi: {profile.connection_count}</p>
                     <button className="w-full text-white bg-blue-600 hover:bg-blue-700 py-2 rounded-lg">
                         Kembangkan jaringan Anda
                     </button>
