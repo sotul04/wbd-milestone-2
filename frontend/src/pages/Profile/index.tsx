@@ -17,30 +17,7 @@ import { FeedCard } from "@/components/feed/feed";
 import { Validation } from "@/components/alert/alert";
 import { buttonStyles } from "@/components/button";
 import { isNotEmail } from "@/lib/regex";
-
-type UserProfile = {
-    name: string;
-    username: string;
-    work_history?: string | null;
-    skills?: string | null;
-    profile_photo?: string;
-    relevant_posts?: {
-        id: string;
-        created_at: Date;
-        updated_at: Date;
-        content: string;
-        user_id: string;
-    }[] | null;
-    connection_count: number;
-    connect_status?: string | null;
-};
-
-type UserEditProfile = {
-    name: string;
-    username: string;
-    work_history: string;
-    skills: string;
-};
+import { UserEditProfile, UserProfile } from "@/types";
 
 export default function Profile() {
     const workHistoryRef = useRef<ReactQuill | null>(null);

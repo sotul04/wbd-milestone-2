@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-import { LoginRequest } from "@/types";
+import { Feed, LoginRequest } from "@/types";
 import { AuthApi } from "@/api/auth-api";
 
 type AuthCtx = {
@@ -11,6 +11,7 @@ type AuthCtx = {
     username: string;
     name: string;
     email: string;
+    feeds: Feed[];
     photoUrl: string;
     update: boolean;
     setUpdate: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthCtx>({
     username: '',
     name: '',
     email: '',
+    feeds: [],
     photoUrl: '',
     update: false,
     setUpdate: () => { }
@@ -38,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [photoUrl, setPhotoUrl] = useState<string>('');
     const [update, setUpdate] = useState(false);
     const [email, setEmail] = useState<string>('');
+    const [feeds, setFeeds] = useState<Feed[]>([]);
 
     useEffect(() => {
         const verifyUser = async () => {
@@ -51,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setUsername(user.body.username);
                     setPhotoUrl(user.body.profile_photo_path);
                     setEmail(user.body.email);
+                    setFeeds(user.body.feeds)
                 }
             } catch (error) {
                 console.error(error);
@@ -62,12 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [update]);
 
     const login = async (payload: LoginRequest) => {
-        try {
-            await AuthApi.login(payload);
-            setUpdate(prev => !prev);
-        } catch (error) {
-            throw error;
-        }
+        await AuthApi.login(payload);
+        setUpdate(prev => !prev);
     }
 
     const logout = async () => {
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return <>
         <AuthContext.Provider
-            value={{ authenticated, userId, username, name, email, photoUrl, login, logout, setUpdate, update }}
+            value={{ authenticated, userId, username, name, email, feeds, photoUrl, login, logout, setUpdate, update }}
         >
             {children}
         </AuthContext.Provider>

@@ -2,7 +2,6 @@ import { ProfileApi } from "@/api/profile-api";
 import { useAuth } from "@/context/AuthContext";
 import { UserProfile } from "@/types";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 export default function HomePage() {
     const auth = useAuth();
@@ -30,54 +29,54 @@ export default function HomePage() {
     }, [auth.userId]); // Trigger only when auth.userId changes
 
     // Dummy data for the feed
-    const feeds = [
-        {
-            id: 1,
-            name: "Nada Raudah Mumtazah",
-            title: "Undergraduate Student of Ocean Engineering, Bandung Institute of Technology",
-            content:
-                "ARUNGI is a national-level design competition based on ocean engineering knowledge for high school students (SMA/SMK/MA equivalent), organized by KMKL and ALKA ITB.",
-            time: "4hr",
-            likes: 32,
-            comments: 5,
-        },
-        {
-            id: 2,
-            name: "Mario Mahardika Sinulingga",
-            title: "IT Enthusiast",
-            content: "Check out the latest opportunities in the tech world!",
-            time: "6hr",
-            likes: 45,
-            comments: 8,
-        },
-        {
-            id: 3,
-            name: "Institut Teknologi Bandung (ITB)",
-            title: "Official Account",
-            content: "KMKL dan ALKA ITB Sukses Gelar ARUNGI 2024.",
-            time: "5hr",
-            likes: 100,
-            comments: 25,
-        },
-        {
-            id: 4,
-            name: "LinkedIn Official",
-            title: "Your Career Partner",
-            content: "Update your job preferences to help recruiters find you for the right opportunities.",
-            time: "8hr",
-            likes: 22,
-            comments: 3,
-        },
-        {
-            id: 5,
-            name: "John Doe",
-            title: "Senior Developer at Tech Inc.",
-            content: "Building scalable solutions for the next generation.",
-            time: "10hr",
-            likes: 67,
-            comments: 15,
-        },
-    ];
+    // const feeds = [
+    //     {
+    //         id: 1,
+    //         name: "Nada Raudah Mumtazah",
+    //         title: "Undergraduate Student of Ocean Engineering, Bandung Institute of Technology",
+    //         content:
+    //             "ARUNGI is a national-level design competition based on ocean engineering knowledge for high school students (SMA/SMK/MA equivalent), organized by KMKL and ALKA ITB.",
+    //         time: "4hr",
+    //         likes: 32,
+    //         comments: 5,
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "Mario Mahardika Sinulingga",
+    //         title: "IT Enthusiast",
+    //         content: "Check out the latest opportunities in the tech world!",
+    //         time: "6hr",
+    //         likes: 45,
+    //         comments: 8,
+    //     },
+    //     {
+    //         id: 3,
+    //         name: "Institut Teknologi Bandung (ITB)",
+    //         title: "Official Account",
+    //         content: "KMKL dan ALKA ITB Sukses Gelar ARUNGI 2024.",
+    //         time: "5hr",
+    //         likes: 100,
+    //         comments: 25,
+    //     },
+    //     {
+    //         id: 4,
+    //         name: "LinkedIn Official",
+    //         title: "Your Career Partner",
+    //         content: "Update your job preferences to help recruiters find you for the right opportunities.",
+    //         time: "8hr",
+    //         likes: 22,
+    //         comments: 3,
+    //     },
+    //     {
+    //         id: 5,
+    //         name: "John Doe",
+    //         title: "Senior Developer at Tech Inc.",
+    //         content: "Building scalable solutions for the next generation.",
+    //         time: "10hr",
+    //         likes: 67,
+    //         comments: 15,
+    //     },
+    // ];
 
 
     /**
@@ -113,16 +112,12 @@ export default function HomePage() {
                     ) : (
                         <p>You haven't sign in!</p>
                     )}
-                    
-
-
-
                 </div>
             </aside>
 
             {/* Main Feed */}
             <main className="flex-1 p-4">
-                {feeds.map((feed) => (
+                {auth.feeds?.map((feed) => (
                     <div
                         key={feed.id}
                         className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"

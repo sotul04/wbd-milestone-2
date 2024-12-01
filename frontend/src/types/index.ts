@@ -10,6 +10,7 @@ export type AuthCheckResponse = Response & {
         id: number;
         full_name: string;
         profile_photo_path: string;
+        feeds: Feed[];
     }
 }
 
@@ -223,4 +224,14 @@ export type RoomChatSearchResponse = Response & {
             profile_photo_path: string;
         };
     }
+}
+
+export type Feed = {
+    id: number,
+    name: string,
+    title: string,
+    content: string,
+    time: string,
+    likes: number,
+    comments: number
 }

@@ -8,12 +8,8 @@ import {
 
 export class AuthApi extends BaseApi {
     public static async checkAuth() {
-        try {
-            const response = await this.client.get<AuthCheckResponse>("/verify");
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
+        const response = await this.client.get<AuthCheckResponse>("/verify");
+        return response.data;
     }
 
     public static async login(payload: LoginPayload) {
