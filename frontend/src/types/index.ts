@@ -251,7 +251,7 @@ export type GetFeed = {
 export type GetUserFeedsPayload = {
     userId: string;
     cursor: number;
-    limit: 10;
+    limit: number;
 }
 
 export type GetUserFeedsResponse = {
@@ -262,13 +262,8 @@ export type GetUserFeedsResponse = {
 }
 
 export type CreateFeedPayload = {
-    id: number;
-    name: string,
-    title: string,
     content: string,
-    time: string,
-    likes: number,
-    comments: number 
+    user_id: string
 }
 
 export type CreateFeedResponse = Response & {

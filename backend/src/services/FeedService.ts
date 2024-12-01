@@ -81,5 +81,5 @@ export const FeedService = {
             console.error(error);
             throw error;
         }
-    };    
+    }    
 }

@@ -1,19 +1,19 @@
-import { CreateFeedResponse, DeleteFeedPayload, DeleteFeedResponse, GetUserFeedsPayload, GetUserFeedsResponse, readFeedPayload, readFeedResponse, UpdateFeedPayload, UpdateFeedResponse } from "@/types";
+import { CreateFeedPayload, CreateFeedResponse, DeleteFeedPayload, DeleteFeedResponse, GetUserFeedsPayload, GetUserFeedsResponse, readFeedPayload, readFeedResponse, UpdateFeedPayload, UpdateFeedResponse } from "@/types";
 import { BaseApi } from "./base-api";
 
 export class feedAPI extends BaseApi{
     public static async getUserFeeds(payload: GetUserFeedsPayload){
         try{
-            const response = await this.client.get<GetUserFeedsResponse>(`/api/feed/${payload.cursor}?${payload.limit}`);
+            const response = await this.client.get<GetUserFeedsResponse>(`/api/feed?cursor=${payload.cursor}&limit=${payload.limit}`);
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;
         }
     }
 
-    public static async createFeed(){
+    public static async createFeed(payload: CreateFeedPayload){
         try{
-            const response = await this.client.post<CreateFeedResponse>(`/api/feed`);
+            const response = await this.client.post<CreateFeedResponse>(`/api/feed`, payload);
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;
@@ -31,7 +31,7 @@ export class feedAPI extends BaseApi{
 
     public static async updateFeed(payload: UpdateFeedPayload){
         try{
-            const response = await this.client.put<UpdateFeedResponse>(`/api/feed/${payload.id}`);
+            const response = await this.client.put<UpdateFeedResponse>(`/api/feed/${payload.id}`, payload);
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;
