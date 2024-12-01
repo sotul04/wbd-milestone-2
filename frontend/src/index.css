@@ -112,3 +112,67 @@
   /* for dropdown */
   color: #444 !important;
 }
+
+.text-area-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #000000 #d9d9d9; /* Firefox */
+  --tw-text-opacity: 1;
+  color: black;
+
+  /* For Webkit (Chrome, Safari) */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #d9d9d9;
+    border-radius: 20px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #000000;
+    border-radius: 20px;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #000000;
+  }
+}
+
+/* Global styles for thin scrollbars */
+html {
+  /* This sets the scrollbar width to thin for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1; /* Color of the scrollbar and the track */
+}
+
+/* Webkit-based browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the scrollbar (for horizontal scrollbars) */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Roundness of the scrollbar thumb */
+  border: 2px solid #f1f1f1; /* Padding around the thumb */
+}
+
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}

@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { buttonStyles } from "@/components/button";
 
 const formSchema = z
     .object({
@@ -109,7 +110,7 @@ export default function Register() {
                                 />
                             </div>
                             {/* Register Button */}
-                            <Button type="submit" className="w-full rounded-full bg-blue-600 hover:bg-blue-700 font-semibold text-[16px] p-6 ">
+                            <Button type="submit" className={`${buttonStyles({ variant: "login", size: "xl" })} w-full`}>
                                 Login
                             </Button>
                         </form>

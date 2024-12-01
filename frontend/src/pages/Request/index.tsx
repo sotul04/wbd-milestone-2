@@ -1,5 +1,6 @@
 import { ConnectionApi } from "@/api/connection-api";
 import { RequestCard } from "@/components/user/request";
+import { UserAside } from "@/components/user/user-aside";
 import { useEffect, useState } from "react";
 
 type UserProps = {
@@ -38,23 +39,29 @@ export default function Requests() {
         setRequests(newRequests);
     }
 
-    return <section className="flex flex-col items-center px-2 py-3">
-        {requests.length > 0 &&
-            <>
-                <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Requests</h3>
-                <div className="w-full container grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-                    {requests.map((item, index) => (
-                        <RequestCard
-                            key={item.from_id}
-                            {...item}
-                            clear={() => deleteRequest(index)}
-                        />
-                    ))}
-                </div>
-            </>
-        }
-        {requests.length <= 0 && <div>
-            <p className="text-center text-sm text-[#808080]">No Requests</p>
-        </div>}
+    return <section className="flex flex-col items-center">
+        <div className="flex container flex-col sm:flex-row sm:gap-4 md:gap-8 p-4">
+            <aside className="w-full sm:w-1/3 md:w-1/4 mb-6 space-y-3 pb-6 border-b-2 md:border-none">
+                <UserAside title="Connection Request" content="Grow your network with the right partners" />
+            </aside>
+
+            <main className="w-full md:w-3/4">
+                {requests.length <= 0 ? <>
+                    <div className="flex items-center justify-center p-1">
+                        <p className="text-center text-sm text-[#808080]">No Request</p>
+                    </div>
+                </> : <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {requests.map((item, index) =>
+                            <RequestCard
+                                key={item.from_id}
+                                {...item}
+                                clear={() => deleteRequest(index)}
+                            />
+                        )}
+                    </div>
+                </>}
+            </main>
+        </div>
     </section>
 }

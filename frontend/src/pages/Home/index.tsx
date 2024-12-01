@@ -79,6 +79,14 @@ export default function HomePage() {
         },
     ];
 
+
+    /**
+     * <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-blue-600 bg-white border border-blue-600 rounded-full transition duration-200 hover:bg-[var(--artdeco-button-secondary-default-hover-background-color)] hover:text-[var(--artdeco-button-secondary-default-hover-color)] hover:shadow-[inset_0_0_0_2px_var(--artdeco-button-secondary-default-hover-border-color)]">
+    Kembangkan jaringan Anda
+</button>
+
+     */
+
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
             {/* Sidebar */}
@@ -90,14 +98,25 @@ export default function HomePage() {
                     <>
                         <h2 className="text-lg font-semibold">Selamat datang, {auth.name}!</h2>
                         <p className="text-sm text-gray-600">Koneksi: {profile.connection_count} </p>
-                        <button className="w-full text-white bg-blue-600 hover:bg-blue-700 py-2 rounded-lg">
-                            Kembangkan jaringan Anda
+                        <button onClick={
+                        () => {
+                            const data = new Date("2024-11-29T13:10:22.193Z").toLocaleString("en-Gb", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })
+                            console.log(data);
+                        }
+                    } className="px-3 h-8 rounded-full font-semibold text-white bg-red-700 duration-100 transition-colors hover:bg-red-900 active:bg-red-950 active:text-red-100">
+                            Kembangkan jaringan
                         </button>
                     </>
                     ) : (
                         <p>You haven't sign in!</p>
                     )}
                     
+
+
+
                 </div>
             </aside>
 

@@ -12,7 +12,7 @@ import { verifyToken } from "../utils/jwtHelper";
 
 export const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 },
+    limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
         if (!allowedImageTypes.includes(file.mimetype)) {

@@ -4,7 +4,8 @@ import { ChatLink, ConnectionsLink, FeedLink, HomeLink, LoginLink, ProfileLink, 
 import { useEffect, useState } from "react";
 import { GripIcon, XIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
+import { buttonStyles } from "../button";
 
 export default function Header() {
     const auth = useAuth();
@@ -38,14 +39,13 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                 <Link to="/">
                     <img src="/purry.ico" width={40} height={40} />
                 </Link>
-                <div onClick={() => props.toggleSideBar()} className="text-[#808080] hover:text-[#191919]">
+                <div onClick={() => props.toggleSideBar()} className="text-[#808080] hover:text-[#191919] cursor-pointer">
                     <XIcon className="w-8 h-8" />
                 </div>
             </div>
             <div className="flex container flex-col gap-3 items-start">
                 <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
                 <FeedLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/feed')} />
-                <ProfileLink onClick={props.toggleSideBar} current={location.pathname.startsWith("/profile")} id={props.id} />
                 <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
                 <RequestsLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/requests')} />
                 <ConnectionsLink id={props.id} onClick={props.toggleSideBar} current={location.pathname.startsWith('/connection')} />
@@ -53,8 +53,10 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                 <div className="w-full border-t-[1px] flex justify-center">
                     <div className="py-3">
                         <div className="flex gap-2">
-                            <Avatar className="w-14 h-14">
-                                <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.photo_url}`} />
+                            <Avatar className="w-14 h-14 border">
+                                {props.photo_url !== '' &&
+                                    <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.photo_url}`} />
+                                }
                                 <AvatarFallback>{props.name.charAt(0).toUpperCase()}</AvatarFallback>
                             </Avatar>
                             <div className="grow flex flex-col gap-0">
@@ -63,7 +65,15 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                             </div>
                         </div>
                         <div className="flex items-center justify-between flex-col">
-                            <Link onClick={props.toggleSideBar} className={`${buttonVariants({ variant: "outline" })} mt-2 h-7 rounded-[999px] border-blue-700 text-blue-700 font-semibold bg-white hover:border-2 hover:text-blue-800 hover:bg-blue-50 `} to={`/profile/${props.id}`}>Show Profile</Link>
+                            <button
+                                className={`${buttonStyles({ size: "sm" })} px-3 mt-2`}
+                                onClick={() => {
+                                    props.toggleSideBar();
+                                    navigate(`/profile/${props.id}`);
+                                }}
+                            >
+                                Show Profile
+                            </button>
                             <Button className="h-4 mt-2 px-1" variant={"link"} onClick={() => {
                                 auth.logout();
                                 navigate("/");
@@ -73,7 +83,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                 </div>
             </div>
         </div>
-        <div onClick={() => props.toggleSideBar()} className="md:hidden text-[#808080] hover:text-[#191919]">
+        <div onClick={() => props.toggleSideBar()} className="md:hidden text-[#808080] hover:text-[#191919] cursor-pointer">
             <GripIcon className="w-8 h-8" />
         </div>
         <div className="gap-2 hidden md:flex">
@@ -97,7 +107,7 @@ function UnauthenticatedNav(props: { sideBarOpen: boolean, toggleSideBar: () => 
                 <Link to="/">
                     <img src="/purry.ico" width={40} height={40} />
                 </Link>
-                <div onClick={() => props.toggleSideBar()} className="text-[#808080] hover:text-[#191919]">
+                <div onClick={() => props.toggleSideBar()} className="text-[#808080] hover:text-[#191919] cursor-pointer">
                     <XIcon className="w-8 h-8" />
                 </div>
             </div>
@@ -108,14 +118,14 @@ function UnauthenticatedNav(props: { sideBarOpen: boolean, toggleSideBar: () => 
                 <RegisterLink />
             </div>
         </div>
-        <div onClick={() => props.toggleSideBar()} className="md:hidden text-[#808080] hover:text-[#191919]">
+        <div onClick={() => props.toggleSideBar()} className="md:hidden text-[#808080] hover:text-[#191919] cursor-pointer">
             <GripIcon className="w-8 h-8" />
         </div>
         <div className="gap-3 hidden md:flex">
             <HomeLink onClick={props.toggleSideBar} current={location.pathname === '/'} />
             <UsersLink onClick={props.toggleSideBar} current={location.pathname.startsWith('/users')} />
-            <LoginLink />
             <RegisterLink />
+            <LoginLink />
         </div>
     </>
 }

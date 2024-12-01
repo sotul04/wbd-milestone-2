@@ -44,6 +44,7 @@ export const UserService = {
                     password_hash: password_hash,
                     full_name: xss(data.name),
                     work_history: '',
+                    updated_at: new Date(),
                     skills: '',
                     profile_photo_path: '',
                 }

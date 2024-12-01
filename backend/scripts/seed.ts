@@ -36,7 +36,8 @@ async function seedDatabase() {
                 profile_photo_path: '',
                 feeds: {
                     create: Array.from({ length: 15 }).map(() => ({
-                        content: faker.lorem.paragraph()
+                        content: faker.lorem.paragraph(),
+                        updated_at: new Date()
                     }))
                 },
             }

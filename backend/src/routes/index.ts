@@ -9,6 +9,8 @@ import { ConnectionController } from "../controller/ConnectionController";
 import { validateRequestBody, validateRequestParams, validateQueryParams } from "../middleware/validation";
 import { getProfileParams, userAuthSchema, userCreateSchema, userUpdateParams, userUpdateSchema } from "../model/User";
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
+import { ChatLoadParams, ChatLoadQuery, RoomChatSearchParams } from "../model/Chat";
+import { ChatController } from "../controller/ChatController";
 
 const uploads = multer();
 
@@ -18,6 +20,7 @@ const router: Router = Router();
 router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserController.login);
 router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), UserController.register);
 router.get('/verify', authJWT, UserController.verify);
+router.get('/logout', UserController.logout);
 
 // profile routes
 router.get('/profile/:userId', validateRequestParams(getProfileParams), ProfileController.getProfile);
@@ -30,5 +33,10 @@ router.get('/connection/requests', authJWT, ConnectionController.connectionReque
 router.post('/connection/connect', authJWT, uploads.none(), validateRequestBody(connectionConnectSchema), ConnectionController.connectionConnect);
 router.get('/connection/list/:userId', validateRequestParams(connectionListParams), ConnectionController.connectionList);
 router.delete('/connection/delete/:to', authJWT, validateRequestParams(connectionDeleteParams), ConnectionController.connectionDelete);
+
+// chat routes
+router.get('/chat/history', authJWT, ChatController.getUserChats);
+router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams), validateQueryParams(ChatLoadQuery), ChatController.loadChat);
+router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSearchParams), ChatController.roomChatSearch);
 
 export default router;

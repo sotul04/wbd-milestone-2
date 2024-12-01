@@ -1,6 +1,6 @@
 import { ProfileApi } from "@/api/profile-api";
 import { AvatarImage, Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,32 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { PenIcon } from "lucide-react";
 import { FeedCard } from "@/components/feed/feed";
 import { Validation } from "@/components/alert/alert";
-import { UserEditProfile, UserProfile } from "@/types";
+import { buttonStyles } from "@/components/button";
+import { isNotEmail } from "@/lib/regex";
+
+type UserProfile = {
+    name: string;
+    username: string;
+    work_history?: string | null;
+    skills?: string | null;
+    profile_photo?: string;
+    relevant_posts?: {
+        id: string;
+        created_at: Date;
+        updated_at: Date;
+        content: string;
+        user_id: string;
+    }[] | null;
+    connection_count: number;
+    connect_status?: string | null;
+};
+
+type UserEditProfile = {
+    name: string;
+    username: string;
+    work_history: string;
+    skills: string;
+};
 
 export default function Profile() {
     const workHistoryRef = useRef<ReactQuill | null>(null);
@@ -109,6 +134,15 @@ export default function Profile() {
         try {
             if (!foto) {
                 const data = edited;
+                if (data.name.trim().length < 3) {
+                    throw new Error("Name must have at least 3 characters");
+                }
+                if (data.username.trim().length < 3) {
+                    throw new Error("Username must have at least 3 characters");
+                }
+                if (!isNotEmail(data.username.trim())) {
+                    throw new Error("Username cannot be an email or contain '@'");
+                }
                 const response = await ProfileApi.updateProfile({
                     name: data.name,
                     userId: userId!,
@@ -136,6 +170,7 @@ export default function Profile() {
                     });
                     await getProfile();
                     auth.setUpdate(prev => !prev);
+                    setPhoto(null);
                     toast({
                         title: "Success",
                         description: response.message,
@@ -149,6 +184,7 @@ export default function Profile() {
                     });
                     await getProfile();
                     auth.setUpdate(prev => !prev);
+                    setPhoto(null);
                     toast({
                         title: "Success",
                         description: response.message,
@@ -157,6 +193,12 @@ export default function Profile() {
                 }
             }
         } catch (error) {
+            setEdited({
+                name: profile.name,
+                username: profile.username,
+                work_history: profile.work_history ?? '',
+                skills: profile.skills ?? ''
+            })
             if (error instanceof Error) {
                 toast({
                     title: "Error",
@@ -206,9 +248,11 @@ export default function Profile() {
                         <div className="w-1/2 h-full absolute bg-[#BFD3D6] right-0 top-0 translate-x-[40%]"></div>
                     </div>
                     <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
-                        <AvatarImage
-                            src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo ?? ""}`}
-                        />
+                        {profile.profile_photo && profile.profile_photo !== '' &&
+                            <AvatarImage
+                                src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
+                            />
+                        }
                         <AvatarFallback className="text-[48px] sm:text-[60px]">
                             {profile.name.substring(0, 1).toUpperCase()}
                         </AvatarFallback>
@@ -221,16 +265,22 @@ export default function Profile() {
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="py-2 px-3">
-                                <Label>{`New Photo (Max 5MB)`}</Label>
+                                <Label className="text-[#808080]">{`New Photo (Max 10MB)`}</Label>
                                 <Input
+                                    className="border-none mt-2"
                                     type="file"
                                     accept="image/jpeg, image/png, image/jpg"
                                     onChange={handlePhotoChange}
                                 />
+                                {photo && <>
+                                    <p className="text-sm text-[#808080] my-2 text-center">Preview</p>
+                                    <Avatar className="h-32 w-32 mx-auto border mb-3">
+                                        <AvatarImage src={URL.createObjectURL(photo)} />
+                                    </Avatar>
+                                </>}
                                 <div className="flex gap-2 mt-3 justify-end">
                                     <Button
-                                        variant={"outline"}
-                                        className="h-8 rounded-full"
+                                        className={buttonStyles({})}
                                         onClick={async () => {
                                             await saveEdit(true, photo === null);
                                             setPopoverOpen(false);
@@ -239,8 +289,7 @@ export default function Profile() {
                                         Save
                                     </Button>
                                     <Button
-                                        variant={"destructive"}
-                                        className="h-8 rounded-full"
+                                        className={buttonStyles({ variant: "destructive" })}
                                         onClick={async () => {
                                             await saveEdit(true, true);
                                             setPopoverOpen(false);
@@ -309,8 +358,7 @@ export default function Profile() {
 
                                 <div className="flex justify-end gap-1 mt-2">
                                     <Button
-                                        variant="outline"
-                                        className="h-8 rounded-full"
+                                        className={`${buttonStyles({ variant: "secondary" })}`}
                                         onClick={() => setIsEdit(false)}
                                     >
                                         Cancel
@@ -320,7 +368,7 @@ export default function Profile() {
                                             saveEdit();
                                             setIsEdit(false);
                                         }}
-                                        className="h-8 rounded-full bg-blue-600 hover:bg-blue-700"
+                                        className={`${buttonStyles()} px-6`}
                                     >
                                         Save
                                     </Button>
@@ -356,8 +404,7 @@ export default function Profile() {
                                 }
                                 <div className="flex justify-end mt-2">
                                     <Button
-                                        className="rounded-full h-8"
-                                        variant="outline"
+                                        className={`${buttonStyles({ variant: "secondary" })} px-6`}
                                         onClick={() => setIsEdit(true)}
                                     >
                                         Edit
@@ -402,9 +449,11 @@ export default function Profile() {
                     <div className="w-1/2 h-full absolute bg-[#BFD3D6] right-0 top-0 translate-x-[40%]"></div>
                 </div>
                 <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
-                    <AvatarImage
-                        src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
-                    />
+                    {profile.profile_photo && profile.profile_photo !== '' &&
+                        <AvatarImage
+                            src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
+                        />
+                    }
                     <AvatarFallback className="text-[48px] sm:text-[60px]">
                         {profile.name.substring(0, 1).toUpperCase()}
                     </AvatarFallback>
@@ -441,8 +490,8 @@ export default function Profile() {
                             <Validation
                                 trigger="Disconnect"
                                 actionDesc="Disconnect"
-                                classTrigger={buttonVariants({variant: "destructive"})}
-                                classAction={buttonVariants({variant: "destructive"})}
+                                classTrigger={buttonStyles({ variant: "destructive" })}
+                                classAction={buttonStyles({ variant: "destructive" })}
                                 action={() => handleDisconnect()}
                                 title="Are you sure?"
                                 description="This action cannot be undone. Your connection with this user is going to be deleted."
@@ -452,8 +501,7 @@ export default function Profile() {
                     {profile.connect_status && profile.connect_status === 'disconnected' &&
                         <div className="flex justify-end mt-2">
                             <Button
-                                className="rounded-full h-8"
-                                variant="outline"
+                                className={buttonStyles()}
                                 onClick={() => handleConnect()}
                             >
                                 Connect
@@ -463,9 +511,7 @@ export default function Profile() {
                     {profile.connect_status && profile.connect_status === 'waiting' &&
                         <div className="flex justify-end mt-2">
                             <Button
-                                disabled
-                                className="rounded-full h-8"
-                                variant={"ghost"}
+                                className={buttonStyles({ variant: "ghost" })}
                             >
                                 Waiting
                             </Button>

@@ -3,12 +3,14 @@ import Home from "./Home";
 import NotFound from "./NotFound";
 import Unauthorized from "./Unauthorized";
 import Register from "./Register";
-import Chat from "./Chat";
+import Chats from "./Chat";
 import Connections from "./Connection";
 import Feed from "./Feed";
 import Profile from "./Profile";
 import Requests from "./Request";
 import Users from "./Users";
+import UserChat from "./Chat/Chat";
+import ChatUnaccessible from "./Chat/Unaccessible";
 
 export {
     Login,
@@ -16,10 +18,12 @@ export {
     NotFound,
     Unauthorized,
     Register,
-    Chat,
+    Chats,
     Connections,
     Feed,
     Profile,
     Requests,
     Users,
+    UserChat,
+    ChatUnaccessible
 };

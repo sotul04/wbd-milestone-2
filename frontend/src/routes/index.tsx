@@ -6,29 +6,37 @@ import {
     NotFound,
     Unauthorized,
     Register,
-    Chat,
+    Chats,
     Connections,
     Feed,
     Profile,
     Requests,
-    Users
+    Users,
+    UserChat,
+    ChatUnaccessible
 } from "@/pages";
 
 import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/nav/Header";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SocketProvider } from "@/context/ChatContext";
+
+const queryClient = new QueryClient();
 
 const AuthProviderLayout = () => {
     const location = useLocation();
     const hideHeaderRoutes = ["/unauthorized", "/login", "/register"];
     const hideHeader = hideHeaderRoutes.includes(location.pathname);
 
-    return <>
-        <AuthProvider>
-            {!hideHeader && <Header />}
-            <Outlet />
-        </AuthProvider>
-    </>
+    return <QueryClientProvider client={queryClient}>
+        <SocketProvider>
+            <AuthProvider>
+                {!hideHeader && <Header />}
+                <Outlet />
+            </AuthProvider>
+        </SocketProvider>
+    </QueryClientProvider>
 }
 
 const routes: RouteObject[] = [
@@ -39,7 +47,7 @@ const routes: RouteObject[] = [
         children: [
             {
                 path: "/",
-                element: <Home/>
+                element: <Home />
             },
             {
                 path: "/login",
@@ -56,27 +64,35 @@ const routes: RouteObject[] = [
             {
                 path: "/chat",
                 element: <ProtectedRoute redirectTo="/login">
-                    <Chat/>
+                    <Chats />
                 </ProtectedRoute>
             },
             {
+                path: "/chat/:roomId",
+                errorElement: <ChatUnaccessible/>,
+                element: <ProtectedRoute redirectTo="/login">
+                    <UserChat />
+                </ProtectedRoute>
+                
+            },
+            {
                 path: "/connections/:userId",
-                element: <Connections/>
+                element: <Connections />
             },
             {
                 path: "/feed",
                 element: <ProtectedRoute redirectTo="/login">
-                    <Feed/>
+                    <Feed />
                 </ProtectedRoute>
             },
             {
                 path: "/profile/:userId",
-                element: <Profile/>
+                element: <Profile />
             },
             {
                 path: "/requests",
                 element: <ProtectedRoute redirectTo="/login">
-                    <Requests/>
+                    <Requests />
                 </ProtectedRoute>
             },
             {

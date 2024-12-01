@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ConnectionApi } from "@/api/connection-api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
+import { buttonStyles } from "../button";
 
 interface Props {
     id: string;
@@ -43,8 +44,10 @@ export function UserCard(props: Props) {
     return <Card className="space-y-0 gap-0" >
         <CardHeader className="px-3 pt-3 pb-3">
             <div className="flex gap-2">
-                <Avatar className="w-12 h-12">
-                    <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo_path ? props.profile_photo_path : ''}`} />
+                <Avatar className="w-12 h-12 border">
+                    {props.profile_photo_path !== '' &&
+                        <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo_path}`} />
+                    }
                     <AvatarFallback className="font-bold">{props.full_name.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="grow flex flex-col gap-0">
@@ -55,16 +58,15 @@ export function UserCard(props: Props) {
                 </div>
             </div>
             {canConnect && <div className="flex justify-end my-2">
-                    <Button
-                        className="h-8"
-                        variant={"outline"}
-                        onClick={() => {
-                            handleConnect();
-                        }}
-                    >
-                        Connect
-                    </Button>
-                </div>}
+                <Button
+                    className={buttonStyles()}
+                    onClick={() => {
+                        handleConnect();
+                    }}
+                >
+                    Connect
+                </Button>
+            </div>}
         </CardHeader>
     </Card>
 }

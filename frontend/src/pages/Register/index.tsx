@@ -23,14 +23,14 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { AuthApi } from "@/api/auth-api";
-import { login } from "@/lib/cookies";
+import { buttonStyles } from "@/components/button";
 
 const formSchema = z
     .object({
         name: z.string().min(3, { message: "Name must be at least 3 characters." }),
         username: z
             .string()
-            .min(3, { message: "Username must be at least 3 characters." }),
+            .min(3, { message: "Username must be at least 3 characters." }).regex(/^[^\s@]+$/, "Username cannot be an email or contain '@'"),
         email: z.string().email({ message: "Please enter a valid email address." }),
         password: z
             .string()
@@ -62,9 +62,8 @@ export default function Register() {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const { username, email, name, password } = values;
-            const response = await AuthApi.register({ username, name, email, password });
-            login(response.body.token);
-            auth.setUpdate(true);
+            await AuthApi.register({ username, name, email, password });
+            auth.setUpdate(prev => !prev);
             navigate("/");
         } catch (error) {
             if (error instanceof Error) {
@@ -182,7 +181,7 @@ export default function Register() {
                                 />
                             </div>
                             {/* Register Button */}
-                            <Button type="submit" className="w-full rounded-full bg-blue-600 hover:bg-blue-700] font-semibold text-[16px] p-6 ">
+                            <Button type="submit" className={`${buttonStyles({ variant: "login", size: "xl" })} w-full`}>
                                 Register
                             </Button>
                         </form>
