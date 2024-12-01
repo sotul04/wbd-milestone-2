@@ -1,15 +1,16 @@
 import * as FeedModel from "../model/Feed";
 
 import {prisma} from '../db';
+import xss from 'xss';
 
 export const FeedService = {
     createFeed: async (param: FeedModel.FeedCreate) => {
         try{
+            const cleanFeed = {...param};
+            cleanFeed.content = xss(cleanFeed.content);
             const createdFeed = await prisma.Feed.create({
                 data: {
-                    updated_at: param.updated_at,
-                    content: param.content,
-                    user_id: param.user_id
+                    ...cleanFeed
                 }
             });
 
@@ -33,11 +34,13 @@ export const FeedService = {
 
     updateFeed: async (param: FeedModel.FeedUpdate) => {
         try{
+            const cleanFeed = {...param};
+            cleanFeed.content = xss(cleanFeed.content)
+            cleanFeed.updated_at = new Date()
             const updatedFeed = await prisma.Feed.update({
                 where: {id: param.id},
                 data: {
-                    updated_at: new Date(),
-                    content: param.content
+                    ...cleanFeed
                 }
             })
         } catch (error){
