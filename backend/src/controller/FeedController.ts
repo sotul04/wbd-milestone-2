@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { response } from '../utils/response';
 
 import { StatusCodes } from 'http-status-codes';
-import { FeedReadParams } from "../model/Feed";
+import { getFeedParams } from "../model/Feed";
 import { FeedService } from "../services/FeedService";
 
 export const FeedController = {
@@ -18,7 +18,7 @@ export const FeedController = {
 
     readFeed: async (req: Request, res: Response) => {
         try{
-            const { id } = FeedReadParams.parse(req.params);
+            const { id } = getFeedParams.parse(req.params);
             const message = await FeedService.readFeed({id});
             res.status(StatusCodes.OK).json(response(true, "Read Feed Success", message));
         } catch (error) {
@@ -38,7 +38,7 @@ export const FeedController = {
 
     deleteFeed: async (req: Request, res: Response) => {
         try{
-            const { id } = FeedReadParams.parse(req.params);
+            const { id } = getFeedParams.parse(req.params);
             const message = await FeedService.deleteFeed({id})
             res.status(StatusCodes.OK).json(response(true, "Delete Feed Success", message));
         } catch (error) {

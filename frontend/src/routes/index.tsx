@@ -86,6 +86,13 @@ const routes: RouteObject[] = [
                 </ProtectedRoute>
             },
             {
+                path: "/feed/:postId",
+                element: <ProtectedRoute redirectTo="/login">
+                    <Feed /> 
+                    {/* To Do: Tampilan per feed */}
+                </ProtectedRoute>
+            },
+            {
                 path: "/profile/:userId",
                 element: <Profile />
             },

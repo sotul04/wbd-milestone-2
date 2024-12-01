@@ -11,6 +11,8 @@ import { getProfileParams, userAuthSchema, userCreateSchema, userUpdateParams, u
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
 import { ChatLoadParams, ChatLoadQuery, RoomChatSearchParams } from "../model/Chat";
 import { ChatController } from "../controller/ChatController";
+import { FeedController } from "../controller/FeedController";
+import { FeedCreateSchema, FeedGetQuerySchema, FeedUpdateSchema, getFeedParams } from "../model/Feed";
 
 const uploads = multer();
 
@@ -40,5 +42,11 @@ router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams),
 router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSearchParams), ChatController.roomChatSearch);
 
 // feeds routes
+router.get('/feed', validateQueryParams(FeedGetQuerySchema), FeedController.getFeeds);
+router.post('/feed', authJWT, uploads.none(), validateRequestBody(FeedCreateSchema), FeedController.createFeed);
+router.get('/feed/:postId', authJWT, validateQueryParams(FeedGetQuerySchema), FeedController.readFeed),
+router.put('/feed/:postId', authJWT, validateRequestParams(getFeedParams), validateRequestBody(FeedUpdateSchema), FeedController.updateFeed); 
+router.delete('/feed/:postId', authJWT, validateRequestParams(getFeedParams), FeedController.deleteFeed);
+
 
 export default router;
