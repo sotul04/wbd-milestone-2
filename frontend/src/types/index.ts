@@ -235,3 +235,65 @@ export type Feed = {
     likes: number,
     comments: number
 }
+
+export type GetFeed = {
+    body:{
+        id: number;
+        name: string;
+        title: string;
+        content: string;
+        time: string;
+        likes: number;
+        comments: number;
+    }
+}
+
+export type GetUserFeedsPayload = {
+    userId: string;
+    cursor: number;
+    limit: 10;
+}
+
+export type GetUserFeedsResponse = {
+    body:{
+        feeds: Feed[];
+        cursor: number;
+    }
+}
+
+export type CreateFeedPayload = {
+    id: number;
+    name: string,
+    title: string,
+    content: string,
+    time: string,
+    likes: number,
+    comments: number 
+}
+
+export type CreateFeedResponse = Response & {
+    body: null
+}
+
+export type readFeedPayload = {
+    id: number;
+}
+
+export type readFeedResponse = Response & {
+    body:{
+        feed: Feed;
+    }
+}
+
+export type UpdateFeedPayload = {
+    id: number;
+    content: string;
+}
+
+export type UpdateFeedResponse = CreateFeedResponse
+
+export type DeleteFeedPayload = {
+    id: number;
+}
+
+export type DeleteFeedResponse = CreateFeedResponse
