@@ -81,6 +81,25 @@ export default function FeedPage() {
             setIsLoading(false);
         }
     }
+
+    function getTimeDifference(date: Date): string {
+        const now = new Date();
+        const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
+    
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds} second${diffInSeconds === 1 ? '' : 's'} ago`;
+        } else if (diffInSeconds < 3600) {
+            const minutes = Math.floor(diffInSeconds / 60);
+            return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+        } else if (diffInSeconds < 86400) {
+            const hours = Math.floor(diffInSeconds / 3600);
+            return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+        } else {
+            const days = Math.floor(diffInSeconds / 86400);
+            return `${days} day${days === 1 ? '' : 's'} ago`;
+        }
+    }
+    
     
     useEffect(() => {
         getProfile();
@@ -224,8 +243,8 @@ export default function FeedPage() {
                                 </div>
                                 <p className="text-gray-800 break-words break-before-right">{feed.content}</p>
                                 <div className="flex justify-between items-center text-gray-600 text-sm">
-                                    <span>{feed.time} ago</span>
-                                    <span>{feed.likes} likes • {feed.comments} comments</span>
+                                    <span>{getTimeDifference(feed.updated_at)}</span>
+                                    <span>{feed.likes ?? 0} likes • {feed.comments ?? 0} comments</span>
                                 </div>
                             </div>
                         </Link>
