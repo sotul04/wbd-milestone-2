@@ -256,8 +256,8 @@ export type GetUserFeedsPayload = {
 
 export type GetUserFeedsResponse = {
     body:{
-        feeds: Feed[];
-        cursor: number;
+        formattedFeeds: Feed[];
+        cursor?: number;
     }
 }
 

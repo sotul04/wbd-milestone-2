@@ -17,6 +17,10 @@ export default function FeedPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [newPostContent, setNewPostContent] = useState(""); // Store the content of the new post
+    const [postError, setPostError] = useState<string | null>(null); // Error state for the post submission
+
     async function getProfile() {
         try {
             if (!auth.userId) return; // Ensure userId is available
@@ -32,83 +36,61 @@ export default function FeedPage() {
     async function fetchFeeds() {
         setIsLoading(true);
         try {
+            console.log("Fetching feeds...");
             const response = await feedAPI.getUserFeeds({ userId: auth.userId, cursor: undefined, limit: 10 });
-    
-            // Check if response.body.feeds exists or is empty
-            if (response?.body?.feeds?.length > 0) {
-                setFeeds(response.body.feeds); // Set the feeds state with the API response
+            console.log("Feeds fetched:", response.body.formattedFeeds);
+            
+            if (response?.body?.formattedFeeds?.length > 0) {
+                setFeeds(response.body.formattedFeeds);
             } else {
-                setFeeds([]); // Set feeds as an empty array if no content is returned
+                setFeeds([]);
             }
     
-            setError(null); // Reset error state on success
+            setError(null);
         } catch (err) {
-            // Handle other API errors
             console.error("Error fetching feeds:", err);
             setError("Failed to fetch feeds. Please try again.");
-            setFeeds([]); // Ensure feeds is an empty array on error
+            setFeeds([]);
         } finally {
             setIsLoading(false);
         }
     }
     
+    async function createPost() {
+        if (!newPostContent.trim()) {
+            setPostError("Post content cannot be empty.");
+            return;
+        }
+    
+        try {
+            setIsLoading(true); // Optional loading state
+            setPostError(null); // Clear previous errors
+    
+            console.log("masuk")
 
+            // Call the createFeed API
+            await feedAPI.createFeed({
+                user_id: auth.userId.toString(),
+                content: newPostContent.trim(),
+            });
+
+            console.log("masuk")
+    
+            setNewPostContent(""); // Clear input after posting
+            await fetchFeeds(); // Refresh feed list
+            setModalOpen(false); // Close modal
+        } catch (error) {
+            console.error("Error creating post:", error);
+            setPostError("Failed to create post. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    
     useEffect(() => {
         getProfile();
         fetchFeeds();
     }, [auth.userId]); // Trigger only when auth.userId changes
-
-    const [isModalOpen, setModalOpen] = useState(false);
-
-    // Dummy data for the feed
-    // const feeds = [
-    //     {
-    //         id: 1,
-    //         name: "Nada Raudah Mumtazah",
-    //         title: "Undergraduate Student of Ocean Engineering, Bandung Institute of Technology",
-    //         content:
-    //             "ARUNGI is a national-level design competition based on ocean engineering knowledge for high school students (SMA/SMK/MA equivalent), organized by KMKL and ALKA ITB.",
-    //         time: "4hr",
-    //         likes: 32,
-    //         comments: 5,
-    //     },
-    //     {
-    //         id: 2,
-    //         name: "Mario Mahardika Sinulingga",
-    //         title: "IT Enthusiast",
-    //         content: "Check out the latest opportunities in the tech world!",
-    //         time: "6hr",
-    //         likes: 45,
-    //         comments: 8,
-    //     },
-    //     {
-    //         id: 3,
-    //         name: "Institut Teknologi Bandung (ITB)",
-    //         title: "Official Account",
-    //         content: "KMKL dan ALKA ITB Sukses Gelar ARUNGI 2024.",
-    //         time: "5hr",
-    //         likes: 100,
-    //         comments: 25,
-    //     },
-    //     {
-    //         id: 4,
-    //         name: "LinkedIn Official",
-    //         title: "Your Career Partner",
-    //         content: "Update your job preferences to help recruiters find you for the right opportunities.",
-    //         time: "8hr",
-    //         likes: 22,
-    //         comments: 3,
-    //     },
-    //     {
-    //         id: 5,
-    //         name: "John Doe",
-    //         title: "Senior Developer at Tech Inc.",
-    //         content: "Building scalable solutions for the next generation.",
-    //         time: "10hr",
-    //         likes: 67,
-    //         comments: 15,
-    //     },
-    // ];
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -131,7 +113,7 @@ export default function FeedPage() {
                     <div className="flex items-center space-x-4">
                         {/* Profile Picture */}
                         <img 
-                            src="public/purry.ico" 
+                            src="/purry.ico" 
                             alt="profile-pic" 
                             className="h-12 w-12 rounded-full"
                         />
@@ -179,12 +161,12 @@ export default function FeedPage() {
                             <div className="flex justify-between items-center mb-4">
                                 <div className="flex items-center space-x-2">
                                     <img
-                                        src="frontend/public/purry.ico"
+                                        src="/purry.ico"
                                         alt="profile-pic"
                                         className="h-10 w-10 rounded-full"
                                     />
                                     <div>
-                                        <h3 className="font-semibold">Darrell Suryanegara</h3>
+                                        <h3 className="font-semibold">{profile.name}</h3>
                                         <p className="text-sm text-gray-500">Post to Anyone</p>
                                     </div>
                                 </div>
@@ -198,34 +180,27 @@ export default function FeedPage() {
 
                             {/* Input Section */}
                             <textarea
+                                value={newPostContent}
+                                onChange={(e) => setNewPostContent(e.target.value)}
                                 placeholder="What do you want to talk about?"
                                 className="w-full h-32 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
 
+                            {postError && <p className="text-red-500 text-sm mt-2">{postError}</p>}
+
                             {/* Action Buttons */}
                             <div className="flex justify-between items-center mt-4">
                                 <div className="flex space-x-2">
-                                    <button className="flex items-center space-x-1 text-sm font-medium text-gray-500 hover:text-blue-600">
-                                        <span>😊</span>
-                                    </button>
-                                    <button className="flex items-center space-x-1 text-sm font-medium text-blue-600">
-                                        ✨ Rewrite with AI
-                                    </button>
-                                    <button className="flex items-center space-x-1 text-sm font-medium text-gray-500 hover:text-gray-800">
-                                        📷
-                                    </button>
-                                    <button className="flex items-center space-x-1 text-sm font-medium text-gray-500 hover:text-gray-800">
-                                        🎥
-                                    </button>
-                                    <button className="flex items-center space-x-1 text-sm font-medium text-gray-500 hover:text-gray-800">
-                                        🗓️
-                                    </button>
+                                    {/* Optional: Add more buttons if needed */}
                                 </div>
                                 <button
-                                    className="bg-blue-600 text-white px-4 py-1 rounded-full font-semibold hover:bg-blue-700 disabled:bg-blue-300"
-                                    disabled
+                                    onClick={createPost}
+                                    disabled={!newPostContent.trim() || isLoading}
+                                    className={`bg-blue-600 text-white px-4 py-1 rounded-full font-semibold hover:bg-blue-700 ${
+                                        !newPostContent.trim() || isLoading ? "disabled:bg-blue-300" : ""
+                                    }`}
                                 >
-                                    Post
+                                    {isLoading ? "Posting..." : "Post"}
                                 </button>
                             </div>
                         </div>
@@ -258,25 +233,6 @@ export default function FeedPage() {
                         </div>
                     ))
                 )}
-                {/* {feeds.map((feed) => (
-                    <div
-                        key={feed.id}
-                        className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"
-                    >
-                        <div className="flex items-center space-x-2">
-                            <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
-                            <div>
-                                <h3 className="font-semibold">{feed.name}</h3>
-                                <p className="text-sm text-gray-600">{feed.title}</p>
-                            </div>
-                        </div>
-                        <p className="text-gray-800">{feed.content}</p>
-                        <div className="flex justify-between items-center text-gray-600 text-sm">
-                            <span>{feed.time} ago</span>
-                            <span>{feed.likes} likes • {feed.comments} comments</span>
-                        </div>
-                    </div>
-                ))} */}
             </main>
 
             {/* Right Sidebar */}

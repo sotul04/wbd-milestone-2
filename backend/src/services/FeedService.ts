@@ -5,27 +5,38 @@ import xss from 'xss';
 
 export const FeedService = {
     createFeed: async (param: FeedModel.FeedCreate) => {
-        try{
-            const cleanFeed = {...param};
-            cleanFeed.content = xss(cleanFeed.content);
-            const createdFeed = await prisma.Feed.create({
+        try {
+            // Sanitize content
+            const sanitizedContent = xss(param.content);
+            // Create feed with explicit handling of fields
+            const createdFeed = await prisma.feed.create({
                 data: {
-                    ...cleanFeed
-                }
+                    content: sanitizedContent,
+                    user_id: param.user_id // Explicitly use user_id from param
+                },
             });
 
-            return createdFeed.id;
+            // Convert BigInt fields to strings
+            const result = {
+                ...createdFeed,
+                id: createdFeed.id.toString(),
+                user_id: createdFeed.user_id.toString(),
+            };
+    
+            console.log(result);
         } catch (error) {
             console.error(error);
             throw error;
         }
     },
-
+    
     readFeed: async (param: FeedModel.FeedRead) => {
         try{
             const readFeed = await prisma.Feed.findUnique({
                 where: {id: param.id}
             })
+
+            return readFeed.id;
         } catch (error){
             console.error(error);
             throw error;
@@ -43,6 +54,8 @@ export const FeedService = {
                     ...cleanFeed
                 }
             })
+
+            return updatedFeed.id;
         } catch (error){
             console.error(error);
             throw error;
@@ -54,6 +67,8 @@ export const FeedService = {
             const deletedFeed = await prisma.Feed.delete({
                 where: {id: param.id}
             })
+
+            return deletedFeed.id;
         } catch (error){
             console.error(error);
             throw error;
