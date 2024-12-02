@@ -20,7 +20,6 @@ export const FeedController = {
     readFeed: async (req: Request, res: Response) => {
         try{
             const { id } = getFeedParams.parse(req.params);
-            console.log("id = ", id)
             const message = await FeedService.readFeed({id});
             
             const feed = {
@@ -50,7 +49,7 @@ export const FeedController = {
         try{
             const { id } = getFeedParams.parse(req.params);
             const message = await FeedService.deleteFeed({id})
-            res.status(StatusCodes.OK).json(response(true, "Delete Feed Success", message));
+            res.status(StatusCodes.OK).json(response(true, "Delete Feed Success", Number(message)));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }

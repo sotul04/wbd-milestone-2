@@ -28,9 +28,7 @@ export class feedAPI extends BaseApi{
 
     public static async readFeed(payload: readFeedPayload){
         try{
-            console.log("payload id =", payload.id)
             const response = await this.client.get<readFeedResponse>(`/feed/${payload.id}`);
-            console.log("balesan:", response.data);
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;
@@ -48,7 +46,7 @@ export class feedAPI extends BaseApi{
 
     public static async deleteFeed(payload: DeleteFeedPayload){
         try{
-            const response = await this.client.delete<DeleteFeedResponse>(`/api/feed/${payload.id}`);
+            const response = await this.client.delete<DeleteFeedResponse>(`feed/${payload.id}`);
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;

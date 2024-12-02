@@ -31,7 +31,7 @@ export default function FeedDetailPage() {
             <h1 className="text-xl font-bold">{feed.title}</h1>
             <p className="text-gray-600">{feed.content}</p>
             <div className="text-sm text-gray-500">
-                <span>{feed.likes} likes • {feed.comments} comments</span>
+                <span>{feed.likes ?? 0} likes • {feed.comments ?? 0} comments</span>
             </div>
         </div>
     );
