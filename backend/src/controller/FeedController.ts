@@ -54,13 +54,14 @@ export const FeedController = {
 
             const feeds = await FeedService.getFeedsByUserID({ user_id, cursor, limit });
 
-            // Convert BigInt values to string
             const formattedFeeds = feeds.map((feed: any) => ({
                 ...feed,
-                id: feed.id?.toString(), // Convert BigInt to string
-                created_at: feed.created_at?.toISOString(), // Format date if needed
-                updated_at: feed.updated_at?.toISOString(), // Format date if needed
+                id: feed.id.toString(), // Convert id to string
+                user_id: feed.user_id.toString(), // Convert user_id to string
+                created_at: feed.created_at.toISOString(), // Format date if needed
+                updated_at: feed.updated_at.toISOString(), // Format date if needed
             }));
+            
 
             res.status(StatusCodes.OK).json(response(true, "Get Feeds Success", formattedFeeds));
         } catch (error) {
