@@ -1,6 +1,7 @@
+import { feedAPI } from "@/api/feed-api";
 import { ProfileApi } from "@/api/profile-api";
 import { useAuth } from "@/context/AuthContext";
-import { UserProfile } from "@/types";
+import { Feed, UserProfile } from "@/types";
 import { useEffect, useState } from "react";
 
 export default function FeedPage() {
@@ -11,6 +12,10 @@ export default function FeedPage() {
         connection_count: 0,
         username: "",
     });
+
+    const [feeds, setFeeds] = useState<Feed[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     async function getProfile() {
         try {
@@ -24,61 +29,86 @@ export default function FeedPage() {
         }
     }
 
+    async function fetchFeeds() {
+        setIsLoading(true);
+        try {
+            const response = await feedAPI.getUserFeeds({ userId: auth.userId, cursor: undefined, limit: 10 });
+    
+            // Check if response.body.feeds exists or is empty
+            if (response?.body?.feeds?.length > 0) {
+                setFeeds(response.body.feeds); // Set the feeds state with the API response
+            } else {
+                setFeeds([]); // Set feeds as an empty array if no content is returned
+            }
+    
+            setError(null); // Reset error state on success
+        } catch (err) {
+            // Handle other API errors
+            console.error("Error fetching feeds:", err);
+            setError("Failed to fetch feeds. Please try again.");
+            setFeeds([]); // Ensure feeds is an empty array on error
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    
+
     useEffect(() => {
         getProfile();
+        fetchFeeds();
     }, [auth.userId]); // Trigger only when auth.userId changes
 
     const [isModalOpen, setModalOpen] = useState(false);
 
     // Dummy data for the feed
-    const feeds = [
-        {
-            id: 1,
-            name: "Nada Raudah Mumtazah",
-            title: "Undergraduate Student of Ocean Engineering, Bandung Institute of Technology",
-            content:
-                "ARUNGI is a national-level design competition based on ocean engineering knowledge for high school students (SMA/SMK/MA equivalent), organized by KMKL and ALKA ITB.",
-            time: "4hr",
-            likes: 32,
-            comments: 5,
-        },
-        {
-            id: 2,
-            name: "Mario Mahardika Sinulingga",
-            title: "IT Enthusiast",
-            content: "Check out the latest opportunities in the tech world!",
-            time: "6hr",
-            likes: 45,
-            comments: 8,
-        },
-        {
-            id: 3,
-            name: "Institut Teknologi Bandung (ITB)",
-            title: "Official Account",
-            content: "KMKL dan ALKA ITB Sukses Gelar ARUNGI 2024.",
-            time: "5hr",
-            likes: 100,
-            comments: 25,
-        },
-        {
-            id: 4,
-            name: "LinkedIn Official",
-            title: "Your Career Partner",
-            content: "Update your job preferences to help recruiters find you for the right opportunities.",
-            time: "8hr",
-            likes: 22,
-            comments: 3,
-        },
-        {
-            id: 5,
-            name: "John Doe",
-            title: "Senior Developer at Tech Inc.",
-            content: "Building scalable solutions for the next generation.",
-            time: "10hr",
-            likes: 67,
-            comments: 15,
-        },
-    ];
+    // const feeds = [
+    //     {
+    //         id: 1,
+    //         name: "Nada Raudah Mumtazah",
+    //         title: "Undergraduate Student of Ocean Engineering, Bandung Institute of Technology",
+    //         content:
+    //             "ARUNGI is a national-level design competition based on ocean engineering knowledge for high school students (SMA/SMK/MA equivalent), organized by KMKL and ALKA ITB.",
+    //         time: "4hr",
+    //         likes: 32,
+    //         comments: 5,
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "Mario Mahardika Sinulingga",
+    //         title: "IT Enthusiast",
+    //         content: "Check out the latest opportunities in the tech world!",
+    //         time: "6hr",
+    //         likes: 45,
+    //         comments: 8,
+    //     },
+    //     {
+    //         id: 3,
+    //         name: "Institut Teknologi Bandung (ITB)",
+    //         title: "Official Account",
+    //         content: "KMKL dan ALKA ITB Sukses Gelar ARUNGI 2024.",
+    //         time: "5hr",
+    //         likes: 100,
+    //         comments: 25,
+    //     },
+    //     {
+    //         id: 4,
+    //         name: "LinkedIn Official",
+    //         title: "Your Career Partner",
+    //         content: "Update your job preferences to help recruiters find you for the right opportunities.",
+    //         time: "8hr",
+    //         likes: 22,
+    //         comments: 3,
+    //     },
+    //     {
+    //         id: 5,
+    //         name: "John Doe",
+    //         title: "Senior Developer at Tech Inc.",
+    //         content: "Building scalable solutions for the next generation.",
+    //         time: "10hr",
+    //         likes: 67,
+    //         comments: 15,
+    //     },
+    // ];
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -86,7 +116,7 @@ export default function FeedPage() {
             <aside className="w-full md:w-1/4 p-4 bg-white shadow-lg">
                 <div className="space-y-4">
                     <div className="bg-gray-200 h-32 rounded-md"></div>
-                    <h2 className="text-lg font-semibold">Selamat datang, {auth.name}!</h2>
+                    <h2 className="text-lg font-semibold">Selamat datang, {profile.name}!</h2>
                     <p className="text-sm text-gray-600">Koneksi: {profile.connection_count}</p>
                     <button className="w-full text-white bg-blue-600 hover:bg-blue-700 py-2 rounded-lg">
                         Kembangkan jaringan Anda
@@ -203,7 +233,32 @@ export default function FeedPage() {
                 )}
 
                 {/* Main Feed */}
-                {feeds.map((feed) => (
+                {isLoading ? (
+                    <p>Loading feeds...</p>
+                ) : error ? (
+                    <p className="text-red-500">{error}</p>
+                ) : (
+                    feeds.map((feed) => (
+                        <div
+                            key={feed.id}
+                            className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"
+                        >
+                            <div className="flex items-center space-x-2">
+                                <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
+                                <div>
+                                    <h3 className="font-semibold">{feed.name}</h3>
+                                    <p className="text-sm text-gray-600">{feed.title}</p>
+                                </div>
+                            </div>
+                            <p className="text-gray-800">{feed.content}</p>
+                            <div className="flex justify-between items-center text-gray-600 text-sm">
+                                <span>{feed.time} ago</span>
+                                <span>{feed.likes} likes • {feed.comments} comments</span>
+                            </div>
+                        </div>
+                    ))
+                )}
+                {/* {feeds.map((feed) => (
                     <div
                         key={feed.id}
                         className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"
@@ -221,7 +276,7 @@ export default function FeedPage() {
                             <span>{feed.likes} likes • {feed.comments} comments</span>
                         </div>
                     </div>
-                ))}
+                ))} */}
             </main>
 
             {/* Right Sidebar */}

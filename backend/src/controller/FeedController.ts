@@ -53,7 +53,16 @@ export const FeedController = {
             const limit = req.query.limit ? Number(req.query.limit) : 10; // Default limit is 10
 
             const feeds = await FeedService.getFeedsByUserID({ user_id, cursor, limit });
-            res.status(StatusCodes.OK).json(response(true, "Get Feeds Success", feeds));
+
+            // Convert BigInt values to string
+            const formattedFeeds = feeds.map((feed: any) => ({
+                ...feed,
+                id: feed.id?.toString(), // Convert BigInt to string
+                created_at: feed.created_at?.toISOString(), // Format date if needed
+                updated_at: feed.updated_at?.toISOString(), // Format date if needed
+            }));
+
+            res.status(StatusCodes.OK).json(response(true, "Get Feeds Success", formattedFeeds));
         } catch (error) {
             console.error(error);
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));

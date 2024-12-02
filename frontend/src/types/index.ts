@@ -249,8 +249,8 @@ export type GetFeed = {
 }
 
 export type GetUserFeedsPayload = {
-    userId: string;
-    cursor: number;
+    userId: number;
+    cursor?: number;
     limit: number;
 }
 
