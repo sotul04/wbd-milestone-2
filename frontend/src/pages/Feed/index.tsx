@@ -245,29 +245,13 @@ export default function FeedPage() {
                 ) : (
                     feeds.map((feed) => (
                         <Link to={`/feed/${feed.id}`} key={feed.id}>
-                            <div
-                                key={feed.id}
-                                className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-2">
-                                        <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
-                                        <div>
-                                            <h3 className="font-semibold">{feed.name}</h3>
-                                            <p className="text-sm text-gray-600">{feed.title}</p>
-                                        </div>
+                            <div key={feed.id} className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2">
+                                <div className="flex items-center space-x-2">
+                                    <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
+                                    <div>
+                                        <h3 className="font-semibold">{feed.name}</h3>
+                                        <p className="text-sm text-gray-600">{feed.title}</p>
                                     </div>
-
-                                    {/* Delete Button */}
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault(); // Prevent navigation
-                                            deleteFeed(feed.id);
-                                        }}
-                                        className="text-red-500 hover:text-red-700 text-sm font-medium"
-                                    >
-                                        ✕
-                                    </button>
                                 </div>
 
                                 <p className="text-gray-800 break-words break-before-right">{feed.content}</p>
