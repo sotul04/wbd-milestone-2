@@ -6,6 +6,7 @@ import Register from "./Register";
 import Chats from "./Chat";
 import Connections from "./Connection";
 import Feed from "./Feed";
+import FeedDetail from "./FeedDetail";
 import Profile from "./Profile";
 import Requests from "./Request";
 import Users from "./Users";
@@ -21,6 +22,7 @@ export {
     Chats,
     Connections,
     Feed,
+    FeedDetail,
     Profile,
     Requests,
     Users,

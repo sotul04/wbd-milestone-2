@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const FeedGetQuerySchema = z.object({
     cursor: z.string().optional(),
-    limit: z.string().refine((val) => {
+    limit: z.string().default("10").refine((val) => {
         const num = parseInt(val, 10);
         return num > 0 && num <= 10;
     }, { message: "Limit can only be between 1 and 10" }),
@@ -21,6 +21,10 @@ export const FeedCreateSchema = z.object({
 export type FeedRead = {
     id: string;
 }
+
+export const FeedReadSchema = z.object({
+    id: z.string()
+})
 
 export type FeedUpdate = {
     id: string;

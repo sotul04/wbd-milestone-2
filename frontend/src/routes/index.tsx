@@ -9,6 +9,7 @@ import {
     Chats,
     Connections,
     Feed,
+    FeedDetail,
     Profile,
     Requests,
     Users,
@@ -88,8 +89,7 @@ const routes: RouteObject[] = [
             {
                 path: "/feed/:postId",
                 element: <ProtectedRoute redirectTo="/login">
-                    <Feed /> 
-                    {/* To Do: Tampilan per feed */}
+                    <FeedDetail />
                 </ProtectedRoute>
             },
             {

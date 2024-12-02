@@ -10,7 +10,6 @@ export class feedAPI extends BaseApi{
                 : `?limit=${payload.limit}`;
             
             const response = await this.client.get<GetUserFeedsResponse>(`/feed${query}`);
-            console.log("jadi gini brok responsenya", response)
             return response.data;
         } catch (error) {
             throw (error as any)?.response?.data;
@@ -29,7 +28,9 @@ export class feedAPI extends BaseApi{
 
     public static async readFeed(payload: readFeedPayload){
         try{
+            console.log("payload id =", payload.id)
             const response = await this.client.get<readFeedResponse>(`/feed/${payload.id}`);
+            console.log("balesan:", response.data);
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;

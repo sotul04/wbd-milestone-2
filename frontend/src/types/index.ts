@@ -227,24 +227,28 @@ export type RoomChatSearchResponse = Response & {
 }
 
 export type Feed = {
-    id: number,
-    name: string,
-    title: string,
-    content: string,
-    time: string,
-    likes: number,
-    comments: number
+    id: number;
+    name?: string;
+    title?: string;
+    created_at: Date;
+    updated_at: Date;
+    content: string;
+    user_id: string;
+    likes?: number;
+    comments?: number;
 }
 
 export type GetFeed = {
     body:{
         id: number;
-        name: string;
-        title: string;
+        name?: string;
+        title?: string;
+        created_at: Date;
+        updated_at: Date;
         content: string;
-        time: string;
-        likes: number;
-        comments: number;
+        user_id: string;
+        likes?: number;
+        comments?: number;
     }
 }
 

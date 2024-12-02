@@ -3,6 +3,7 @@ import { ProfileApi } from "@/api/profile-api";
 import { useAuth } from "@/context/AuthContext";
 import { Feed, UserProfile } from "@/types";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function FeedPage() {
     const auth = useAuth();
@@ -36,9 +37,7 @@ export default function FeedPage() {
     async function fetchFeeds() {
         setIsLoading(true);
         try {
-            console.log("Fetching feeds...");
             const response = await feedAPI.getUserFeeds({ userId: auth.userId, cursor: undefined, limit: 10 });
-            console.log("Feeds fetched:", response.body.formattedFeeds);
             
             if (response?.body?.formattedFeeds?.length > 0) {
                 setFeeds(response.body.formattedFeeds);
@@ -65,16 +64,12 @@ export default function FeedPage() {
         try {
             setIsLoading(true); // Optional loading state
             setPostError(null); // Clear previous errors
-    
-            console.log("masuk")
 
             // Call the createFeed API
             await feedAPI.createFeed({
                 user_id: auth.userId.toString(),
                 content: newPostContent.trim(),
             });
-
-            console.log("masuk")
     
             setNewPostContent(""); // Clear input after posting
             await fetchFeeds(); // Refresh feed list
@@ -181,11 +176,12 @@ export default function FeedPage() {
                             {/* Input Section */}
                             <textarea
                                 value={newPostContent}
-                                onChange={(e) => setNewPostContent(e.target.value)}
+                                onChange={(e) => setNewPostContent(e.target.value.slice(0, 280))} // Prevent text beyond 280 chars
+                                maxLength={280} // HTML limit
                                 placeholder="What do you want to talk about?"
                                 className="w-full h-32 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-
+                            <p className="text-gray-500 text-sm mt-1">{newPostContent.length}/280</p>
                             {postError && <p className="text-red-500 text-sm mt-2">{postError}</p>}
 
                             {/* Action Buttons */}
@@ -214,23 +210,25 @@ export default function FeedPage() {
                     <p className="text-red-500">{error}</p>
                 ) : (
                     feeds.map((feed) => (
-                        <div
-                            key={feed.id}
-                            className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
-                                <div>
-                                    <h3 className="font-semibold">{feed.name}</h3>
-                                    <p className="text-sm text-gray-600">{feed.title}</p>
+                        <Link to={`/feed/${feed.id}`} key={feed.id}>
+                            <div
+                                key={feed.id}
+                                className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
+                                    <div>
+                                        <h3 className="font-semibold">{feed.name}</h3>
+                                        <p className="text-sm text-gray-600">{feed.title}</p>
+                                    </div>
+                                </div>
+                                <p className="text-gray-800 break-words break-before-right">{feed.content}</p>
+                                <div className="flex justify-between items-center text-gray-600 text-sm">
+                                    <span>{feed.time} ago</span>
+                                    <span>{feed.likes} likes • {feed.comments} comments</span>
                                 </div>
                             </div>
-                            <p className="text-gray-800">{feed.content}</p>
-                            <div className="flex justify-between items-center text-gray-600 text-sm">
-                                <span>{feed.time} ago</span>
-                                <span>{feed.likes} likes • {feed.comments} comments</span>
-                            </div>
-                        </div>
+                        </Link>
                     ))
                 )}
             </main>

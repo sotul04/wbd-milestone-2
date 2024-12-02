@@ -22,8 +22,6 @@ export const FeedService = {
                 id: createdFeed.id.toString(),
                 user_id: createdFeed.user_id.toString(),
             };
-    
-            console.log(result);
         } catch (error) {
             console.error(error);
             throw error;
@@ -36,7 +34,14 @@ export const FeedService = {
                 where: {id: param.id}
             })
 
-            return readFeed.id;
+            // Convert BigInt fields to strings
+            const result = {
+                ...readFeed,
+                id: readFeed.id.toString(),
+                user_id: readFeed.user_id.toString(),
+            };
+
+            return result;
         } catch (error){
             console.error(error);
             throw error;
@@ -82,7 +87,7 @@ export const FeedService = {
                     user_id: param.user_id,
                 },
                 orderBy: {
-                    id: "asc",
+                    id: "desc",
                 },
                 cursor: param.cursor
                     ? { id: param.cursor }

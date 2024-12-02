@@ -8,7 +8,7 @@ import { FeedService } from "../services/FeedService";
 export const FeedController = {
     createFeed: async (req: Request, res: Response) => {
         const {content, user_id } = req.body;
-        //console.log(req.body)
+        
         try{
             const message = await FeedService.createFeed({content, user_id})
             res.status(StatusCodes.OK).json(response(true, "Create Feed Success", message));
@@ -20,8 +20,17 @@ export const FeedController = {
     readFeed: async (req: Request, res: Response) => {
         try{
             const { id } = getFeedParams.parse(req.params);
+            console.log("id = ", id)
             const message = await FeedService.readFeed({id});
-            res.status(StatusCodes.OK).json(response(true, "Read Feed Success", message));
+            
+            const feed = {
+                ...message
+            };
+
+            const responsePayload = {
+                feed
+            };
+            res.status(StatusCodes.OK).json(response(true, "Read Feed Success", responsePayload));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
