@@ -41,8 +41,6 @@ export default function FeedPage() {
         setIsLoading(true);
         try {
             const userIds = [auth.userId.toString(), ...friends.map(friend => friend.id.toString())]; // Combine user's ID and friends' IDs
-            console.log(friends)
-            console.log("Fetching feeds for users:", userIds);
     
             const response = await feedAPI.getUserFeeds({
                 userIds, // Pass the list of user IDs
@@ -121,7 +119,7 @@ export default function FeedPage() {
 
                 // Then fetch feeds based on the updated friends list
                 const userIds = [auth.userId.toString(), ...response.body.map(friend => friend.id.toString())];
-                console.log("Fetching feeds for users:", userIds);
+
 
                 const feedsResponse = await feedAPI.getUserFeeds({
                     userIds,
