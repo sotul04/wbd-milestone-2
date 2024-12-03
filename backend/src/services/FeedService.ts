@@ -60,7 +60,14 @@ export const FeedService = {
                 }
             })
 
-            return updatedFeed.id;
+            // Convert BigInt fields to strings
+            const result = {
+                ...updatedFeed,
+                id: updatedFeed.id.toString(),
+                user_id: updatedFeed.user_id.toString(),
+            };
+
+            return result;
         } catch (error){
             console.error(error);
             throw error;

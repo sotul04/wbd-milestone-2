@@ -289,7 +289,7 @@ export type UpdateFeedPayload = {
     content: string;
 }
 
-export type UpdateFeedResponse = CreateFeedResponse
+export type UpdateFeedResponse = readFeedResponse
 
 export type DeleteFeedPayload = {
     id: number;

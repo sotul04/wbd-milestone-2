@@ -82,21 +82,6 @@ export default function FeedPage() {
         }
     }
 
-    async function deleteFeed(id: number) {
-        if (!window.confirm("Are you sure you want to delete this feed?")) return;
-    
-        try {
-            setIsLoading(true); // Optional loading state
-            await feedAPI.deleteFeed({id}); // Call delete API
-            setFeeds(feeds.filter((feed) => feed.id !== id)); // Update the state to remove the feed
-        } catch (error) {
-            console.error("Error deleting feed:", error);
-            alert("Failed to delete feed. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
     function getTimeDifference(date: Date): string {
         const now = new Date();
         const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);

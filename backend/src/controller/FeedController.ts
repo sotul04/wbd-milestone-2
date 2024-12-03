@@ -39,7 +39,15 @@ export const FeedController = {
         const { id, created_at, updated_at, content, user_id } = req.body;
         try{
             const message = await FeedService.updateFeed({id, created_at, updated_at, content, user_id})
-            res.status(StatusCodes.OK).json(response(true, "Update Feed Success", message));
+
+            const feed = {
+                ...message
+            };
+
+            const responsePayload = {
+                feed
+            };
+            res.status(StatusCodes.OK).json(response(true, "Update Feed Success", responsePayload));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
