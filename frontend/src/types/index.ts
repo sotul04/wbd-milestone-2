@@ -253,7 +253,7 @@ export type GetFeed = {
 }
 
 export type GetUserFeedsPayload = {
-    userId: number;
+    userIds: string[];
     cursor?: number;
     limit: number;
 }
@@ -296,3 +296,11 @@ export type DeleteFeedPayload = {
 }
 
 export type DeleteFeedResponse = CreateFeedResponse
+
+export type UserProps = {
+    id: string;
+    username: string;
+    email: string;
+    full_name: string | null;
+    profile_photo_path: string;
+}

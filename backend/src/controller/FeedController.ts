@@ -66,13 +66,17 @@ export const FeedController = {
     },
 
     getFeeds: async (req: Request, res: Response) => {
-        const user_id = req.headers["x-user-id"]; // Retrieve user_id from headers
+        const user_ids_header = req.headers["x-user-id"];
+        console.log(user_ids_header)
+        const user_ids = typeof user_ids_header === "string" ? JSON.parse(user_ids_header) : [];
+
+        console.log("Parsed user IDs: ", user_ids);
 
         try {
             const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
             const limit = req.query.limit ? Number(req.query.limit) : 10;
 
-            const feeds = await FeedService.getFeedsByUserID({ user_id, cursor, limit });
+            const feeds = await FeedService.getFeedsByUserID({ user_ids, cursor, limit });
 
             const formattedFeeds = feeds.map((feed: any) => ({
                 ...feed,

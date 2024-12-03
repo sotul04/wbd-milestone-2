@@ -43,7 +43,7 @@ export type FeedDelete = {
 }
 
 export type FeedsByUserId = {
-    user_id: string;
+    user_ids: string[];
     cursor?: number;
     limit: number;
 }

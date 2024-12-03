@@ -1,16 +1,9 @@
 import { ConnectionApi } from "@/api/connection-api";
 import { FriendsCard } from "@/components/user/friends";
 import { UserAside } from "@/components/user/user-aside";
+import { UserProps } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-
-type UserProps = {
-    id: string;
-    username: string;
-    email: string;
-    full_name: string | null;
-    profile_photo_path: string;
-}
 
 export default function Connections() {
     const { userId } = useParams();

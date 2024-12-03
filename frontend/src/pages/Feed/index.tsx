@@ -1,12 +1,15 @@
+import { ConnectionApi } from "@/api/connection-api";
 import { feedAPI } from "@/api/feed-api";
 import { ProfileApi } from "@/api/profile-api";
 import { useAuth } from "@/context/AuthContext";
-import { Feed, UserProfile } from "@/types";
+import { Feed, UserProfile, UserProps } from "@/types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function FeedPage() {
     const auth = useAuth();
+
+    const [friends, setFriends] = useState<UserProps[]>([]);
 
     const [profile, setProfile] = useState<UserProfile>({
         name: "",
@@ -37,9 +40,16 @@ export default function FeedPage() {
     async function fetchFeeds() {
         setIsLoading(true);
         try {
-            //console.log("auth.userId = ", auth.userId);
-            const response = await feedAPI.getUserFeeds({ userId: auth.userId, cursor: undefined, limit: 10 });
-            
+            const userIds = [auth.userId.toString(), ...friends.map(friend => friend.id.toString())]; // Combine user's ID and friends' IDs
+            console.log(friends)
+            console.log("Fetching feeds for users:", userIds);
+    
+            const response = await feedAPI.getUserFeeds({
+                userIds, // Pass the list of user IDs
+                cursor: undefined,
+                limit: 10,
+            });
+    
             if (response?.body?.formattedFeeds?.length > 0) {
                 setFeeds(response.body.formattedFeeds);
             } else {
@@ -99,12 +109,51 @@ export default function FeedPage() {
             return `${days} day${days === 1 ? '' : 's'} ago`;
         }
     }
-    
-    
+
     useEffect(() => {
-        getProfile();
-        fetchFeeds();
+        async function initializeData() {
+            try {
+                // Fetch friends first
+                const response = await ConnectionApi.connectionList({
+                    userId: auth.userId.toString()!,
+                });
+                setFriends(response.body);
+
+                // Then fetch feeds based on the updated friends list
+                const userIds = [auth.userId.toString(), ...response.body.map(friend => friend.id.toString())];
+                console.log("Fetching feeds for users:", userIds);
+
+                const feedsResponse = await feedAPI.getUserFeeds({
+                    userIds,
+                    cursor: undefined,
+                    limit: 10,
+                });
+
+                if (feedsResponse?.body?.formattedFeeds?.length > 0) {
+                    setFeeds(feedsResponse.body.formattedFeeds);
+                } else {
+                    setFeeds([]);
+                }
+
+                getProfile()
+
+                setError(null);
+            } catch (error) {
+                console.error("Error initializing data:", error);
+                setFriends([]);
+                setFeeds([]);
+                setError("Failed to load data. Please try again.");
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        if (auth.userId) {
+            setIsLoading(true);
+            initializeData();
+        }
     }, [auth.userId]);
+
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">

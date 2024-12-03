@@ -2,8 +2,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { feedAPI } from "@/api/feed-api";
 import { Feed } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 export default function FeedDetailPage() {
+    const auth = useAuth();
     const { postId } = useParams();
     const id = Number(postId);
     const [feed, setFeed] = useState<Feed | null>(null);
@@ -118,30 +120,31 @@ export default function FeedDetailPage() {
                         <span>{feed.likes ?? 0} likes • {feed.comments ?? 0} comments</span>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-4 mt-4">
-                        {/* Edit Button */}
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                        >
-                            Edit
-                        </button>
+                    {feed.user_id === auth.userId.toString() && (
+                        <div className="flex gap-4 mt-4">
+                            {/* Edit Button */}
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                            >
+                                Edit
+                            </button>
 
-                        {/* Delete Button */}
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                deleteFeed(feed.id);
-                            }}
-                            disabled={isLoading}
-                            className={`text-red-500 hover:text-red-700 text-sm font-medium ${
-                                isLoading ? "cursor-not-allowed opacity-50" : ""
-                            }`}
-                        >
-                            {isLoading ? "Deleting..." : "Delete"}
-                        </button>
-                    </div>
+                            {/* Delete Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    deleteFeed(feed.id);
+                                }}
+                                disabled={isLoading}
+                                className={`text-red-500 hover:text-red-700 text-sm font-medium ${
+                                    isLoading ? "cursor-not-allowed opacity-50" : ""
+                                }`}
+                            >
+                                {isLoading ? "Deleting..." : "Delete"}
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

@@ -84,10 +84,13 @@ export const FeedService = {
     },
 
     getFeedsByUserID: async (param: FeedModel.FeedsByUserId) => {
+        const userIds = param.user_ids.map((id) => BigInt(id))
         try {
             const feeds = await prisma.feed.findMany({
                 where: {
-                    user_id: param.user_id,
+                    user_id: {
+                        in: userIds
+                    },
                 },
                 orderBy: {
                     id: "desc",

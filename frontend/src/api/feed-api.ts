@@ -10,8 +10,9 @@ export class feedAPI extends BaseApi{
                 : `?limit=${payload.limit}`;
 
             const response = await this.client.get<GetUserFeedsResponse>(`/feed${query}`, {
-                headers: { "X-User-ID": payload.userId },
+                headers: { "X-User-ID": JSON.stringify(payload.userIds)},
             });
+
             return response.data;
         } catch (error) {
             throw (error as any)?.response?.data;
