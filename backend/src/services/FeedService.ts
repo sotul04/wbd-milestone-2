@@ -49,11 +49,11 @@ export const FeedService = {
         try{
             const cleanFeed = {...param};
             cleanFeed.content = xss(cleanFeed.content)
-            cleanFeed.updated_at = new Date()
             const updatedFeed = await prisma.Feed.update({
                 where: {id: param.id},
                 data: {
-                    ...cleanFeed
+                    ...cleanFeed,
+                    updated_at: new Date()
                 }
             })
 

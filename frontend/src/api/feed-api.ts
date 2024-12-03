@@ -8,8 +8,10 @@ export class feedAPI extends BaseApi{
             const query = payload.cursor 
                 ? `?cursor=${payload.cursor}&limit=${payload.limit}` 
                 : `?limit=${payload.limit}`;
-            
-            const response = await this.client.get<GetUserFeedsResponse>(`/feed${query}`);
+
+            const response = await this.client.get<GetUserFeedsResponse>(`/feed${query}`, {
+                headers: { "X-User-ID": payload.userId },
+            });
             return response.data;
         } catch (error) {
             throw (error as any)?.response?.data;
@@ -19,7 +21,9 @@ export class feedAPI extends BaseApi{
 
     public static async createFeed(payload: CreateFeedPayload){
         try{
-            const response = await this.client.post<CreateFeedResponse>(`/feed`, payload);
+            const response = await this.client.post<CreateFeedResponse>(`/feed`, { content: payload.content }, {
+                headers: { "X-User-ID": payload.user_id }
+            });
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;
@@ -37,7 +41,9 @@ export class feedAPI extends BaseApi{
 
     public static async updateFeed(payload: UpdateFeedPayload){
         try{
-            const response = await this.client.put<UpdateFeedResponse>(`feed/${payload.id}`, payload);
+            const response = await this.client.put<UpdateFeedResponse>(`feed/${payload.id}`, { content: payload.content }, {
+                headers: { "X-ID": payload.id }
+            });
             return response.data;
         } catch(error){
             throw (error as any)?.response?.data;

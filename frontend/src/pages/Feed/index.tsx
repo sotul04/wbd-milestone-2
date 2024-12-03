@@ -37,6 +37,7 @@ export default function FeedPage() {
     async function fetchFeeds() {
         setIsLoading(true);
         try {
+            //console.log("auth.userId = ", auth.userId);
             const response = await feedAPI.getUserFeeds({ userId: auth.userId, cursor: undefined, limit: 10 });
             
             if (response?.body?.formattedFeeds?.length > 0) {
@@ -233,8 +234,8 @@ export default function FeedPage() {
                                 <div className="flex items-center space-x-2">
                                     <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
                                     <div>
-                                        <h3 className="font-semibold">{feed.name}</h3>
-                                        <p className="text-sm text-gray-600">{feed.title}</p>
+                                        <h3 className="font-semibold">{feed.title}</h3>
+                                        <p className="text-sm text-gray-600">{feed.user_id}</p>
                                     </div>
                                 </div>
 

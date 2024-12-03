@@ -7,7 +7,8 @@ import { FeedService } from "../services/FeedService";
 
 export const FeedController = {
     createFeed: async (req: Request, res: Response) => {
-        const {content, user_id } = req.body;
+        const user_id = req.headers["x-user-id"];
+        const { content } = req.body;
         
         try{
             const message = await FeedService.createFeed({content, user_id})
@@ -36,9 +37,10 @@ export const FeedController = {
     },
 
     updateFeed: async (req: Request, res: Response) => {
-        const { id, created_at, updated_at, content, user_id } = req.body;
+        const id = req.headers["x-id"];
+        const { content } = req.body;
         try{
-            const message = await FeedService.updateFeed({id, created_at, updated_at, content, user_id})
+            const message = await FeedService.updateFeed({id, content})
 
             const feed = {
                 ...message
@@ -64,7 +66,8 @@ export const FeedController = {
     },
 
     getFeeds: async (req: Request, res: Response) => {
-        const { user_id } = req.body;
+        const user_id = req.headers["x-user-id"]; // Retrieve user_id from headers
+
         try {
             const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
             const limit = req.query.limit ? Number(req.query.limit) : 10;

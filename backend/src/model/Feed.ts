@@ -14,8 +14,7 @@ export type FeedCreate = {
 }
 
 export const FeedCreateSchema = z.object({
-    content: z.string().min(1).max(280),
-    user_id: z.string()
+    content: z.string().min(1).max(280)
 })
 
 export type FeedRead = {
@@ -28,10 +27,7 @@ export const FeedReadSchema = z.object({
 
 export type FeedUpdate = {
     id: string;
-    created_at: Date;
-    updated_at: Date;
     content: string;
-    user_id: string;
 }
 
 export const FeedUpdateSchema = z.object({
