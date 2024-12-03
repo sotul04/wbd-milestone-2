@@ -6,17 +6,15 @@ import xss from 'xss';
 export const FeedService = {
     createFeed: async (param: FeedModel.FeedCreate) => {
         try {
-            // Sanitize content
             const sanitizedContent = xss(param.content);
-            // Create feed with explicit handling of fields
+
             const createdFeed = await prisma.feed.create({
                 data: {
                     content: sanitizedContent,
-                    user_id: param.user_id // Explicitly use user_id from param
+                    user_id: param.user_id
                 },
             });
 
-            // Convert BigInt fields to strings
             const result = {
                 ...createdFeed,
                 id: createdFeed.id.toString(),
@@ -34,7 +32,6 @@ export const FeedService = {
                 where: {id: param.id}
             })
 
-            // Convert BigInt fields to strings
             const result = {
                 ...readFeed,
                 id: readFeed.id.toString(),
@@ -60,7 +57,6 @@ export const FeedService = {
                 }
             })
 
-            // Convert BigInt fields to strings
             const result = {
                 ...updatedFeed,
                 id: updatedFeed.id.toString(),

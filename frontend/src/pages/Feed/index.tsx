@@ -19,16 +19,16 @@ export default function FeedPage() {
     const [error, setError] = useState<string | null>(null);
 
     const [isModalOpen, setModalOpen] = useState(false);
-    const [newPostContent, setNewPostContent] = useState(""); // Store the content of the new post
-    const [postError, setPostError] = useState<string | null>(null); // Error state for the post submission
+    const [newPostContent, setNewPostContent] = useState("");
+    const [postError, setPostError] = useState<string | null>(null);
 
     async function getProfile() {
         try {
-            if (!auth.userId) return; // Ensure userId is available
+            if (!auth.userId) return;
             const response = await ProfileApi.getProfile({
-                userId: auth.userId.toString(), // Use auth.userId instead of params userId if relevant
+                userId: auth.userId.toString()
             });
-            setProfile(response.body); // Update state with API response
+            setProfile(response.body);
         } catch (error) {
             console.error("Error fetching profile:", error);
         }
@@ -62,18 +62,17 @@ export default function FeedPage() {
         }
     
         try {
-            setIsLoading(true); // Optional loading state
-            setPostError(null); // Clear previous errors
+            setIsLoading(true); 
+            setPostError(null); 
 
-            // Call the createFeed API
             await feedAPI.createFeed({
                 user_id: auth.userId.toString(),
                 content: newPostContent.trim(),
             });
     
-            setNewPostContent(""); // Clear input after posting
-            await fetchFeeds(); // Refresh feed list
-            setModalOpen(false); // Close modal
+            setNewPostContent(""); 
+            await fetchFeeds();
+            setModalOpen(false); 
         } catch (error) {
             console.error("Error creating post:", error);
             setPostError("Failed to create post. Please try again.");
@@ -104,7 +103,7 @@ export default function FeedPage() {
     useEffect(() => {
         getProfile();
         fetchFeeds();
-    }, [auth.userId]); // Trigger only when auth.userId changes
+    }, [auth.userId]);
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -195,8 +194,8 @@ export default function FeedPage() {
                             {/* Input Section */}
                             <textarea
                                 value={newPostContent}
-                                onChange={(e) => setNewPostContent(e.target.value.slice(0, 280))} // Prevent text beyond 280 chars
-                                maxLength={280} // HTML limit
+                                onChange={(e) => setNewPostContent(e.target.value.slice(0, 280))}
+                                maxLength={280}
                                 placeholder="What do you want to talk about?"
                                 className="w-full h-32 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />

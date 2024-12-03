@@ -67,19 +67,18 @@ export const FeedController = {
         const { user_id } = req.body;
         try {
             const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
-            const limit = req.query.limit ? Number(req.query.limit) : 10; // Default limit is 10
+            const limit = req.query.limit ? Number(req.query.limit) : 10;
 
             const feeds = await FeedService.getFeedsByUserID({ user_id, cursor, limit });
 
             const formattedFeeds = feeds.map((feed: any) => ({
                 ...feed,
-                id: feed.id.toString(), // Convert id to string
-                user_id: feed.user_id.toString(), // Convert user_id to string
-                created_at: feed.created_at.toISOString(), // Format date if needed
-                updated_at: feed.updated_at.toISOString(), // Format date if needed
+                id: feed.id.toString(),
+                user_id: feed.user_id.toString(), 
+                created_at: feed.created_at.toISOString(), 
+                updated_at: feed.updated_at.toISOString(),
             }));
 
-            // Return data in expected format
             const responsePayload = {
                 formattedFeeds,
                 cursor

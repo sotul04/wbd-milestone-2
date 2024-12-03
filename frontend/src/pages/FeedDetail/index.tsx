@@ -4,53 +4,53 @@ import { feedAPI } from "@/api/feed-api";
 import { Feed } from "@/types";
 
 export default function FeedDetailPage() {
-    const { postId } = useParams(); // Get the feed ID from the route
+    const { postId } = useParams();
     const id = Number(postId);
     const [feed, setFeed] = useState<Feed | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [content, setContent] = useState<string>(""); // Edit data
-    const [isLoading, setIsLoading] = useState(false); // Loading state for delete
-    const [isEditing, setIsEditing] = useState(false); // Toggle edit mode
-    const navigate = useNavigate(); // To redirect after deletion
+    const [content, setContent] = useState<string>("");
+    const [isLoading, setIsLoading] = useState(false); 
+    const [isEditing, setIsEditing] = useState(false); 
+    const navigate = useNavigate(); 
 
     async function deleteFeed(id: number) {
         if (!window.confirm("Are you sure you want to delete this feed?")) return;
 
         try {
-            setIsLoading(true); // Show loading indicator
-            await feedAPI.deleteFeed({id}); // Call delete API
-            alert("Feed deleted successfully."); // Show success message
-            navigate("/feed"); // Redirect to the main feed page
+            setIsLoading(true); 
+            await feedAPI.deleteFeed({id}); 
+            alert("Feed deleted successfully."); 
+            navigate("/feed"); 
         } catch (error) {
             console.error("Error deleting feed:", error);
             alert("Failed to delete feed. Please try again.");
         } finally {
-            setIsLoading(false); // Remove loading indicator
+            setIsLoading(false);
         }
     }
 
     // Save edited feed
     async function saveFeed() {
         try {
-            setIsLoading(true); // Show loading indicator
-            const response = await feedAPI.updateFeed({ id, content }); // Call update API
-            const refreshedFeed = await feedAPI.readFeed({ id }); // Fetch updated feed
-            setFeed(refreshedFeed.body.feed); // Set the updated feed
-            setContent(response.body.feed.content); // Update the state with new data
-            alert("Feed updated successfully."); // Show success message
-            setIsEditing(false); // Exit edit mode
+            setIsLoading(true);
+            const response = await feedAPI.updateFeed({ id, content });
+            const refreshedFeed = await feedAPI.readFeed({ id });
+            setFeed(refreshedFeed.body.feed);
+            setContent(response.body.feed.content); 
+            alert("Feed updated successfully.");
+            setIsEditing(false);
         } catch (error) {
             console.error("Error updating feed:", error);
             alert("Failed to update feed. Please try again.");
         } finally {
-            setIsLoading(false); // Remove loading indicator
+            setIsLoading(false);
         }
     }
 
     useEffect(() => {
         async function fetchFeedDetail() {
             try {
-                const response = await feedAPI.readFeed({ id }); // Fetch feed by ID
+                const response = await feedAPI.readFeed({ id });
                 setFeed(response.body.feed);
                 setContent(response.body.feed.content);
             } catch (err) {
@@ -67,7 +67,6 @@ export default function FeedDetailPage() {
 
     return (
         <div className="p-4">
-            {/* Conditional rendering for Edit Mode */}
             {isEditing ? (
                 <div>
                     {/* Edit Form */}
@@ -132,7 +131,7 @@ export default function FeedDetailPage() {
                         {/* Delete Button */}
                         <button
                             onClick={(e) => {
-                                e.preventDefault(); // Prevent default navigation
+                                e.preventDefault();
                                 deleteFeed(feed.id);
                             }}
                             disabled={isLoading}
