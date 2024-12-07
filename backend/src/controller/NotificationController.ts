@@ -26,6 +26,8 @@ export const NotificationController = {
                 ...data
             });
 
+            console.log("Subscription added for", data.user_id);
+
             res.status(StatusCodes.OK).json(response(true, "Subscription added"));
         } catch (error) {
             console.error(error);
@@ -73,6 +75,8 @@ export const NotificationController = {
 
             await Promise.all(sendNotifications);
 
+            console.log("Push notification for chats");
+
             res.status(StatusCodes.OK).json(response(true, "Push notification added"));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Failed to add push notification", error));
@@ -119,6 +123,7 @@ export const NotificationController = {
 
             await Promise.all(sendNotifications);
 
+            console.log("Push notification for feed");
             res.status(StatusCodes.OK).json(response(true, "Push notification added"));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Failed to add push notification", error));
