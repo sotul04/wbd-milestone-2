@@ -9,7 +9,7 @@ self.addEventListener("push", (event) => {
         const { title = "Notification", body = "", description = "", icon = "/purry.ico", data: notificationData = {} } = data;
 
         const notificationOptions = {
-            body: `${body}\n${description}`,
+            body: `${body}\n\n${description}`,
             icon,
             tag: notificationData.tag || "unique-tag",
             data: {

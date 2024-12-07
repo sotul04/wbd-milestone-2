@@ -15,7 +15,6 @@ export const PushNotificationProvider: React.FC<{ children: React.ReactNode }> =
     const auth = useAuth();
 
     const subscribeToPushNotifications = async () => {
-        console.log("Public key", import.meta.env.VITE_VAPID_PUBLIC_KEY);
         if ("serviceWorker" in navigator) {
             try {
                 const register = await navigator.serviceWorker.register("/sw.js");
@@ -25,14 +24,12 @@ export const PushNotificationProvider: React.FC<{ children: React.ReactNode }> =
                     applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY,
                 });
 
-
-                const res = await NotifApi.subscribe({
+                await NotifApi.subscribe({
                     user_id: auth.authenticated ? auth.userId : null,
                     endpoint: subscription.endpoint,
                     keys: subscription.toJSON().keys,
                 });
 
-                console.log(res);
             } catch (error) {
                 console.error("Error during subscription:", error);
             }

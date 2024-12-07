@@ -169,6 +169,29 @@ export default function FeedPage() {
                                     </DialogContent>
                                 </Dialog>
                             </div>
+                            <div className="flex justify-between items-center mt-1 text-gray-600 mx-5 mb-4">
+                                <div className="flex items-center space-x-2 text-sm font-medium text-blue-600">
+                                    <img
+                                        src="https://img.icons8.com/color/24/null/image-gallery.png"
+                                        alt="Photo Icon"
+                                    />
+                                    <span>Photo</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm font-medium text-green-600">
+                                    <img
+                                        src="https://img.icons8.com/color/24/null/video.png"
+                                        alt="Video Icon"
+                                    />
+                                    <span>Video</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm font-medium text-orange-600">
+                                    <img
+                                        src="https://img.icons8.com/color/24/null/news.png"
+                                        alt="Write Article Icon"
+                                    />
+                                    <span>Write article</span>
+                                </div>
+                            </div>
                         </Card>
                         { /* Feeds */}
                         {feeds.map((item, index) =>
