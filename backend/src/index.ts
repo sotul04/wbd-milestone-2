@@ -4,14 +4,39 @@ import { Server } from 'socket.io';
 import { createServer } from 'http';
 import { JoinChatData, SendMessageData, SendTyping } from './model/Chat';
 import { ChatService } from './services/ChatService';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
 
 dotenv.config();
+
+const PORT = process.env.PORT ?? 3000;
+
+const swaggerOptions = {
+    definition:{
+        openapi: "3.0.0",
+        info: {
+            title: 'LinkPurry API Documentation',
+            version: "1.0.0",
+            description: 'API Documentation for LinkPurry',
+        },
+        servers: [
+            {
+                url: `http://localhost:${PORT}`,
+                description: "Development server"
+            }
+        ]
+    },
+    apis: ['src/routes/index.ts']
+}
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Set up Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (req, res) => {
     res.send('Hello, TypeScript Node Express!');
 });
-
-const PORT = process.env.PORT ?? 3000;
 
 const httpServer = createServer(app);
 

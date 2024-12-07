@@ -23,7 +23,7 @@ export const UserController = {
                 name: user.username
             });
             res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000, sameSite: true });
-            res.status(200).json(response(true, 'Login successfull', { token: token }));
+            res.status(200).json(response(true, 'Login successful', { token: token }));
         } catch (error) {
             res.status(500).json(response(false, 'Internal server error', error));
         }
@@ -44,7 +44,7 @@ export const UserController = {
                 name: user.username
             });
             res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000, sameSite: true });
-            res.status(200).json(response(true, 'Login successfull', { token: token }));
+            res.status(200).json(response(true, 'Register successful', { token: token }));
         } catch (error) {
             console.error('Error creating user', error);
             if (error instanceof Error) {
@@ -67,7 +67,7 @@ export const UserController = {
     verify: async (req: Request, res: Response) => {
         try {
             if (!req.user) {
-                res.status(200).json(response(false, 'Unauthenticated'));
+                res.status(401).json(response(false, 'Unauthenticated'));
                 return;
             }
             const userData = await UserService.userProfile({ id: BigInt(req.user.userId) });
