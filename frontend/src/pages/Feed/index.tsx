@@ -83,7 +83,7 @@ export default function FeedPage() {
             });
             toast({
                 title: "Success",
-                description: "Feed succefully created"
+                description: "Feed successfully created"
             });
         } catch (error) {
             toast({

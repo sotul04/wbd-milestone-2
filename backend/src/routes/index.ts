@@ -1757,8 +1757,198 @@ router.put('/feed/:id', authJWT, uploads.none(), validateRequestParams(FeedUpdat
 router.delete('/feed/:id', authJWT, validateRequestParams(FeedDeleteParams), FeedController.deleteFeed);
 
 // push notification
+/**
+ * @swagger
+ * /notifications/subscribe:
+ *   post:
+ *     summary: Subscribe to notifications
+ *     description: Subscribes a user to push notifications by adding their subscription details.
+ *     tags:
+ *       - Notifications
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: bigint
+ *                 description: The ID of the user subscribing to notifications.
+ *                 example: 123456789
+ *               endpoint:
+ *                 type: string
+ *                 description: The endpoint for the push subscription.
+ *                 example: "https://fcm.googleapis.com/fcm/send/abc123..."
+ *               keys:
+ *                 type: object
+ *                 properties:
+ *                   auth:
+ *                     type: string
+ *                     description: Auth key for the subscription.
+ *                     example: "abcd1234..."
+ *                   p256dh:
+ *                     type: string
+ *                     description: Public key for the subscription.
+ *                     example: "abcd5678..."
+ *     responses:
+ *       200:
+ *         description: Subscription added successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Subscription added.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *               example:
+ *                 success: false
+ *                 message: "Subscription failed"
+ *                 error: {}
+ */   
 router.post('/subscribe', uploads.none(), validateRequestBody(PushSubsSchema), NotificationController.subscribe);
+
+/**
+ * @swagger
+ * /notifications/chat:
+ *   post:
+ *     summary: Push chat notification
+ *     description: Sends a push notification for a new chat message.
+ *     tags:
+ *       - Notifications
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the user sending the message.
+ *                 example: "John Doe"
+ *               to_id:
+ *                 type: bigint
+ *                 description: The ID of the user being sent the message
+ *                 example: 123
+ *               room_id:
+ *                 type: bigint
+ *                 description: The ID of the chat room.
+ *                 example: 12345
+ *               message:
+ *                 type: string
+ *                 description: The message content.
+ *                 example: "Hello! How are you?"
+ *     responses:
+ *       200:
+ *         description: Push notification added successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Push notification added.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *               example:
+ *                 success: false
+ *                 message: "Failed to add push notification"
+ *                 error: {}
+ */
 router.post('/push/chat', uploads.none(), validateRequestBody(PushChatNotificationSchema), NotificationController.pushChat);
+
+/**
+ * @swagger
+ * /notifications/feed:
+ *   post:
+ *     summary: Push feed notification
+ *     description: Sends a push notification for a new feed post.
+ *     tags:
+ *       - Notifications
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the user who created the feed post.
+ *                 example: "Jane Doe"
+ *               user_id:
+ *                 type: bigint
+ *                 description: The ID of the author of the feed
+ *                 example: 123
+ *               content:
+ *                 type: string
+ *                 description: The content of the feed post.
+ *                 example: "Check out my new blog post!"
+ *     responses:
+ *       200:
+ *         description: Push notification added successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Push notification added.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *               example:
+ *                 success: false
+ *                 message: "Failed to add push notification"
+ *                 error: {}
+ */
 router.post('/push/feed', uploads.none(), validateRequestBody(PushFeedNotificationSchema), NotificationController.pushFeed);
 
 export default router;
