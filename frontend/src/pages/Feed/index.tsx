@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { buttonStyles } from "@/components/button";
 import { useToast } from "@/hooks/use-toast";
+import { NotifApi } from "@/api/notif-api";
 
 export default function FeedPage() {
 
@@ -74,6 +75,11 @@ export default function FeedPage() {
             setFeeds(prev => {
                 const newFeeds = [newFeed, ...prev];
                 return newFeeds;
+            });
+            NotifApi.pushFeed({
+                name: auth.name.length > 0 ? auth.name : "Unknown",
+                user_id: auth.userId.toString(),
+                content: content
             });
             toast({
                 title: "Success",

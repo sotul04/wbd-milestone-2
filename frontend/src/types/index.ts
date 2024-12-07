@@ -322,3 +322,32 @@ export type DeleteFeedPayload = {
 export type DeleteFeedResponse = Response & {
     body: null;
 };
+
+export type PushSubsPayload = {
+    user_id: number | string | null;
+    endpoint: string;
+    keys: any
+}
+
+export type PushSubsResponse = Response & {
+    body: null;
+}
+
+export type PushChatNotificationPayload = {
+    name: string;
+    to_id: string;
+    room_id: string;
+    message: string;
+}
+
+export type PushChatNotificationResponse = Response & {
+    body: null
+}
+
+export type PushFeedNotificationPayload = {
+    name: string;
+    user_id: string;
+    content: string;
+}
+
+export type PushFeedNotificationResponse = PushChatNotificationResponse;

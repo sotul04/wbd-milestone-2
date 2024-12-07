@@ -23,17 +23,17 @@ export default function HomePage() {
                         <p className="text-lg text-[#404040] font-semibold">Explore feeds and updates from your network!</p>
                         <ul className="space-y-2 text-sm my-4">
                             <li>
-                                <Link to={`connections/${auth.userId}`} className={`${buttonStyles({variant: "link", size: "xl"})} px-0 font-normal text-sm`}>
+                                <Link to={`connections/${auth.userId}`} className={`${buttonStyles({ variant: "link", size: "xl" })} px-0 font-normal text-sm`}>
                                     Your Connections
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/requests" className={`${buttonStyles({variant: "link", size: "xl"})} px-0 font-normal text-sm`}>
+                                <Link to="/requests" className={`${buttonStyles({ variant: "link", size: "xl" })} px-0 font-normal text-sm`}>
                                     Connection Requests
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/chat" className={`${buttonStyles({variant: "link", size: "xl"})} px-0 font-normal text-sm`}>
+                                <Link to="/chat" className={`${buttonStyles({ variant: "link", size: "xl" })} px-0 font-normal text-sm`}>
                                     Messages
                                 </Link>
                             </li>

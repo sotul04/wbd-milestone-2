@@ -21,6 +21,7 @@ import Header from "@/components/nav/Header";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SocketProvider } from "@/context/ChatContext";
+import { PushNotificationProvider } from "@/context/NotificationContext";
 
 const queryClient = new QueryClient();
 
@@ -29,11 +30,14 @@ const AuthProviderLayout = () => {
     const hideHeaderRoutes = ["/unauthorized", "/login", "/register"];
     const hideHeader = hideHeaderRoutes.includes(location.pathname);
 
+
     return <QueryClientProvider client={queryClient}>
         <SocketProvider>
             <AuthProvider>
-                {!hideHeader && <Header />}
-                <Outlet />
+                <PushNotificationProvider>
+                    {!hideHeader && <Header />}
+                    <Outlet />
+                </PushNotificationProvider>
             </AuthProvider>
         </SocketProvider>
     </QueryClientProvider>

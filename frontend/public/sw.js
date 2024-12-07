@@ -6,14 +6,15 @@ self.addEventListener("push", (event) => {
 
     try {
         const data = event.data.json();
-        const { title = "Notification", body = "", icon = "/purry.ico", data: notificationData = {} } = data;
+        const { title = "Notification", body = "", description = "", icon = "/purry.ico", data: notificationData = {} } = data;
 
         const notificationOptions = {
-            body,
+            body: `${body}\n${description}`,
             icon,
             tag: notificationData.tag || "unique-tag",
             data: {
                 url: notificationData.url || "/",
+                description
             },
         };
 

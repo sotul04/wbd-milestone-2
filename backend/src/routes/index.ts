@@ -13,6 +13,8 @@ import { ChatLoadParams, ChatLoadQuery, RoomChatSearchParams } from "../model/Ch
 import { ChatController } from "../controller/ChatController";
 import { FeedController } from "../controller/FeedController";
 import { FeedCreateSchema, FeedDeleteParams, FeedReadParams, FeedUpdateParams, FeedUpdateSchema, GetFeedsQuery } from "../model/Feed";
+import { PushChatNotificationSchema, PushFeedNotificationSchema, PushSubsSchema } from "../model/Notification";
+import { NotificationController } from "../controller/NotificationController";
 
 const uploads = multer();
 
@@ -1753,5 +1755,10 @@ router.put('/feed/:id', authJWT, uploads.none(), validateRequestParams(FeedUpdat
  *                 error: {}
  */
 router.delete('/feed/:id', authJWT, validateRequestParams(FeedDeleteParams), FeedController.deleteFeed);
+
+// push notification
+router.post('/subscribe', uploads.none(), validateRequestBody(PushSubsSchema), NotificationController.subscribe);
+router.post('/push/chat', uploads.none(), validateRequestBody(PushChatNotificationSchema), NotificationController.pushChat);
+router.post('/push/feed', uploads.none(), validateRequestBody(PushFeedNotificationSchema), NotificationController.pushFeed);
 
 export default router;

@@ -8,6 +8,7 @@ import { useSocket } from "@/context/ChatContext";
 import { Card } from "@/components/ui/card";
 import { ChevronLeftIcon, SendHorizonalIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NotifApi } from "@/api/notif-api";
 
 interface UserProps {
     first_user_id: string;
@@ -141,6 +142,12 @@ export default function UserChat() {
             socket?.emit("send_message", message);
             setAddedMessages(prev => [message, ...prev]);
             setNewMessage("");
+            NotifApi.pushChat({
+                name: auth.name.length > 0 ? auth.name : "Unknown",
+                to_id: message.to_id,
+                room_id: roomId,
+                message: message.message
+            })
         }
     };
 
