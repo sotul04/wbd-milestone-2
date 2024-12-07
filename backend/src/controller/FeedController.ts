@@ -2,95 +2,107 @@ import { Request, Response } from "express";
 import { response } from '../utils/response';
 
 import { StatusCodes } from 'http-status-codes';
-import { getFeedParams } from "../model/Feed";
+import { FeedCreateSchema, FeedDeleteParams, FeedReadParams, FeedUpdateParams, FeedUpdateSchema, GetFeedsQuery } from "../model/Feed";
 import { FeedService } from "../services/FeedService";
 
 export const FeedController = {
     createFeed: async (req: Request, res: Response) => {
-        const user_id = req.headers["x-user-id"];
-        const { content } = req.body;
-        
-        try{
-            const message = await FeedService.createFeed({content, user_id})
-            res.status(StatusCodes.OK).json(response(true, "Create Feed Success", message));
+        try {
+            const user_id = req.user!.userId;
+            const { content } = FeedCreateSchema.parse(req.body);
+            const feed = await FeedService.createFeed({ content, user_id: BigInt(user_id) });
+            res.status(StatusCodes.OK).json(response(true, "Successfully created feed.", feed));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
     },
 
     readFeed: async (req: Request, res: Response) => {
-        try{
-            const { id } = getFeedParams.parse(req.params);
-            const message = await FeedService.readFeed({id});
-            
-            const feed = {
-                ...message
-            };
+        try {
+            const { id } = FeedReadParams.parse(req.params);
+            const message = await FeedService.readFeed({ id });
 
-            const responsePayload = {
-                feed
-            };
-            res.status(StatusCodes.OK).json(response(true, "Read Feed Success", responsePayload));
+            if (!message) {
+                res.status(StatusCodes.NOT_FOUND).json(response(false, "Not Found", null));
+                return;
+            }
+
+            res.status(StatusCodes.OK).json(response(true, "Successfully retrieved the Feed", message));
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
     },
 
     updateFeed: async (req: Request, res: Response) => {
-        const id = req.headers["x-id"];
-        const { content } = req.body;
-        try{
-            const message = await FeedService.updateFeed({id, content})
-
-            const feed = {
-                ...message
-            };
-
-            const responsePayload = {
-                feed
-            };
-            res.status(StatusCodes.OK).json(response(true, "Update Feed Success", responsePayload));
+        const userId = req.user!.userId;
+        const { id } = FeedUpdateParams.parse(req.params);
+        const { content } = FeedUpdateSchema.parse(req.body);
+        try {
+            const updated = await FeedService.updateFeed({ id, userId: BigInt(userId), content });
+            res.status(StatusCodes.OK).json(response(true, "Update Feed Success", updated));
         } catch (error) {
+            if (error instanceof Error) {
+                if (error.message === 'Not Found') {
+                    res.status(StatusCodes.NOT_FOUND).json(response(false, "Feed is not found", error));
+                    return;
+                }
+                if (error.message === 'Unauthorized') {
+                    res.status(StatusCodes.UNAUTHORIZED).json(response(false, "Unauthorized", error));
+                    return;
+                }
+            }
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
     },
 
     deleteFeed: async (req: Request, res: Response) => {
-        try{
-            const { id } = getFeedParams.parse(req.params);
-            const message = await FeedService.deleteFeed({id})
-            res.status(StatusCodes.OK).json(response(true, "Delete Feed Success", Number(message)));
+        try {
+            const userId = req.user!.userId;
+            const { id } = FeedDeleteParams.parse(req.params);
+            await FeedService.deleteFeed({ id, userId: BigInt(userId) });
+            res.status(StatusCodes.OK).json(response(true, "Successfully deleted the feed"));
         } catch (error) {
+            if (error instanceof Error) {
+                if (error.message === 'Not Found') {
+                    res.status(StatusCodes.NOT_FOUND).json(response(false, "Feed is not found", error));
+                    return;
+                }
+                if (error.message === 'Unauthorized') {
+                    res.status(StatusCodes.UNAUTHORIZED).json(response(false, "Unauthorized", error));
+                    return;
+                }
+            }
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
     },
 
     getFeeds: async (req: Request, res: Response) => {
-        const user_ids_header = req.headers["x-user-id"];
-        const user_ids = typeof user_ids_header === "string" ? JSON.parse(user_ids_header) : [];
-
+        // const user_ids_header = req.headers["x-user-id"];
+        // const user_ids = typeof user_ids_header === "string" ? JSON.parse(user_ids_header) : [];
         try {
-            const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
-            const limit = req.query.limit ? Number(req.query.limit) : 10;
+            // const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
+            // const limit = req.query.limit ? Number(req.query.limit) : 10;
 
-            const feeds = await FeedService.getFeedsByUserID({ user_ids, cursor, limit });
+            // const feeds = await FeedService.getFeedsByUserID({ user_ids, cursor, limit });
 
-            const formattedFeeds = feeds.map((feed: any) => ({
-                ...feed,
-                id: feed.id.toString(),
-                user_id: feed.user_id.toString(), 
-                created_at: feed.created_at.toISOString(), 
-                updated_at: feed.updated_at.toISOString(),
-            }));
+            // const formattedFeeds = feeds.map((feed: any) => ({
+            //     ...feed,
+            //     id: feed.id.toString(),
+            //     user_id: feed.user_id.toString(),
+            //     created_at: feed.created_at.toISOString(),
+            //     updated_at: feed.updated_at.toISOString(),
+            // }));
 
-            const responsePayload = {
-                formattedFeeds,
-                cursor
-            };
-            
-            res.status(StatusCodes.OK).json(response(true, "Get Feeds Success", responsePayload));
+            // const responsePayload = {
+            //     formattedFeeds,
+            //     cursor
+            // };
+
+            const userId = req.user!.userId;
+            const { limit, cursor } = GetFeedsQuery.parse(req.query);
+            const feeds = await FeedService.getFeeds({ userId: BigInt(userId), cursor, limit });
+            res.status(StatusCodes.OK).json(response(true, "Get Feeds Success", feeds));
         } catch (error) {
-            console.error(error);
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, "Internal server error", error));
         }
     },

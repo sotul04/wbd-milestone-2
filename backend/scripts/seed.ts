@@ -15,8 +15,8 @@ async function seedDatabase() {
 
     // Create 10 users
     for (let i = 0; i < 10; i++) {
-        const username = `user${i+1}`;
-        const email = `user${i+1}@user.com`;
+        const username = `user${i + 1}`;
+        const email = `user${i + 1}@user.com`;
 
         // Hash a consistent password 
         const saltRounds = 10;
@@ -35,12 +35,17 @@ async function seedDatabase() {
                 skills: faker.lorem.paragraphs(),
                 profile_photo_path: '',
                 feeds: {
-                    create: Array.from({ length: 15 }).map(() => ({
-                        content: faker.lorem.paragraph(),
-                        updated_at: new Date()
-                    }))
+                    create: Array.from({ length: 15 }).map((_, index) => {
+                        const baseTime = new Date();
+                        const created_at = new Date(baseTime.getTime() + index * 60 * 60 * 1000); // Increment by 1 hour
+                        return {
+                            content: faker.lorem.paragraph(),
+                            created_at,
+                            updated_at: created_at,
+                        };
+                    }),
                 },
-            }
+            },
         });
 
         users.push(user);

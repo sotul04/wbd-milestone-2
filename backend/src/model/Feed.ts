@@ -1,16 +1,16 @@
 import { z } from "zod";
 
-export const FeedGetQuerySchema = z.object({
-    cursor: z.string().optional(),
-    limit: z.string().default("10").refine((val) => {
-        const num = parseInt(val, 10);
-        return num > 0 && num <= 10;
-    }, { message: "Limit can only be between 1 and 10" }),
-});
+export type FeedSerializable = {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    content: string;
+    user_id: string;
+}
 
 export type FeedCreate = {
     content: string;
-    user_id: string;
+    user_id: bigint;
 }
 
 export const FeedCreateSchema = z.object({
@@ -18,29 +18,69 @@ export const FeedCreateSchema = z.object({
 })
 
 export type FeedRead = {
-    id: string;
+    id: bigint;
 }
 
-export const FeedReadSchema = z.object({
-    id: z.string()
+export const FeedReadParams = z.object({
+    id: z.string().refine(
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        { message: "Id must be a valid number" }
+    ).transform((val) => BigInt(val))
 })
 
 export type FeedUpdate = {
-    id: string;
+    id: bigint;
+    userId: bigint;
     content: string;
 }
 
 export const FeedUpdateSchema = z.object({
     content: z
-    .string()
-    .min(1)
-    .max(280)
-    .trim()
+        .string()
+        .trim()
+        .min(1)
+        .max(280)
 });
 
+export const FeedUpdateParams = z.object({
+    id: z.string().refine(
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        { message: "Id must be a valid number" }
+    ).transform((val) => BigInt(val))
+})
+
 export type FeedDelete = {
-    id: string;
+    id: bigint;
+    userId: bigint;
 }
+
+export const FeedDeleteParams = z.object({
+    id: z.string().refine(
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        { message: "Id must be a valid number" }
+    ).transform((val) => BigInt(val))
+})
 
 export type FeedsByUserId = {
     user_ids: string[];
@@ -48,11 +88,45 @@ export type FeedsByUserId = {
     limit: number;
 }
 
-export const getFeedParams = z.object({
+export type GetFeeds = {
+    userId: bigint;
+    cursor?: bigint;
+    limit: number;
+}
+
+export const GetFeedsQuery = z.object({
+    cursor: z.string().refine(
+        val => {
+            try {
+                BigInt(val);
+                return true;
+            } catch (error) {
+                return false
+            }
+        }
+    ).transform(val => BigInt(val)).optional(),
+    limit: z.string().refine(
+        val => {
+            try {
+                Number(val);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+    ).transform(val => Number(val))
+})
+
+export const GetFeedParams = z.object({
     id: z.string().refine(
-        (val) => 
-            !isNaN(Number(val)
-        ), 
-        {message: "id must be a valid number"}
-    ).transform((val) => Number(val))
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        { message: "Id must be a valid number" }
+    ).transform((val) => BigInt(val))
 });

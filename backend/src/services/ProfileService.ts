@@ -24,7 +24,9 @@ export const ProfileService = {
                 name: profile.full_name,
                 profile_photo: profile.profile_photo_path,
                 username: profile.username,
-                connection_count
+                connection_count,
+                work_history: profile.work_history,
+                skills: profile.skills
             }
 
         } catch (error) {
@@ -76,14 +78,14 @@ export const ProfileService = {
                 connection_count,
                 work_history: profile.work_history,
                 connect_status,
-                relevant_posts: connect_status === 'connected' ? profile.feeds.map(item => {
+                relevant_posts: profile.feeds.map(item => {
                     return {
                         ...item,
                         id: item.id.toString(),
                         user_id: item.user_id.toString()
                     }
-                }) : undefined,
-                skills: connect_status ? profile.skills : undefined
+                }),
+                skills: profile.skills
             }
 
         } catch (error) {

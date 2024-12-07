@@ -12,7 +12,7 @@ import { connectionConnectSchema, connectionDeleteParams, connectionListParams, 
 import { ChatLoadParams, ChatLoadQuery, RoomChatSearchParams } from "../model/Chat";
 import { ChatController } from "../controller/ChatController";
 import { FeedController } from "../controller/FeedController";
-import { FeedCreateSchema, FeedGetQuerySchema, FeedReadSchema, FeedUpdateSchema, getFeedParams } from "../model/Feed";
+import { FeedCreateSchema, FeedDeleteParams, FeedReadParams, FeedUpdateParams, FeedUpdateSchema, GetFeedsQuery } from "../model/Feed";
 
 const uploads = multer();
 
@@ -42,11 +42,10 @@ router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams),
 router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSearchParams), ChatController.roomChatSearch);
 
 // feeds routes
-router.get('/feed', validateQueryParams(FeedGetQuerySchema), FeedController.getFeeds);
+router.get('/feed', authJWT, validateQueryParams(GetFeedsQuery), FeedController.getFeeds);
 router.post('/feed', authJWT, uploads.none(), validateRequestBody(FeedCreateSchema), FeedController.createFeed);
-router.get('/feed/:id', authJWT, validateRequestParams(FeedReadSchema), FeedController.readFeed),
-router.put('/feed/:id', authJWT, validateRequestParams(getFeedParams), validateRequestBody(FeedUpdateSchema), FeedController.updateFeed); 
-router.delete('/feed/:id', authJWT, validateRequestParams(getFeedParams), FeedController.deleteFeed);
-
+router.get('/feed/:id', authJWT, validateRequestParams(FeedReadParams), FeedController.readFeed),
+router.put('/feed/:id', authJWT, uploads.none(), validateRequestParams(FeedUpdateParams), validateRequestBody(FeedUpdateSchema), FeedController.updateFeed); 
+router.delete('/feed/:id', authJWT, validateRequestParams(FeedDeleteParams), FeedController.deleteFeed);
 
 export default router;
