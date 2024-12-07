@@ -238,65 +238,6 @@ export type Feed = {
     comments?: number;
 }
 
-export type GetFeed = {
-    body:{
-        id: number;
-        name?: string;
-        title?: string;
-        created_at: Date;
-        updated_at: Date;
-        content: string;
-        user_id: string;
-        likes?: number;
-        comments?: number;
-    }
-}
-
-export type GetUserFeedsPayload = {
-    userIds: string[];
-    cursor?: number;
-    limit: number;
-}
-
-export type GetUserFeedsResponse = {
-    body:{
-        formattedFeeds: Feed[];
-        cursor?: number;
-    }
-}
-
-export type CreateFeedPayload = {
-    content: string,
-    user_id: string
-}
-
-export type CreateFeedResponse = Response & {
-    body: null
-}
-
-export type readFeedPayload = {
-    id: number;
-}
-
-export type readFeedResponse = Response & {
-    body:{
-        feed: Feed;
-    }
-}
-
-export type UpdateFeedPayload = {
-    id: number;
-    content: string;
-}
-
-export type UpdateFeedResponse = readFeedResponse
-
-export type DeleteFeedPayload = {
-    id: number;
-}
-
-export type DeleteFeedResponse = CreateFeedResponse
-
 export type UserProps = {
     id: string;
     username: string;
@@ -304,3 +245,140 @@ export type UserProps = {
     full_name: string | null;
     profile_photo_path: string;
 }
+
+export type GetFeedsPayload = {
+    cursor?: string | null;
+    limit: number;
+}
+
+export type GetFeedsResponse = Response & {
+    body: {
+        feeds: {
+            id: string;
+            user_id: string;
+            content: string;
+            user: {
+                full_name: string | null;
+                profile_photo_path: string;
+            };
+            created_at: Date;
+            updated_at: Date;
+        }[];
+        nextCursor: string | null;
+        cursor: bigint | undefined;
+    }
+}
+
+export interface FeedSchema {
+    id: string;
+    user_id: string;
+    content: string;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export type CreateFeedPayload = {
+    content: string
+}
+
+export type CreateFeedResponse = Response & {
+    body: {
+        id: string;
+        user_id: string;
+        content: string;
+        created_at: Date;
+        updated_at: Date;
+    }
+}
+
+export type ReadFeedPayload = Response & {
+    id: number | string;
+}
+
+export type ReadFeedResponse = Response & {
+    body: {
+        id: string;
+        user_id: string;
+        content: string;
+        user: {
+            full_name: string | null;
+            profile_photo_path: string;
+        };
+        created_at: Date;
+        updated_at: Date;
+    }
+}
+
+export type UpdateFeedPayload = {
+    id: number | string;
+    content: string;
+}
+
+export type UpdateFeedResponse = CreateFeedResponse;
+
+export type DeleteFeedPayload = {
+    id: number;
+}
+
+export type DeleteFeedResponse = Response & {
+    body: null;
+};
+
+// export type GetFeed = {
+//     body:{
+//         id: number;
+//         name?: string;
+//         title?: string;
+//         created_at: Date;
+//         updated_at: Date;
+//         content: string;
+//         user_id: string;
+//         likes?: number;
+//         comments?: number;
+//     }
+// }
+
+// export type GetUserFeedsPayload = {
+//     userIds: string[];
+//     cursor?: number;
+//     limit: number;
+// }
+
+// export type GetUserFeedsResponse = {
+//     body:{
+//         formattedFeeds: Feed[];
+//         cursor?: number;
+//     }
+// }
+
+// export type CreateFeedPayload = {
+//     content: string,
+//     user_id: string
+// }
+
+// export type CreateFeedResponse = Response & {
+//     body: null
+// }
+
+// export type readFeedPayload = {
+//     id: number;
+// }
+
+// export type readFeedResponse = Response & {
+//     body:{
+//         feed: Feed;
+//     }
+// }
+
+// export type UpdateFeedPayload = {
+//     id: number;
+//     content: string;
+// }
+
+// export type UpdateFeedResponse = readFeedResponse
+
+// export type DeleteFeedPayload = {
+//     id: number;
+// }
+
+// export type DeleteFeedResponse = CreateFeedResponse

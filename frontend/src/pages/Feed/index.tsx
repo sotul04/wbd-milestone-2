@@ -1,326 +1,188 @@
-import { ConnectionApi } from "@/api/connection-api";
-import { feedAPI } from "@/api/feed-api";
-import { ProfileApi } from "@/api/profile-api";
+import { FeedApi } from "@/api/feed-api";
+import { FeedCard } from "@/components/feed/feed";
+import { UserAside } from "@/components/user/user-aside";
 import { useAuth } from "@/context/AuthContext";
-import { Feed, UserProfile, UserProps } from "@/types";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { LoaderCircleIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { buttonStyles } from "@/components/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function FeedPage() {
+
     const auth = useAuth();
+    const [feeds, setFeeds] = useState<{
+        id: string;
+        user_id: string;
+        content: string;
+        user: {
+            full_name: string | null;
+            profile_photo_path: string;
+        };
+        created_at: Date;
+        updated_at: Date;
+    }[]>([]);
+    const { ref, inView } = useInView();
+    const [content, setContent] = useState("");
+    const { toast } = useToast();
+    const [isOpen, setOpen] = useState(false);
 
-    const [friends, setFriends] = useState<UserProps[]>([]);
+    const fetchItems = useCallback(
+        async ({ pageParam }: { pageParam: string | null }) => {
+            return await FeedApi.getFeeds({ limit: 10, cursor: pageParam });
+        }, []
+    )
 
-    const [profile, setProfile] = useState<UserProfile>({
-        name: "",
-        connection_count: 0,
-        username: "",
+    const {
+        data,
+        fetchNextPage,
+        isFetchingNextPage
+    } = useInfiniteQuery({
+        queryKey: ["chats"],
+        queryFn: fetchItems,
+        initialPageParam: null,
+        getNextPageParam: (lastPage) => lastPage.nextPage,
     });
 
-    const [feeds, setFeeds] = useState<Feed[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [newPostContent, setNewPostContent] = useState("");
-    const [postError, setPostError] = useState<string | null>(null);
-
-    async function getProfile() {
-        try {
-            if (!auth.userId) return;
-            const response = await ProfileApi.getProfile({
-                userId: auth.userId.toString()
-            });
-            setProfile(response.body);
-        } catch (error) {
-            console.error("Error fetching profile:", error);
+    useEffect(() => {
+        if (inView) {
+            fetchNextPage();
         }
-    }
-
-    async function fetchFeeds() {
-        setIsLoading(true);
-        try {
-            const userIds = [auth.userId.toString(), ...friends.map(friend => friend.id.toString())]; // Combine user's ID and friends' IDs
-    
-            const response = await feedAPI.getUserFeeds({
-                userIds, // Pass the list of user IDs
-                cursor: undefined,
-                limit: 10,
-            });
-    
-            if (response?.body?.formattedFeeds?.length > 0) {
-                setFeeds(response.body.formattedFeeds);
-            } else {
-                setFeeds([]);
-            }
-    
-            setError(null);
-        } catch (err) {
-            console.error("Error fetching feeds:", err);
-            setError("Failed to fetch feeds. Please try again.");
-            setFeeds([]);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-    
-    async function createPost() {
-        if (!newPostContent.trim()) {
-            setPostError("Post content cannot be empty.");
-            return;
-        }
-    
-        try {
-            setIsLoading(true); 
-            setPostError(null); 
-
-            await feedAPI.createFeed({
-                user_id: auth.userId.toString(),
-                content: newPostContent.trim(),
-            });
-    
-            setNewPostContent(""); 
-            await fetchFeeds();
-            setModalOpen(false); 
-        } catch (error) {
-            console.error("Error creating post:", error);
-            setPostError("Failed to create post. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    function getTimeDifference(date: Date): string {
-        const now = new Date();
-        const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
-    
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds} second${diffInSeconds === 1 ? '' : 's'} ago`;
-        } else if (diffInSeconds < 3600) {
-            const minutes = Math.floor(diffInSeconds / 60);
-            return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
-        } else if (diffInSeconds < 86400) {
-            const hours = Math.floor(diffInSeconds / 3600);
-            return `${hours} hour${hours === 1 ? '' : 's'} ago`;
-        } else {
-            const days = Math.floor(diffInSeconds / 86400);
-            return `${days} day${days === 1 ? '' : 's'} ago`;
-        }
-    }
+    }, [inView, fetchNextPage]);
 
     useEffect(() => {
-        async function initializeData() {
-            try {
-                // Fetch friends first
-                const response = await ConnectionApi.connectionList({
-                    userId: auth.userId.toString()!,
-                });
-                setFriends(response.body);
+        const dataFetched = data ? data.pages[data.pages.length - 1].data : [];
+        setFeeds(prev => [...prev, ...dataFetched]);
+    }, [data]);
 
-                // Then fetch feeds based on the updated friends list
-                const userIds = [auth.userId.toString(), ...response.body.map(friend => friend.id.toString())];
-
-
-                const feedsResponse = await feedAPI.getUserFeeds({
-                    userIds,
-                    cursor: undefined,
-                    limit: 10,
-                });
-
-                if (feedsResponse?.body?.formattedFeeds?.length > 0) {
-                    setFeeds(feedsResponse.body.formattedFeeds);
-                } else {
-                    setFeeds([]);
+    async function handlePost() {
+        try {
+            const response = await FeedApi.createFeed({ content: content });
+            const newFeed = {
+                ...response.body,
+                user: {
+                    full_name: auth.name,
+                    profile_photo_path: auth.photoUrl,
                 }
-
-                getProfile()
-
-                setError(null);
-            } catch (error) {
-                console.error("Error initializing data:", error);
-                setFriends([]);
-                setFeeds([]);
-                setError("Failed to load data. Please try again.");
-            } finally {
-                setIsLoading(false);
             }
+            setContent("");
+            setFeeds(prev => {
+                const newFeeds = [newFeed, ...prev];
+                return newFeeds;
+            });
+            toast({
+                title: "Success",
+                description: "Feed succefully created"
+            });
+        } catch (error) {
+            toast({
+                title: "Opss",
+                description: (error as any)?.message
+            });
         }
+    }
 
-        if (auth.userId) {
-            setIsLoading(true);
-            initializeData();
-        }
-    }, [auth.userId]);
+    function onDelete(index: number) {
+        setFeeds(prev => {
+            const filtered = prev.filter((_, idx) => idx !== index);
+            return filtered;
+        })
+    }
 
+    function onUpdate(index: number, content: string, updated_at: Date) {
+        setFeeds(prev => {
+            const updated = [...prev];
+            updated[index].content = content;
+            updated[index].updated_at = updated_at;
+            return updated;
+        })
+    }
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-            {/* Sidebar */}
-            <aside className="w-full md:w-1/4 p-4 bg-white shadow-lg">
-                <div className="space-y-4">
-                    <div className="bg-gray-200 h-32 rounded-md"></div>
-                    <h2 className="text-lg font-semibold">Selamat datang, {profile.name}!</h2>
-                    <p className="text-sm text-gray-600">Koneksi: {profile.connection_count}</p>
-                    <button className="w-full text-white bg-blue-600 hover:bg-blue-700 py-2 rounded-lg">
-                        Kembangkan jaringan Anda
-                    </button>
-                </div>
-            </aside>
-            
-            {/* Main Body */}
-            <main className="flex-1 p-4">
-                {/* Add Post Section */}
-                <div className="bg-white p-4 rounded-md shadow-md mb-4">
-                    <div className="flex items-center space-x-4">
-                        {/* Profile Picture */}
-                        <img 
-                            src="/purry.ico" 
-                            alt="profile-pic" 
-                            className="h-12 w-12 rounded-full"
-                        />
+        <section className="flex flex-col items-center">
+            <div className="flex container flex-col md:flex-row md:gap-8 p-4">
+                <aside className="w-full sm:w-1/3 md:w-1/4 mb-6 space-y-3 pb-6 border-b-2 md:border-none">
+                    <UserAside title="Feeds" content="Find something interesting and also share yours" />
+                </aside>
 
-                        {/* Button */}
-                        <button
-                            onClick={() => setModalOpen(true)}
-                            className="w-full text-left px-4 py-2 border rounded-full text-gray-600 bg-gray-100 focus:outline-none hover:bg-gray-200"
-                        >
-                            Start a post, try writing with AI
-                        </button>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex justify-between items-center mt-4 text-gray-600">
-                        <button className="flex items-center space-x-2 text-sm font-medium text-blue-600">
-                            <img
-                                src="https://img.icons8.com/color/24/null/image-gallery.png"
-                                alt="Photo Icon"
-                            />
-                            <span>Photo</span>
-                        </button>
-                        <button className="flex items-center space-x-2 text-sm font-medium text-green-600">
-                            <img
-                                src="https://img.icons8.com/color/24/null/video.png"
-                                alt="Video Icon"
-                            />
-                            <span>Video</span>
-                        </button>
-                        <button className="flex items-center space-x-2 text-sm font-medium text-orange-600">
-                            <img
-                                src="https://img.icons8.com/color/24/null/news.png"
-                                alt="Write Article Icon"
-                            />
-                            <span>Write article</span>
-                        </button>
-                    </div>
-                </div>
-
-                {/* Modal */}
-                {isModalOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-white rounded-lg p-4 w-11/12 max-w-md shadow-lg">
-                            {/* Header */}
-                            <div className="flex justify-between items-center mb-4">
-                                <div className="flex items-center space-x-2">
-                                    <img
-                                        src="/purry.ico"
-                                        alt="profile-pic"
-                                        className="h-10 w-10 rounded-full"
-                                    />
-                                    <div>
-                                        <h3 className="font-semibold">{profile.name}</h3>
-                                        <p className="text-sm text-gray-500">Post to Anyone</p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => setModalOpen(false)}
-                                    className="text-gray-500 hover:text-gray-800"
-                                >
-                                    ✕
-                                </button>
+                <main className="w-full md:w-3/4">
+                    <div className="grid grid-cols-1 gap-3">
+                        {/* Feed add */}
+                        <Card className="p-0">
+                            <div className="flex items-center gap-2 p-3">
+                                <Avatar className="h-12 w-12 border">
+                                    {auth.photoUrl !== '' &&
+                                        <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${auth.photoUrl}`} />
+                                    }
+                                    <AvatarFallback className="font-bold">
+                                        {auth.name.charAt(0).toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <Dialog open={isOpen} onOpenChange={setOpen}>
+                                    <DialogTrigger asChild>
+                                        <button className="border h-12 text-sm font-semibold rounded-full flex-grow text-left p-3 px-5 transition-all hover:bg-[#efefef]">
+                                            Start making posts
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-[425px] md:max-w-[600px] m-2">
+                                        <DialogTitle className="hidden"></DialogTitle>
+                                        <DialogHeader>
+                                            <div className="flex gap-3 items-center">
+                                                <Avatar className="h-12 w-12 border">
+                                                    {auth.photoUrl !== '' &&
+                                                        <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${auth.photoUrl}`} />
+                                                    }
+                                                    <AvatarFallback className="font-bold">
+                                                        {auth.name.charAt(0).toUpperCase()}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <h3 className="text-lg font-semibold">
+                                                    {auth.name}
+                                                </h3>
+                                            </div>
+                                        </DialogHeader>
+                                        <textarea
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value.slice(0, 280))}
+                                            maxLength={280}
+                                            placeholder="What do you want to talk about?"
+                                            className="w-full text-area-scrollbar bg-transparent h-32 p-2 border-none rounded-md focus:outline-none resize-none"
+                                        />
+                                        <DialogFooter>
+                                            <Button onClick={async () => {
+                                                await handlePost();
+                                                setOpen(false);
+                                            }} disabled={content.trim().length === 0} className={buttonStyles({ variant: "login" })}>Posting</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
-
-                            {/* Input Section */}
-                            <textarea
-                                value={newPostContent}
-                                onChange={(e) => setNewPostContent(e.target.value.slice(0, 280))}
-                                maxLength={280}
-                                placeholder="What do you want to talk about?"
-                                className="w-full h-32 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        </Card>
+                        { /* Feeds */}
+                        {feeds.map((item, index) =>
+                            <FeedCard
+                                key={`${index}${item.id}`}
+                                {...item}
+                                profile_photo={item.user.profile_photo_path}
+                                name={item.user.full_name ?? ""}
+                                onDelete={() => onDelete(index)}
+                                index={index}
+                                onUpdate={onUpdate}
                             />
-                            <p className="text-gray-500 text-sm mt-1">{newPostContent.length}/280</p>
-                            {postError && <p className="text-red-500 text-sm mt-2">{postError}</p>}
-
-                            {/* Action Buttons */}
-                            <div className="flex justify-between items-center mt-4">
-                                <div className="flex space-x-2">
-                                    {/* Optional: Add more buttons if needed */}
-                                </div>
-                                <button
-                                    onClick={createPost}
-                                    disabled={!newPostContent.trim() || isLoading}
-                                    className={`bg-blue-600 text-white px-4 py-1 rounded-full font-semibold hover:bg-blue-700 ${
-                                        !newPostContent.trim() || isLoading ? "disabled:bg-blue-300" : ""
-                                    }`}
-                                >
-                                    {isLoading ? "Posting..." : "Post"}
-                                </button>
-                            </div>
-                        </div>
+                        )
+                        }
                     </div>
-                )}
-
-                {/* Main Feed */}
-                {isLoading ? (
-                    <p>Loading feeds...</p>
-                ) : error ? (
-                    <p className="text-red-500">{error}</p>
-                ) : (
-                    feeds.map((feed) => (
-                        <Link to={`/feed/${feed.id}`} key={feed.id}>
-                            <div key={feed.id} className="bg-white p-4 rounded-md shadow-md mb-4 space-y-2">
-                                <div className="flex items-center space-x-2">
-                                    <div className="bg-gray-300 h-12 w-12 rounded-full"></div>
-                                    <div>
-                                        <h3 className="font-semibold">{feed.title}</h3>
-                                        <p className="text-sm text-gray-600">{feed.user_id}</p>
-                                    </div>
-                                </div>
-
-                                <p className="text-gray-800 break-words break-before-right">{feed.content}</p>
-                                <div className="flex justify-between items-center text-gray-600 text-sm">
-                                    <span>{getTimeDifference(feed.updated_at)}</span>
-                                    <span>{feed.likes ?? 0} likes • {feed.comments ?? 0} comments</span>
-                                </div>
-                            </div>
-                        </Link>
-                    ))
-                )}
-            </main>
-
-            {/* Right Sidebar */}
-            <aside className="w-full md:w-1/4 p-4 bg-white shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Berita LinkedIn</h2>
-                <ul className="space-y-2">
-                    <li className="text-sm text-gray-800">
-                        <a href="#" className="hover:underline">
-                            Americans see ideal salary at $270K
-                        </a>
-                        <p className="text-xs text-gray-500">4j yang lalu - 28,970 pembaca</p>
-                    </li>
-                    <li className="text-sm text-gray-800">
-                        <a href="#" className="hover:underline">
-                            Amazon raises stake in Anthropic
-                        </a>
-                        <p className="text-xs text-gray-500">8j yang lalu - 18,304 pembaca</p>
-                    </li>
-                    <li className="text-sm text-gray-800">
-                        <a href="#" className="hover:underline">
-                            Bitcoin takes aim at $100K mark
-                        </a>
-                        <p className="text-xs text-gray-500">4j yang lalu - 7,526 pembaca</p>
-                    </li>
-                </ul>
-            </aside>
-        </div>
+                    <div className="flex items-center justify-center py-2" ref={ref}>
+                        {isFetchingNextPage && <LoaderCircleIcon className="animate-spin" />}
+                    </div>
+                </main>
+            </div>
+        </section>
     );
 }
+

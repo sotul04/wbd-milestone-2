@@ -9,7 +9,6 @@ import {
     Chats,
     Connections,
     Feed,
-    FeedDetail,
     Profile,
     Requests,
     Users,
@@ -70,11 +69,10 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/chat/:roomId",
-                errorElement: <ChatUnaccessible/>,
+                errorElement: <ChatUnaccessible />,
                 element: <ProtectedRoute redirectTo="/login">
                     <UserChat />
                 </ProtectedRoute>
-                
             },
             {
                 path: "/connections/:userId",
@@ -84,12 +82,6 @@ const routes: RouteObject[] = [
                 path: "/feed",
                 element: <ProtectedRoute redirectTo="/login">
                     <Feed />
-                </ProtectedRoute>
-            },
-            {
-                path: "/feed/:postId",
-                element: <ProtectedRoute redirectTo="/login">
-                    <FeedDetail />
                 </ProtectedRoute>
             },
             {

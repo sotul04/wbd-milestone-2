@@ -37,7 +37,6 @@ export class ConnectionApi extends BaseApi {
     public static async connectionList(payload: ConnectionListPayload) {
         try {
             const response = await this.client.get<ConnectionListResponse>(`/connection/list/${payload.userId}`);
-            console.log("data: ", response.data.body);
             return response.data;
 
         } catch (error) {

@@ -43,6 +43,13 @@ export default function Profile() {
     });
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [photo, setPhoto] = useState<File | null>(null);
+    const [feeds, setFeeds] = useState<{
+        id: string;
+        created_at: Date;
+        updated_at: Date;
+        content: string;
+        user_id: string;
+    }[]>([]);
 
     function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0] ?? null;
@@ -89,6 +96,7 @@ export default function Profile() {
                 userId: userId!,
             });
             setProfile(response.body);
+            setFeeds(response.body.relevant_posts ?? []);
         } catch (error) {
             throw new Error((error as any)?.message);
         }
@@ -190,6 +198,22 @@ export default function Profile() {
                 });
             }
         }
+    }
+
+    function onDelete(index: number) {
+        setFeeds(prev => {
+            const filtered = prev.filter((_, idx) => idx !== index);
+            return filtered;
+        });
+    }
+
+    function onUpdate(index: number, content: string, updated_at: Date) {
+        setFeeds(prev => {
+            const updated = [...prev];
+            updated[index].content = content;
+            updated[index].updated_at = updated_at;
+            return updated;
+        })
     }
 
     const editorModules = {
@@ -398,14 +422,16 @@ export default function Profile() {
                 {profile.relevant_posts && profile.relevant_posts.length > 0 &&
                     <>
                         <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h3>
-                        <div className="w-full container grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-                            {profile.relevant_posts.map(item => (
+                        <div className="w-full container grid mb-3 gap-2 grid-cols-1 md:grid-cols-2">
+                            {feeds.map((item, index) => (
                                 <FeedCard
                                     key={item.id}
                                     {...item}
                                     profile_photo={profile.profile_photo}
                                     name={profile.name}
-                                    username={profile.username}
+                                    onDelete={() => onDelete(index)}
+                                    index={index}
+                                    onUpdate={onUpdate}
                                 />
                             ))}
                         </div>
@@ -503,14 +529,16 @@ export default function Profile() {
             {profile.relevant_posts && profile.relevant_posts.length > 0 &&
                 <>
                     <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h3>
-                    <div className="w-full container grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-                        {profile.relevant_posts.map(item => (
+                    <div className="w-full container grid mb-3 gap-2 grid-cols-1 md:grid-cols-2">
+                        {feeds.map((item, index) => (
                             <FeedCard
                                 key={item.id}
                                 {...item}
                                 profile_photo={profile.profile_photo}
                                 name={profile.name}
-                                username={profile.username}
+                                onDelete={() => onDelete(index)}
+                                index={index}
+                                onUpdate={onUpdate}
                             />
                         ))}
                     </div>
