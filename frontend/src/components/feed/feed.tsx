@@ -136,19 +136,22 @@ export function FeedCard(props: FeedProps) {
                                 placeholder="What do you want to talk about?"
                                 className="w-full text-sm text-[#606060] rounded-md text-area-scrollbar bg-[#fdfbef] h-12 p-2 border-none focus:outline-none resize-none"
                             />
-                            <div className="flex justify-end gap-2">
-                                <Button className={buttonStyles({ variant: "secondary", size: "sm" })} onClick={() => {
-                                    setEdit(false);
-                                    setData({ content: props.content });
-                                }}>
-                                    Cancel
-                                </Button>
-                                <Button className={buttonStyles({ size: "sm" })} disabled={data.content.trim().length === 0} onClick={() => {
-                                    setEdit(false);
-                                    handleUpdate()
-                                }}>
-                                    Save
-                                </Button>
+                            <div className="flex justify-between gap-2">
+                                <p className="text-sm text-[#808080]">{data.content.trim().length}/280</p>
+                                <div className="flex gap-2">
+                                    <Button className={buttonStyles({ variant: "secondary", size: "sm" })} onClick={() => {
+                                        setEdit(false);
+                                        setData({ content: props.content });
+                                    }}>
+                                        Cancel
+                                    </Button>
+                                    <Button className={buttonStyles({ size: "sm" })} disabled={data.content.trim().length === 0} onClick={() => {
+                                        setEdit(false);
+                                        handleUpdate()
+                                    }}>
+                                        Save
+                                    </Button>
+                                </div>
                             </div>
                         </>
                     }

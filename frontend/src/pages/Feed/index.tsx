@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { LoaderCircleIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { buttonStyles } from "@/components/button";
 import { useToast } from "@/hooks/use-toast";
@@ -153,12 +153,13 @@ export default function FeedPage() {
                                             placeholder="What do you want to talk about?"
                                             className="w-full text-area-scrollbar bg-transparent h-32 p-2 border-none rounded-md focus:outline-none resize-none"
                                         />
-                                        <DialogFooter>
+                                        <div className="flex items-start justify-between">
+                                            <p className="text-sm text-[#808080]">{content.trim().length}/280</p>
                                             <Button onClick={async () => {
                                                 await handlePost();
                                                 setOpen(false);
                                             }} disabled={content.trim().length === 0} className={buttonStyles({ variant: "login" })}>Posting</Button>
-                                        </DialogFooter>
+                                        </div>
                                     </DialogContent>
                                 </Dialog>
                             </div>
