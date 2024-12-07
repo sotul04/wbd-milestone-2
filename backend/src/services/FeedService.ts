@@ -141,7 +141,6 @@ export const FeedService = {
             const friendConnections = await prisma.connection.findMany({
                 where: {
                     OR: [
-                        { from_id: param.userId },
                         { to_id: param.userId },
                     ],
                 },
@@ -185,7 +184,6 @@ export const FeedService = {
             });
 
             const feedsEn = feeds.map((feed, index) => {
-                console.log("idx", index, "id", feed.id)
                 return {
                     ...feed,
                     id: feed.id.toString(),

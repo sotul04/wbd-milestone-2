@@ -77,27 +77,7 @@ export const FeedController = {
     },
 
     getFeeds: async (req: Request, res: Response) => {
-        // const user_ids_header = req.headers["x-user-id"];
-        // const user_ids = typeof user_ids_header === "string" ? JSON.parse(user_ids_header) : [];
         try {
-            // const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
-            // const limit = req.query.limit ? Number(req.query.limit) : 10;
-
-            // const feeds = await FeedService.getFeedsByUserID({ user_ids, cursor, limit });
-
-            // const formattedFeeds = feeds.map((feed: any) => ({
-            //     ...feed,
-            //     id: feed.id.toString(),
-            //     user_id: feed.user_id.toString(),
-            //     created_at: feed.created_at.toISOString(),
-            //     updated_at: feed.updated_at.toISOString(),
-            // }));
-
-            // const responsePayload = {
-            //     formattedFeeds,
-            //     cursor
-            // };
-
             const userId = req.user!.userId;
             const { limit, cursor } = GetFeedsQuery.parse(req.query);
             const feeds = await FeedService.getFeeds({ userId: BigInt(userId), cursor, limit });
