@@ -28,7 +28,7 @@ async function seedDatabase() {
             data: {
                 username,
                 email,
-                full_name: faker.name.fullName(),
+                full_name: faker.person.fullName(),
                 password_hash,
                 updated_at: new Date(),
                 work_history: faker.lorem.paragraphs(),
