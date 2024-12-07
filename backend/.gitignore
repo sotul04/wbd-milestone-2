@@ -1,0 +1,15 @@
+# Node modules should not be tracked
+node_modules/
+
+# Keep environment variables out of version control
+.env
+
+# Ignore storage folder
+/storage/*
+
+# But ensure the .gitkeep file inside storage is tracked
+!/storage/.gitkeep
+!/storage/icons/
+
+/dist/*
+!/dist/.gitkeep
