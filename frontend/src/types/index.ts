@@ -10,7 +10,6 @@ export type AuthCheckResponse = Response & {
         id: number;
         full_name: string;
         profile_photo_path: string;
-        feeds: Feed[];
     }
 }
 
