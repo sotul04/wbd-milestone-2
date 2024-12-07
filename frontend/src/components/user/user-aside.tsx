@@ -11,7 +11,7 @@ export function UserAside({ title, content }: UserAsideProps) {
     const auth = useAuth();
 
     if (!auth.authenticated) {
-        return
+        return <p></p>
     }
 
     return <>

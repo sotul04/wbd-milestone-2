@@ -41,7 +41,7 @@ export default function Requests() {
 
     return <section className="flex flex-col items-center">
         <div className="flex container flex-col sm:flex-row sm:gap-4 md:gap-8 p-4">
-            <aside className="w-full sm:w-1/3 md:w-1/4 mb-6 space-y-3 pb-6 border-b-2 md:border-none">
+            <aside className="w-full sm:w-1/3 md:w-1/4 mb-6 space-y-3 pb-6 border-b-2 sm:border-none">
                 <UserAside title="Connection Request" content="Grow your network with the right partners" />
             </aside>
 
