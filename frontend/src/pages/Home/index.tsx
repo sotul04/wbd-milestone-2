@@ -1,4 +1,3 @@
-import { buttonStyles } from "@/components/button";
 import { LoginLink, RegisterLink } from "@/components/link";
 import { UserAside } from "@/components/user/user-aside";
 import { useAuth } from "@/context/AuthContext";
@@ -21,23 +20,17 @@ export default function HomePage() {
                     <main className="w-full md:w-3/4">
                         <h2 className="text-4xl font-bold mb-4 text-[#505050]">Welcome, {auth.name}</h2>
                         <p className="text-lg text-[#404040] font-semibold">Explore feeds and updates from your network!</p>
-                        <ul className="space-y-2 text-sm my-4">
-                            <li>
-                                <Link to={`connections/${auth.userId}`} className={`${buttonStyles({ variant: "link", size: "xl" })} px-0 font-normal text-sm`}>
-                                    Your Connections
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/requests" className={`${buttonStyles({ variant: "link", size: "xl" })} px-0 font-normal text-sm`}>
-                                    Connection Requests
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/chat" className={`${buttonStyles({ variant: "link", size: "xl" })} px-0 font-normal text-sm`}>
-                                    Messages
-                                </Link>
-                            </li>
-                        </ul>
+                        <div className="flex flex-col text-sm my-4">
+                            <Link to={`connections/${auth.userId}`} className="font-semibold hover:underline underline-offset-4 py-1">
+                                Your Connections
+                            </Link>
+                            <Link to="/requests" className="font-semibold hover:underline underline-offset-4 py-1">
+                                Connection Requests
+                            </Link>
+                            <Link to="/chat" className="font-semibold hover:underline underline-offset-4 py-1">
+                                Messages
+                            </Link>
+                        </div>
                     </main>
                 </div>
             </section>

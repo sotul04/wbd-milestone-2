@@ -32,12 +32,20 @@ self.addEventListener("notificationclick", (event) => {
     if (url) {
         event.waitUntil(
             clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+                let matchingClient = null;
+
                 for (const client of clientList) {
                     if (client.url === url && "focus" in client) {
-                        return client.focus();
+                        matchingClient = client;
+                        break;
                     }
                 }
-                if (clients.openWindow) {
+
+                if (matchingClient) {
+                    // If localhost:5173 is open, reload the window
+                    return matchingClient.navigate(url);
+                } else if (clients.openWindow) {
+                    // If no window is open, open the URL
                     return clients.openWindow(url);
                 }
             })
