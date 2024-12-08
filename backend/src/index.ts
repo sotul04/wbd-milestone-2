@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (_, res) => {
-    res.status(200);
+    res.status(200).json({success: true});
 })
 
 const httpServer = createServer(app);
