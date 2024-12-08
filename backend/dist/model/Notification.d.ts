@@ -6,7 +6,7 @@ export type PushSubs = {
     keys: InputJsonValue;
 };
 export declare const PushSubsSchema: z.ZodObject<{
-    user_id: z.ZodNullable<z.ZodEffects<z.ZodEffects<z.ZodString, string, string>, bigint, string>>;
+    user_id: z.ZodEffects<z.ZodEffects<z.ZodNullable<z.ZodString>, string | null, string | null>, bigint | null, string | null>;
     endpoint: z.ZodString;
     keys: z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, string | number | boolean | import("@prisma/client/runtime/library").InputJsonObject | import("@prisma/client/runtime/library").InputJsonArray | {
         toJSON(): unknown;
