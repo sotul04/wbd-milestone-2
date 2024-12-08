@@ -155,9 +155,9 @@ export default function UserChat() {
         <section className="flex flex-col h-[calc(100vh-80px)] items-center px-2">
             <Card className="container h-[calc(100%-20px)] py-4 my-5 flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                    <Link to='/chat'><ChevronLeftIcon /></Link>
+                    <Link aria-label="Go back button" to='/chat'><ChevronLeftIcon /></Link>
                     {users && users.first_user_id !== auth.userId.toString() && <>
-                        <Avatar className="h-12 w-12 border">
+                        <Avatar aria-label="User Avatar" className="h-12 w-12 border">
                             {users.first_user.profile_photo_path !== '' &&
                                 <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.first_user.profile_photo_path}`} />
                             }
@@ -167,7 +167,7 @@ export default function UserChat() {
                     </>
                     }
                     {users && users.second_user_id !== auth.userId.toString() && <>
-                        <Avatar className="h-12 w-12 border">
+                        <Avatar aria-label="User Avatar" className="h-12 w-12 border">
                             {users.second_user.profile_photo_path !== '' &&
                                 <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${users.second_user.profile_photo_path}`} />
                             }
@@ -200,7 +200,7 @@ export default function UserChat() {
                             }
                         }}
                     />
-                    <button onClick={sendMessage} className="hover:text-[#808080] transition-all px-1 rounded-sm">
+                    <button aria-label="Send message button" onClick={sendMessage} className="hover:text-[#808080] transition-all px-1 rounded-sm">
                         <SendHorizonalIcon />
                     </button>
                 </div>

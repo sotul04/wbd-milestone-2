@@ -28,7 +28,7 @@ export default function ChatCard(chat: Chat) {
         return <Card onClick={() => {
             navigate(`/chat/${chat.id}`);
         }} className="flex gap-2 items-center w-full p-2 cursor-pointer">
-            <Avatar className="w-12 h-12 border">
+            <Avatar aria-label="User Avatar" className="w-12 h-12 border">
                 {chat.first_user.profile_photo_path !== '' &&
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${chat.first_user.profile_photo_path}`} />
                 }
@@ -52,7 +52,7 @@ export default function ChatCard(chat: Chat) {
     return <Card onClick={() => {
         navigate(`/chat/${chat.id}`);
     }} className="flex gap-2 items-center w-full p-2 cursor-pointer">
-        <Avatar className="w-12 h-12 border">
+        <Avatar aria-label="User Avatar" className="w-12 h-12 border">
             {chat.second_user.profile_photo_path !== '' &&
                 <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${chat.second_user.profile_photo_path}`} />
             }

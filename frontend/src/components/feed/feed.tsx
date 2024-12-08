@@ -99,7 +99,9 @@ export function FeedCard(props: FeedProps) {
                         {props.user_id === auth.userId.toString() &&
                             <Popover open={open} onOpenChange={setOpen}>
                                 <PopoverTrigger asChild className="self-start">
-                                    <button className="text-[#808080] rounded-lg px-2 hover:text-[#202020] hover:bg-[#efefef]">
+                                    <button
+                                        aria-label="Option button"
+                                        className="text-[#808080] rounded-lg px-2 hover:text-[#202020] hover:bg-[#efefef]">
                                         <EllipsisIcon />
                                     </button>
                                 </PopoverTrigger>
@@ -111,7 +113,7 @@ export function FeedCard(props: FeedProps) {
                                     <Validation
                                         trigger="Delete"
                                         actionDesc="Delete"
-                                        classTrigger="w-full text-sm text-[#808080] text-left hover:bg-[#ffcdcd] py-1 px-4"
+                                        classTrigger="w-full text-sm text-[#808080] text-left hover:bg-[#ffcdcd] px-4"
                                         classAction={buttonStyles({ variant: "destructive" })}
                                         action={() => {
                                             setOpen(false);

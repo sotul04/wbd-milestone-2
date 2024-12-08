@@ -9,17 +9,22 @@ export type PushSubs = {
 }
 
 export const PushSubsSchema = z.object({
-    user_id: z.string().refine(
-        (val) => {
-            try {
-                BigInt(val);
-                return true;
-            } catch {
-                return false;
-            }
-        },
-        { message: 'user_id must be a valid bigint' }
-    ).transform(val => BigInt(val)).nullable(),
+    user_id: z
+        .string()
+        .nullable()
+        .refine(
+            (val) => {
+                if (val === null) return true;
+                try {
+                    BigInt(val);
+                    return true;
+                } catch {
+                    return false;
+                }
+            },
+            { message: "user_id must be a valid bigint or null" }
+        )
+        .transform((val) => (val === null ? null : BigInt(val))),
     endpoint: z.string().min(1, "Endpoint cannot be empty"),
     keys: z.any()
         .refine(

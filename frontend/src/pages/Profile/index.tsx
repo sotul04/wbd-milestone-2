@@ -248,7 +248,7 @@ export default function Profile() {
                         <div className="w-full h-[300px] rounded-full absolute bg-[#A0B4B7] bottom-1/2 left-0 -translate-x-[36%] translate-y-1/2"></div>
                         <div className="w-1/2 h-full absolute bg-[#BFD3D6] right-0 top-0 translate-x-[40%]"></div>
                     </div>
-                    <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
+                    <Avatar aria-label="User Avatar" className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
                         {profile.profile_photo && profile.profile_photo !== '' &&
                             <AvatarImage
                                 src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
@@ -261,7 +261,7 @@ export default function Profile() {
                     <div className="absolute left-[5%] top-24 sm:top-36 md:top-44">
                         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                             <PopoverTrigger asChild>
-                                <Button variant={"outline"} className="bg-blue-200 hover:bg-blue-100 -translate-y-1/2 translate-x-[calc(128px-60%)] sm:translate-x-[calc(160px-60%)] md:translate-x-[calc(192px-60%)]  rounded-full w-9 h-9">
+                                <Button aria-label="Edit photo button" variant={"outline"} className="bg-blue-200 hover:bg-blue-100 -translate-y-1/2 translate-x-[calc(128px-60%)] sm:translate-x-[calc(160px-60%)] md:translate-x-[calc(192px-60%)]  rounded-full w-9 h-9">
                                     <PenIcon />
                                 </Button>
                             </PopoverTrigger>
@@ -275,7 +275,7 @@ export default function Profile() {
                                 />
                                 {photo && <>
                                     <p className="text-sm text-[#808080] my-2 text-center">Preview</p>
-                                    <Avatar className="h-32 w-32 mx-auto border mb-3">
+                                    <Avatar aria-label="User Avatar" className="h-32 w-32 mx-auto border mb-3">
                                         <AvatarImage src={URL.createObjectURL(photo)} />
                                     </Avatar>
                                 </>}
@@ -421,7 +421,7 @@ export default function Profile() {
                 </Card>
                 {profile.relevant_posts && profile.relevant_posts.length > 0 &&
                     <>
-                        <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h3>
+                        <h1 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h1>
                         <div className="w-full container grid mb-3 gap-2 grid-cols-1 md:grid-cols-2">
                             {feeds.map((item, index) => (
                                 <FeedCard
@@ -451,7 +451,7 @@ export default function Profile() {
                     <div className="w-full h-[300px] rounded-full absolute bg-[#A0B4B7] bottom-1/2 left-0 -translate-x-[36%] translate-y-1/2"></div>
                     <div className="w-1/2 h-full absolute bg-[#BFD3D6] right-0 top-0 translate-x-[40%]"></div>
                 </div>
-                <Avatar className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
+                <Avatar aria-label="User Avatar" className="absolute border left-[5%] top-24 sm:top-36 md:top-44 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48">
                     {profile.profile_photo && profile.profile_photo !== '' &&
                         <AvatarImage
                             src={`${import.meta.env.VITE_API_URL}/storage/${profile.profile_photo}`}
@@ -528,7 +528,7 @@ export default function Profile() {
             </Card>
             {profile.relevant_posts && profile.relevant_posts.length > 0 &&
                 <>
-                    <h3 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h3>
+                    <h1 className="text-center text-xl my-2 font-semibold text-[#808080]">Feeds</h1>
                     <div className="w-full container grid mb-3 gap-2 grid-cols-1 md:grid-cols-2">
                         {feeds.map((item, index) => (
                             <FeedCard

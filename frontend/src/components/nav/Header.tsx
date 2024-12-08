@@ -20,7 +20,7 @@ export default function Header() {
         <header className="flex justify-center bg-white border-b-[1px] sticky top-0 z-30">
             <nav className="container my-1 flex justify-between items-center py-1 px-2">
                 <Link to="/">
-                    <img src="/purry.ico" width={40} height={40} />
+                    <img src="/purry.ico" width={40} height={40} alt="LinkinPurry icon"/>
                 </Link>
                 {auth.authenticated && <AuthenticatedNav name={auth.name} photo_url={auth.photoUrl} email={auth.email} id={auth.userId.toString()} sideBarOpen={sideBarOpen} toggleSideBar={toggleSideBar} />}
                 {!auth.authenticated && <UnauthenticatedNav sideBarOpen={sideBarOpen} toggleSideBar={toggleSideBar} />}
@@ -37,7 +37,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
         <div className={`fixed inset-y-0 left-0 md:hidden transform ${props.sideBarOpen ? "translate-x-0" : "-translate-x-full"} items-center transition flex flex-col duration-200 px-2 ease-in-out bg-white w-full space-y-6 h-screen z-50`}>
             <div className="flex container justify-between my-1 py-1 items-center">
                 <Link to="/">
-                    <img src="/purry.ico" width={40} height={40} />
+                    <img src="/purry.ico" width={40} height={40} alt="LinkinPurry icon" />
                 </Link>
                 <div onClick={() => props.toggleSideBar()} className="text-[#808080] hover:text-[#191919] cursor-pointer">
                     <XIcon className="w-8 h-8" />
@@ -53,7 +53,7 @@ function AuthenticatedNav(props: { name: string, photo_url: string | undefined |
                 <div className="w-full border-t-[1px] flex justify-center">
                     <div className="py-3">
                         <div className="flex gap-2">
-                            <Avatar className="w-14 h-14 border">
+                            <Avatar aria-label="User Avatar" className="w-14 h-14 border">
                                 {props.photo_url !== '' &&
                                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.photo_url}`} />
                                 }
@@ -105,7 +105,7 @@ function UnauthenticatedNav(props: { sideBarOpen: boolean, toggleSideBar: () => 
         <div className={`fixed inset-y-0 left-0 md:hidden transform ${props.sideBarOpen ? "translate-x-0" : "-translate-x-full"} items-center transition flex flex-col duration-200 px-2 ease-in-out bg-white w-full space-y-6 h-screen z-20`}>
             <div className="flex container justify-between my-1 py-1 items-center">
                 <Link to="/">
-                    <img src="/purry.ico" width={40} height={40} />
+                    <img src="/purry.ico" width={40} height={40} alt="LinkinPurry icon" />
                 </Link>
                 <div onClick={() => props.toggleSideBar()} className="text-[#808080] hover:text-[#191919] cursor-pointer">
                     <XIcon className="w-8 h-8" />

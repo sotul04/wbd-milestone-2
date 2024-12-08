@@ -121,7 +121,7 @@ export default function FeedPage() {
                         {/* Feed add */}
                         <Card className="p-0">
                             <div className="flex items-center gap-2 p-3">
-                                <Avatar className="h-12 w-12 border">
+                                <Avatar aria-label="User Avatar" className="h-12 w-12 border">
                                     {auth.photoUrl !== '' &&
                                         <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${auth.photoUrl}`} />
                                     }
@@ -139,7 +139,7 @@ export default function FeedPage() {
                                         <DialogTitle className="hidden"></DialogTitle>
                                         <DialogHeader>
                                             <div className="flex gap-3 items-center">
-                                                <Avatar className="h-12 w-12 border">
+                                                <Avatar aria-label="User Avatar" className="h-12 w-12 border">
                                                     {auth.photoUrl !== '' &&
                                                         <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${auth.photoUrl}`} />
                                                     }

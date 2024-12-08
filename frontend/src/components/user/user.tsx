@@ -44,7 +44,7 @@ export function UserCard(props: Props) {
     return <Card className="space-y-0 gap-0" >
         <CardHeader className="px-3 pt-3 pb-3">
             <div className="flex gap-2">
-                <Avatar className="w-12 h-12 border">
+                <Avatar aria-label="User Avatar" className="w-12 h-12 border">
                     {props.profile_photo_path !== '' &&
                         <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.profile_photo_path}`} />
                     }

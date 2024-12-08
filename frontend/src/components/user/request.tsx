@@ -44,16 +44,16 @@ export function RequestCard(props: Props) {
 
     return <Card className="px-3 pt-3 pb-3 flex flex-col justify-between">
         <div className="flex gap-2">
-            <Avatar className="w-12 h-12 border">
+            <Avatar aria-label="User Avatar" className="w-12 h-12 border">
                 {props.from_user.profile_photo_path !== '' &&
                     <AvatarImage src={`${import.meta.env.VITE_API_URL}/storage/${props.from_user.profile_photo_path}`} />
                 }
                 <AvatarFallback className="font-bold">{props.from_user.full_name?.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="grow flex flex-col gap-0">
-                <h3 onClick={() => {
+                <h1 onClick={() => {
                     navigate(`/profile/${props.from_id}`);
-                }} className="text-lg cursor-pointer hover:underline underline-offset-4 font-semibold">{props.from_user.full_name}</h3>
+                }} className="text-lg cursor-pointer hover:underline underline-offset-4 font-semibold">{props.from_user.full_name}</h1>
                 <p className="text-gray-500 text-sm">{props.from_user.email}</p>
             </div>
         </div>
