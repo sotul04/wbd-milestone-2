@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (user) {
                     setAuthenticated(true);
                     setName(user.body.full_name ?? '');
-                    setUserId(user.body.id);
+                    setUserId(Number(user.body.id));
                     setUsername(user.body.username);
                     setPhotoUrl(user.body.profile_photo_path);
                     setEmail(user.body.email);

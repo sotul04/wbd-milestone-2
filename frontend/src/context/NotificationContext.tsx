@@ -25,7 +25,7 @@ export const PushNotificationProvider: React.FC<{ children: React.ReactNode }> =
                 });
 
                 await NotifApi.subscribe({
-                    user_id: auth.authenticated ? auth.userId : null,
+                    user_id: auth.authenticated ? auth.userId.toString() : null,
                     endpoint: subscription.endpoint,
                     keys: subscription.toJSON().keys,
                 });

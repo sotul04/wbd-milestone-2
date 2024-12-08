@@ -13,10 +13,10 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-RUN npm run build
-
 ENV PORT=5173
 
 EXPOSE 5173
 
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
+RUN npm run build
+
+CMD ["npm", "run", "preview", "--","--host", "0.0.0.0", "--port", "5173"]

@@ -7,7 +7,7 @@ export type AuthCheckResponse = Response & {
     body: {
         username: string;
         email: string;
-        id: number;
+        id: string;
         full_name: string;
         profile_photo_path: string;
     }
@@ -324,7 +324,7 @@ export type DeleteFeedResponse = Response & {
 };
 
 export type PushSubsPayload = {
-    user_id: number | string | null;
+    user_id: string | null;
     endpoint: string;
     keys: any
 }

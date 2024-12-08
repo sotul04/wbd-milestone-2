@@ -14,6 +14,8 @@ COPY --chown=node:node . .
 
 COPY ./.env.example ./.env
 
+RUN npx prisma generate
+
 ENV PORT=3000
 
 EXPOSE 3000

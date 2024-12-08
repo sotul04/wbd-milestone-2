@@ -5,7 +5,9 @@ import { StatusCodes } from "http-status-codes";
 import { response } from "../utils/response";
 import webpush from "web-push";
 import dotenv from "dotenv";
+import { JsonValue } from "@prisma/client/runtime/library";
 dotenv.config();
+
 
 const vapidKeys = {
     publicKey: process.env.VAPID_PUBLIC_KEY,
@@ -49,7 +51,12 @@ export const NotificationController = {
             }
 
             const targets = await NotificationService.pushChat(data);
-            const subscriptions = targets.map((target) => {
+            const subscriptions = targets.map((target: {
+                endpoint: string;
+                user_id: bigint | null;
+                keys: JsonValue;
+                created_at: Date;
+            }) => {
                 const keys = target.keys as { auth: string; p256dh: string };
                 return {
                     endpoint: target.endpoint,
@@ -60,12 +67,18 @@ export const NotificationController = {
                 };
             });
 
-            const sendNotifications = subscriptions.map(async (subscription) => {
+            const sendNotifications = subscriptions.map(async (subscription: {
+                endpoint: string;
+                keys: {
+                    auth: string;
+                    p256dh: string;
+                };
+            }) => {
                 try {
                     await webpush.sendNotification(subscription, JSON.stringify(notificationPayload));
                 } catch (error) {
-                    if ((error as any)?.statusCode === 410) {
-                        console.log(`Subscription ${subscription.endpoint} is no longer valid. Removing from database.`);
+                    if ((error as any)?.statusCode === 410 || (error as any)?.statusCode === 401) {
+                        console.log(`Subscription ${subscription.endpoint} is no longer valid or has mismatch key. Removing from database.`);
                         await NotificationService.removeSubs(subscription.endpoint);
                     } else {
                         console.error("Error sending notification:", error);
@@ -97,7 +110,12 @@ export const NotificationController = {
             }
 
             const targets = await NotificationService.pushFeed(data);
-            const subscriptions = targets.map((target) => {
+            const subscriptions = targets.map((target: {
+                user_id: bigint | null;
+                endpoint: string;
+                keys: JsonValue;
+                created_at: Date;
+            }) => {
                 const keys = target.keys as { auth: string; p256dh: string };
                 return {
                     endpoint: target.endpoint,
@@ -108,12 +126,18 @@ export const NotificationController = {
                 }
             });
 
-            const sendNotifications = subscriptions.map(async (subscription) => {
+            const sendNotifications = subscriptions.map(async (subscription: {
+                endpoint: string;
+                keys: {
+                    auth: string;
+                    p256dh: string;
+                };
+            }) => {
                 try {
                     await webpush.sendNotification(subscription, JSON.stringify(notificationPayload));
                 } catch (error) {
-                    if ((error as any)?.statusCode === 410) {
-                        console.log(`Subscription ${subscription.endpoint} is no longer valid. Removing from database.`);
+                    if ((error as any)?.statusCode === 410 || (error as any)?.statusCode === 401) {
+                        console.log(`Subscription ${subscription.endpoint} is no longer valid or has mismatch key. Removing from database.`);
                         await NotificationService.removeSubs(subscription.endpoint);
                     } else {
                         console.error("Error sending notification:", error);

@@ -1,19 +1,21 @@
 FROM node:20-alpine
 
-# Create and set working directory
+RUN mkdir -p /home/app/node_modules && chown -R node:node /home/app
+
 WORKDIR /home/app
 
-# Install dependencies
+USER node
+
 COPY --chown=node:node package*.json ./
+
 RUN npm ci
 
 COPY --chown=node:node . .
 
-# Set environment variables
+RUN npx prisma generate
+
 ENV PORT=3000
 
-# Expose the application port
 EXPOSE 3000
 
-# Use the dev script for development
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

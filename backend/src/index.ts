@@ -38,11 +38,15 @@ app.get('/', (req, res) => {
     res.send('Hello, TypeScript Node Express!');
 });
 
+app.get('/health', (_, res) => {
+    res.status(200);
+})
+
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http:localhost:5173',
+        origin: process.env.ORIGIN_URL,
         credentials: false,
     },
     transports: ['websocket'],
