@@ -23,7 +23,7 @@ const router: Router = Router();
 // user routes
 /**
  * @swagger
- * /login:
+ * /api/login:
  *   post:
  *     summary: User Login
  *     description: Authenticates a user and returns a JWT token.
@@ -124,7 +124,7 @@ router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserC
 
 /**
  * @swagger
- * /register:
+ * /api/register:
  *   post:
  *     summary: User registration
  *     description: Registers a new user and returns a JWT token.
@@ -217,7 +217,7 @@ router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), 
 
 /**
  * @swagger
- * /verify:
+ * /api/verify:
  *   get:
  *     summary: Verify User Authentication
  *     description: Verifies if the user is authenticated by checking the JWT.
@@ -293,7 +293,7 @@ router.get('/verify', authJWT, UserController.verify);
 
 /**
  * @swagger
- * /logout:
+ * /api/logout:
  *   get:
  *     summary: User Logout
  *     description: Logs out the user by clearing the JWT cookie.
@@ -337,7 +337,7 @@ router.get('/logout', UserController.logout);
 // profile routes
 /**
  * @swagger
- * /profile/{userId}:
+ * /api/profile/{userId}:
  *   get:
  *     summary: Get user profile
  *     description: Retrieves profile details of a specific user.
@@ -457,7 +457,7 @@ router.get('/profile/:userId', validateRequestParams(getProfileParams), ProfileC
 
 /**
  * @swagger
- * /profile/{userId}:
+ * /api/profile/{userId}:
  *   put:
  *     summary: Update user profile
  *     description: Updates the profile details of a specific user.
@@ -562,7 +562,7 @@ router.put('/profile/:userId', authJWT, upload.single('profile_photo'), validate
 // connection routes
 /**
  * @swagger
- * /connection:
+ * /api/connection:
  *   get:
  *     summary: Search users
  *     description: Retrieves a list of users matching the search query.
@@ -632,7 +632,7 @@ router.get('/connection', validateQueryParams(usersGetQuery), ConnectionControll
 
 /**
  * @swagger
- * /connection/send:
+ * /api/connection/send:
  *   post:
  *     summary: Send connection request
  *     description: Sends a connection request to another user.
@@ -713,7 +713,7 @@ router.post('/connection/send', authJWT, uploads.none(), validateRequestBody(con
 
 /**
  * @swagger
- * /connection/requests:
+ * /api/connection/requests:
  *   get:
  *     summary: Retrieve connection requests
  *     description: Gets the list of pending connection requests for the authenticated user.
@@ -800,7 +800,7 @@ router.get('/connection/requests', authJWT, ConnectionController.connectionReque
 
 /**
  * @swagger
- * /connection/connect:
+ * /api/connection/connect:
  *   post:
  *     summary: Accept or reject connection request
  *     description: Handles connection requests by accepting or rejecting them.
@@ -888,7 +888,7 @@ router.post('/connection/connect', authJWT, uploads.none(), validateRequestBody(
 
 /**
  * @swagger
- * /connection/list/{userId}:
+ * /api/connection/list/{userId}:
  *   get:
  *     summary: Retrieve user connections
  *     description: Retrieves a list of connections for a specific user.
@@ -975,7 +975,7 @@ router.get('/connection/list/:userId', validateRequestParams(connectionListParam
 
 /**
  * @swagger
- * /connection/delete/{to}:
+ * /api/connection/delete/{to}:
  *   delete:
  *     summary: Delete connection
  *     description: Deletes a connection with another user.
@@ -1056,7 +1056,7 @@ router.delete('/connection/delete/:to', authJWT, validateRequestParams(connectio
 // chat routes
 /**
  * @swagger
- * /chat/user:
+ * /api/chat/history:
  *   get:
  *     summary: Get user chat rooms
  *     description: Retrieves all chat rooms associated with the authenticated user.
@@ -1133,7 +1133,7 @@ router.get('/chat/history', authJWT, ChatController.getUserChats);
 
 /**
  * @swagger
- * /chat/{roomId}:
+ * /api/chat/{roomId}:
  *   get:
  *     summary: Load chat messages
  *     description: Retrieves chat messages from a specific room, optionally paginated using a cursor.
@@ -1215,7 +1215,7 @@ router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams),
 
 /**
  * @swagger
- * /chat/room/{roomId}:
+ * /api/chat/room/users/{roomId}:
  *   get:
  *     summary: Get chat room details
  *     description: Retrieves details about a specific chat room and its messages.
@@ -1312,7 +1312,7 @@ router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSe
 // feeds routes
 /**
  * @swagger
- * /feed:
+ * /api/feed:
  *   get:
  *     summary: Get all feeds
  *     description: Retrieves a paginated list of feeds visible to the authenticated user.
@@ -1408,7 +1408,7 @@ router.get('/feed', authJWT, validateQueryParams(GetFeedsQuery), FeedController.
 
 /**
  * @swagger
- * /feed:
+ * /api/feed:
  *   post:
  *     summary: Create a new feed
  *     description: Allows the authenticated user to create a new feed post.
@@ -1481,7 +1481,7 @@ router.post('/feed', authJWT, uploads.none(), validateRequestBody(FeedCreateSche
 
 /**
  * @swagger
- * /feed/{id}:
+ * /api/feed/{id}:
  *   get:
  *     summary: Get a specific feed
  *     description: Retrieves details of a specific feed post by its ID.
@@ -1573,7 +1573,7 @@ router.get('/feed/:id', authJWT, validateRequestParams(FeedReadParams), FeedCont
 
 /**
  * @swagger
- * /feed/{id}:
+ * /api/feed/{id}:
  *   patch:
  *     summary: Update a feed
  *     description: Allows the authenticated user to update the content of a feed post they own.
@@ -1681,7 +1681,7 @@ router.put('/feed/:id', authJWT, uploads.none(), validateRequestParams(FeedUpdat
 
 /**
  * @swagger
- * /feed/{id}:
+ * /api/feed/{id}:
  *   delete:
  *     summary: Delete a feed
  *     description: Allows the authenticated user to delete a feed post they own.
@@ -1759,7 +1759,7 @@ router.delete('/feed/:id', authJWT, validateRequestParams(FeedDeleteParams), Fee
 // push notification
 /**
  * @swagger
- * /notifications/subscribe:
+ * /api/subscribe:
  *   post:
  *     summary: Subscribe to notifications
  *     description: Subscribes a user to push notifications by adding their subscription details.
@@ -1827,7 +1827,7 @@ router.post('/subscribe', uploads.none(), validateRequestBody(PushSubsSchema), N
 
 /**
  * @swagger
- * /notifications/chat:
+ * /api/push/chat:
  *   post:
  *     summary: Push chat notification
  *     description: Sends a push notification for a new chat message.
@@ -1892,7 +1892,7 @@ router.post('/push/chat', uploads.none(), validateRequestBody(PushChatNotificati
 
 /**
  * @swagger
- * /notifications/feed:
+ * /api/push/feed:
  *   post:
  *     summary: Push feed notification
  *     description: Sends a push notification for a new feed post.
