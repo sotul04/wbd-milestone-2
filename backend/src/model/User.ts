@@ -82,6 +82,20 @@ export type UserFindId = {
     id: bigint;
 }
 
+export const UserFindIdParams = z.object({
+    id: z.string().refine(
+        (val) => {
+            try {
+                BigInt(val);
+                return true;
+            } catch {
+                return false;
+            }
+        },
+        { message: 'Id must be a valid bigint' }
+    ).transform(val => BigInt(val))
+})
+
 export type UserFindConnection = {
     idClient: bigint;
     idTarget: bigint;

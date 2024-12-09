@@ -125,8 +125,10 @@ After the server is running you can access the ```http://localhost:3000/api-docs
 |**Bonuses**       | UI/UX                                  | `13522098`              | 
 |                  | Typing                                 | `13522098`              | 
 |                  | Lighthouse                             | `13522098`              | 
+|                  | Connection recommendation              | `13522098`              | 
 
 ## Completed Bonuses
 - UI/UX like LinkedIn
 - Typing indicator
 - Good score of lighthouse
+- Connection Recommendation

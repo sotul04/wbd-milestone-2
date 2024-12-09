@@ -1,4 +1,5 @@
 import { LoginLink, RegisterLink } from "@/components/link";
+import { Recommendations } from "@/components/recommendation/recommendation";
 import { UserAside } from "@/components/user/user-aside";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
@@ -22,21 +23,9 @@ export default function HomePage() {
                             title="Home"
                             content="The first step to building yourself"
                         />
-                    </aside>
-
-                    <main className="w-full md:w-3/4">
-                        <h1
-                            id="welcome-title"
-                            className="text-4xl font-bold mb-4 text-[#505050]"
-                        >
-                            Welcome, {auth.name}
-                        </h1>
-                        <p className="text-lg text-[#404040] font-semibold">
-                            Explore feeds and updates from your network!
-                        </p>
                         <nav
                             aria-label="Quick Links"
-                            className="flex flex-col text-sm my-4"
+                            className="flex flex-col text-sm my-4 pl-1"
                         >
                             <Link
                                 to={`connections/${auth.userId}`}
@@ -57,6 +46,20 @@ export default function HomePage() {
                                 Open Messages
                             </Link>
                         </nav>
+                    </aside>
+
+                    <main className="w-full md:w-3/4">
+                        <h1
+                            id="welcome-title"
+                            className="text-4xl font-bold mb-4 text-[#505050]"
+                        >
+                            Welcome, {auth.name}
+                        </h1>
+                        <p className="text-lg text-[#404040] font-semibold">
+                            Explore feeds and updates from your network!
+                        </p>
+
+                        <Recommendations />
                     </main>
                 </div>
             </section>

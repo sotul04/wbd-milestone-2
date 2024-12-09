@@ -2,6 +2,7 @@ import * as ConnectionModel from '../model/Connection';
 
 import { prisma } from '../db';
 import { ChatService } from './ChatService';
+import { UserFindId } from '../model/User';
 
 export const ConnectionService = {
     getUsers: async (param: ConnectionModel.UsersGet) => {
@@ -174,7 +175,7 @@ export const ConnectionService = {
                     ],
                 });
 
-                await ChatService.createRoom({first_user_id: data.from, second_user_id: data.to});
+                await ChatService.createRoom({ first_user_id: data.from, second_user_id: data.to });
 
                 return 'You are now connected';
 
@@ -291,7 +292,7 @@ export const ConnectionService = {
                     ],
                 });
 
-                await ChatService.createRoom({first_user_id: data.from, second_user_id: data.to});
+                await ChatService.createRoom({ first_user_id: data.from, second_user_id: data.to });
             }
 
         } catch (error) {
@@ -371,5 +372,167 @@ export const ConnectionService = {
             console.error(error);
             throw error;
         }
-    }
+    },
+    getRecommendations: async (param: UserFindId) => {
+        try {
+            const directConnections = await prisma.connection.findMany({
+                where: {
+                    OR: [{ from_id: param.id }, { to_id: param.id }],
+                },
+                select: {
+                    from_id: true,
+                    to_id: true,
+                },
+            });
+
+            const directIds = new Set(
+                directConnections.map((conn) =>
+                    conn.from_id === param.id ? conn.to_id : conn.from_id
+                )
+            );
+
+            const directs = Array.from(directIds);
+
+            if (directConnections.length === 0) {
+                const fallbackUsers = await prisma.users.findMany({
+                    where: {
+                        NOT: { id: param.id },
+                    },
+                    select: {
+                        id: true,
+                        full_name: true,
+                        profile_photo_path: true,
+                        username: true,
+                    },
+                    take: 10,
+                });
+
+                return fallbackUsers.map(user => ({
+                    ...user,
+                    id: user.id.toString(),
+                }));
+            }
+
+            const secondDegreeConnections = await prisma.connection.findMany({
+                where: {
+                    AND: [
+                        {
+                            OR: [
+                                { from_id: { in: directs } },
+                                { to_id: { in: directs } },
+                            ],
+                        },
+                        {
+                            NOT: {
+                                OR: [
+                                    { from_id: param.id },
+                                    { to_id: param.id },
+                                    { from_id: { in: directs } },
+                                    { to_id: { in: directs } },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                select: {
+                    from_id: true,
+                    to_id: true,
+                },
+            });
+
+            const secondDegreeIds = new Set(
+                secondDegreeConnections.map((conn) =>
+                    directIds.has(conn.from_id) ? conn.to_id : conn.from_id
+                )
+            );
+
+            const secondDirects = Array.from(secondDegreeIds);
+
+            const thirdDegreeConnections = await prisma.connection.findMany({
+                where: {
+                    AND: [
+                        {
+                            OR: [
+                                { from_id: { in: secondDirects } },
+                                { to_id: { in: secondDirects } },
+                            ],
+                        },
+                        {
+                            NOT: {
+                                OR: [
+                                    { from_id: param.id },
+                                    { to_id: param.id },
+                                    { from_id: { in: directs } },
+                                    { to_id: { in: directs } },
+                                    { from_id: { in: secondDirects } },
+                                    { to_id: { in: secondDirects } },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                select: {
+                    from_id: true,
+                    to_id: true,
+                },
+            });
+
+            const thirdDegreeIds = new Set(
+                thirdDegreeConnections.map((conn) =>
+                    secondDegreeIds.has(conn.from_id) ? conn.to_id : conn.from_id
+                )
+            );
+
+            const allRecommendations = new Set([
+                ...secondDegreeIds,
+                ...thirdDegreeIds,
+            ]);
+
+            if (allRecommendations.size === 0) {
+                const fallbackUsers = await prisma.users.findMany({
+                    where: {
+                        NOT: {
+                            id: {
+                                in: [param.id, ...directs],
+                            },
+                        },
+                    },
+                    select: {
+                        id: true,
+                        full_name: true,
+                        profile_photo_path: true,
+                        username: true,
+                    },
+                    take: 10,
+                });
+
+                return fallbackUsers.map(user => ({
+                    ...user,
+                    id: user.id.toString(),
+                }));
+            }
+
+            const recommendedUsers = Array.from(allRecommendations);
+            const recs = await prisma.users.findMany({
+                where: {
+                    id: { in: recommendedUsers },
+                },
+                select: {
+                    id: true,
+                    full_name: true,
+                    profile_photo_path: true,
+                    username: true,
+                },
+                take: 10,
+            });
+
+            return recs.map(user => ({
+                ...user,
+                id: user.id.toString(),
+            }));
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    },
 }

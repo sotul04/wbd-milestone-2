@@ -1,30 +1,30 @@
 import { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 import { faker } from '@faker-js/faker'
-import { User } from '@prisma/client'
+import { Users } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function seedDatabase() {
     // Clear existing data to prevent duplicates
     await prisma.feed.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.users.deleteMany();
 
     // Array to store created users
-    const users: User[] = [];
+    const users: Users[] = [];
 
     // Create 10 users
-    for (let i = 0; i < 100; i++) {
-        const username = `user${i + 1}wbd`;
+    for (let i = 0; i < 20; i++) {
+        const username = `user${i + 1}`;
         const email = `user${i + 1}@user.com`;
 
         // Hash a consistent password 
         const saltRounds = 10;
-        const password = `password${i + 1}`;
+        const password = `password`;
         const password_hash = await bcrypt.hash(password, saltRounds);
 
         // Create user
-        const user = await prisma.user.create({
+        const user = await prisma.users.create({
             data: {
                 username,
                 email,
@@ -35,7 +35,7 @@ async function seedDatabase() {
                 skills: faker.lorem.paragraphs(),
                 profile_photo_path: '',
                 feeds: {
-                    create: Array.from({ length: 150 }).map((_, index) => {
+                    create: Array.from({ length: 100 }).map((_, index) => {
                         const baseTime = new Date();
                         const created_at = new Date(baseTime.getTime() + (i * 10 + index) * 60 * 60 * 1000 - 100 * 24 * 60 * 60 * 1000); // Increment by 1 hour
                         return {

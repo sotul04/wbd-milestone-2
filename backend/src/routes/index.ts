@@ -7,7 +7,7 @@ import { ProfileController, upload } from "../controller/ProfileController";
 import { ConnectionController } from "../controller/ConnectionController";
 
 import { validateRequestBody, validateRequestParams, validateQueryParams } from "../middleware/validation";
-import { getProfileParams, userAuthSchema, userCreateSchema, userUpdateParams, userUpdateSchema } from "../model/User";
+import { getProfileParams, userAuthSchema, userCreateSchema, UserFindIdParams, userUpdateParams, userUpdateSchema } from "../model/User";
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
 import { ChatLoadParams, ChatLoadQuery, RoomChatSearchParams } from "../model/Chat";
 import { ChatController } from "../controller/ChatController";
@@ -733,7 +733,7 @@ router.post('/connection/send', authJWT, uploads.none(), validateRequestBody(con
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved the data.
- *                 data:
+ *                 body:
  *                   type: array
  *                   items:
  *                     type: object
@@ -1052,6 +1052,96 @@ router.get('/connection/list/:userId', validateRequestParams(connectionListParam
  *                 error: {}
  */
 router.delete('/connection/delete/:to', authJWT, validateRequestParams(connectionDeleteParams), ConnectionController.connectionDelete);
+
+/**
+ * @swagger
+ * /api/connection/recommendation:
+ *   get:
+ *     summary: Get Recommedations Connection (2nd, 3rd)
+ *     description: Retrieves 5 top 2nd and 3rd connections 
+ *     tags:
+ *       - Connections
+ *     responses:
+ *       200:
+ *         description: Recommendation successfully retrieved.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Connection deleted successfully.
+ *                 body:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "123"
+ *                       username:
+ *                         type: string
+ *                         example: "johndoe"
+ *                       full_name:
+ *                         type: string
+ *                         example: "Johndoe"
+ *                       profile_photo_path:
+ *                         type: string
+ *                         example: "picture-1-813213.png"
+ *       400:
+ *         description: Bad request (e.g., missing fields).
+ *         content: 
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *               example:
+ *                 success: false
+ *                 message: "Invalid id" 
+ *                 error: "Invalid id"
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *               example:
+ *                 success: false
+ *                 message: "Unauthorized access"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *               example:
+ *                 success: false
+ *                 message: "Failed to update the user"
+ *                 error: {}
+ */
+router.get("/connection/recommendation", authJWT, ConnectionController.getRecommendations);
 
 // chat routes
 /**

@@ -351,3 +351,16 @@ export type PushFeedNotificationPayload = {
 }
 
 export type PushFeedNotificationResponse = PushChatNotificationResponse;
+
+export type GetRecommendationsPayload = {
+    id: string
+}
+
+export type GetRecommendationsResponse = Response & {
+    body: {
+        id: string;
+        username: string;
+        full_name: string | null;
+        profile_photo_path: string;
+    }[]
+}

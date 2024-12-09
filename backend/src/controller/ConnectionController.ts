@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { connectionConnectSchema, connectionDeleteParams, connectionListParams, connectionSendSchema, usersGetQuery } from "../model/Connection";
 import { verifyToken } from "../utils/jwtHelper";
 import { GenerateTokenPayload } from "../types/express";
+import { UserFindIdParams } from "../model/User";
 
 export const ConnectionController = {
     getUsers: async (req: Request, res: Response) => {
@@ -98,6 +99,21 @@ export const ConnectionController = {
             const data = connectionListParams.parse(req.params);
             const users = await ConnectionService.connectionList({id: data.userId});
             res.status(StatusCodes.OK).json(response(true, 'Successfully retrieved the data', users));
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(StatusCodes.BAD_REQUEST).json(response(false, error.message, error));
+                return;
+            }
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response(false, 'Internal server error', error));
+        }
+    },
+
+    getRecommendations: async (req: Request, res: Response) => {
+        try {
+            const id = req.user!.userId;
+            const recs = await ConnectionService.getRecommendations({id: BigInt(id)});
+
+            res.status(200).json(response(true, "Recommendation successfully retrieved", recs));
         } catch (error) {
             if (error instanceof Error) {
                 res.status(StatusCodes.BAD_REQUEST).json(response(false, error.message, error));

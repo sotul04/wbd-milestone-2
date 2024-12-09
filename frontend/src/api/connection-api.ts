@@ -1,4 +1,4 @@
-import { ConnectionConnectPayload, ConnectionConnectResponse, ConnectionDeletePayload, ConnectionListPayload, ConnectionListResponse, ConnectionRequestsResponse, ConnectionSendPayload, ConnectionSendResponse, GetUsersPayload, GetUsersResponse } from "@/types";
+import { ConnectionConnectPayload, ConnectionConnectResponse, ConnectionDeletePayload, ConnectionListPayload, ConnectionListResponse, ConnectionRequestsResponse, ConnectionSendPayload, ConnectionSendResponse, GetRecommendationsResponse, GetUsersPayload, GetUsersResponse } from "@/types";
 import { BaseApi } from "./base-api";
 
 export class ConnectionApi extends BaseApi {
@@ -46,6 +46,14 @@ export class ConnectionApi extends BaseApi {
     public static async connectionDelete(payload: ConnectionDeletePayload) {
         try {
             const response = await this.client.delete<ConnectionConnectResponse>(`/connection/delete/${payload.to}`);
+            return response.data;
+        } catch (error) {
+            throw (error as any)?.response?.data;
+        }
+    }
+    public static async getRecommendations() {
+        try {
+            const response = await this.client.get<GetRecommendationsResponse>(`/connection/recommendation`);
             return response.data;
         } catch (error) {
             throw (error as any)?.response?.data;
