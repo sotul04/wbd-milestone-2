@@ -8,7 +8,7 @@ export const ConnectionService = {
         try {
             if (param.id) {
                 const id = BigInt(param.id);
-                const users = await prisma.user.findMany({
+                const users = await prisma.users.findMany({
                     where: param.search ? {
                         OR: [
                             { username: { contains: param.search, mode: 'insensitive' } },
@@ -27,7 +27,7 @@ export const ConnectionService = {
                     }
                 });
 
-                const user = await prisma.user.findUnique({
+                const user = await prisma.users.findUnique({
                     where: {
                         id: id
                     },
@@ -75,7 +75,7 @@ export const ConnectionService = {
                 }
 
             } else {
-                const users = await prisma.user.findMany({
+                const users = await prisma.users.findMany({
                     where: param.search ? {
                         OR: [
                             { username: { contains: param.search, mode: 'insensitive' } },
@@ -336,7 +336,7 @@ export const ConnectionService = {
 
     connectionList: async (data: ConnectionModel.ConnectionList) => {
         try {
-            const user = await prisma.user.findUnique({
+            const user = await prisma.users.findUnique({
                 where: {
                     id: data.id
                 }
@@ -344,7 +344,7 @@ export const ConnectionService = {
             if (!user) {
                 throw new Error('User not found.');
             }
-            const list = await prisma.user.findMany({
+            const list = await prisma.users.findMany({
                 where: {
                     sent_connections: {
                         some: {

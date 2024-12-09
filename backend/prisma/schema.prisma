@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Users {
   id                           BigInt              @id @default(autoincrement())
   username                     String              @unique @db.VarChar(255)
   email                        String              @unique @db.VarChar(255)
@@ -35,6 +35,8 @@ model User {
   rooms_chat_first             RoomChat[]          @relation("FirstUserRoom")
   rooms_chat_second            RoomChat[]          @relation("SecondUserRoom")
   last_sender_rooms            RoomChat[]          @relation("LastSender")
+
+  @@map("users")
 }
 
 model Feed {
@@ -43,7 +45,10 @@ model Feed {
   updated_at DateTime @default(now()) @db.Timestamptz
   content    String   @db.Text
   user_id    BigInt
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user       Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("feed")
+  @@index([created_at])
 }
 
 model Chat {
@@ -53,9 +58,12 @@ model Chat {
   to_id     BigInt
   message   String   @db.Text
   room_id   BigInt
-  from_user User     @relation("SentChats", fields: [from_id], references: [id], onDelete: Cascade)
-  to_user   User     @relation("ReceivedChats", fields: [to_id], references: [id], onDelete: Cascade)
+  from_user Users     @relation("SentChats", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user   Users     @relation("ReceivedChats", fields: [to_id], references: [id], onDelete: Cascade)
   room      RoomChat @relation(fields: [room_id], references: [id], onDelete: Cascade)
+
+  @@map("chat")
+  @@index([timestamp])
 }
 
 model RoomChat {
@@ -65,9 +73,9 @@ model RoomChat {
   last_message   String?  @db.Text
   last_sender_id BigInt?
   updated_at     DateTime @default(now()) @db.Timestamptz
-  first_user     User     @relation("FirstUserRoom", fields: [first_user_id], references: [id], onDelete: Cascade)
-  second_user    User     @relation("SecondUserRoom", fields: [second_user_id], references: [id], onDelete: Cascade)
-  last_sender    User?    @relation("LastSender", fields: [last_sender_id], references: [id], onDelete: Cascade)
+  first_user     Users     @relation("FirstUserRoom", fields: [first_user_id], references: [id], onDelete: Cascade)
+  second_user    Users     @relation("SecondUserRoom", fields: [second_user_id], references: [id], onDelete: Cascade)
+  last_sender    Users?    @relation("LastSender", fields: [last_sender_id], references: [id], onDelete: Cascade)
   chats          Chat[]   @relation()
 
   @@unique([first_user_id, second_user_id])
@@ -77,9 +85,10 @@ model ConnectionRequest {
   from_id    BigInt
   to_id      BigInt
   created_at DateTime @db.Timestamptz
-  from_user  User     @relation("SentConnectionRequests", fields: [from_id], references: [id], onDelete: Cascade)
-  to_user    User     @relation("ReceivedConnectionRequests", fields: [to_id], references: [id], onDelete: Cascade)
+  from_user  Users     @relation("SentConnectionRequests", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user    Users     @relation("ReceivedConnectionRequests", fields: [to_id], references: [id], onDelete: Cascade)
 
+  @@map("connection_request")
   @@id([from_id, to_id])
 }
 
@@ -87,9 +96,10 @@ model Connection {
   from_id    BigInt
   to_id      BigInt
   created_at DateTime @db.Timestamptz
-  from_user  User     @relation("SentConnections", fields: [from_id], references: [id], onDelete: Cascade)
-  to_user    User     @relation("ReceivedConnections", fields: [to_id], references: [id], onDelete: Cascade)
+  from_user  Users     @relation("SentConnections", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user    Users     @relation("ReceivedConnections", fields: [to_id], references: [id], onDelete: Cascade)
 
+  @@map("connection")
   @@id([from_id, to_id])
 }
 
@@ -98,5 +108,7 @@ model PushSubscription {
   user_id    BigInt?
   keys       Json
   created_at DateTime @default(now()) @db.Timestamptz
-  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user       Users?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("push_subscriptions")
 }

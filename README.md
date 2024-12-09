@@ -84,18 +84,22 @@ This command will wrap the database, frontend, and backend in one network.
 ## API Documentation
 After the server is running you can access the ```http://localhost:3000/api-docs``` to look all the apis.
 
+## Load test and Stress Test
+![profile test](docs/test/profile.png)
+![feed test](docs/test/feed.png)
+
 ## Lighthouse
-![home page public](lighthouse/1home.png)
-![login page](lighthouse/2login.png)
-![home job seeker page](lighthouse/3register.png)
-![detail lowongan page](lighthouse/4home.png)
-![lamaran page](lighthouse/5feed.png)
-![riwayat page](lighthouse/6profile.png)
-![home company page](lighthouse/7users.png)
-![tambah lowongan page](lighthouse/8request.png)
-![detail lamaran page](lighthouse/9connection.png)
-![edit lowongan page](lighthouse/10chats.png)
-![profil page](lighthouse/11chat.png)
+![home page public](docs/lighthouse/1home.png)
+![login page](docs/lighthouse/2login.png)
+![home job seeker page](docs/lighthouse/3register.png)
+![detail lowongan page](docs/lighthouse/4home.png)
+![lamaran page](docs/lighthouse/5feed.png)
+![riwayat page](docs/lighthouse/6profile.png)
+![home company page](docs/lighthouse/7users.png)
+![tambah lowongan page](docs/lighthouse/8request.png)
+![detail lamaran page](docs/lighthouse/9connection.png)
+![edit lowongan page](docs/lighthouse/10chats.png)
+![profil page](docs/lighthouse/11chat.png)
 
 ## Work Responsibilities
 | **Component**    | **Specification**                      | **NIM**                 | 

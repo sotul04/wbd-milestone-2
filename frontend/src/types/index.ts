@@ -14,12 +14,12 @@ export type AuthCheckResponse = Response & {
 }
 
 export type LoginRequest = {
-    username: string;
+    identifier: string;
     password: string;
 }
 
 export type LoginPayload = {
-    username: string;
+    identifier: string;
     password: string;
 }
 

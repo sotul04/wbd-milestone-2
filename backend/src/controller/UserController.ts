@@ -5,14 +5,14 @@ import { response } from '../utils/response';
 
 export const UserController = {
     login: async (req: Request, res: Response) => {
-        const { username, password } = req.body;
+        const { identifier, password } = req.body;
         try {
-            const user = await UserService.getUser({ username, password });
+            const user = await UserService.getUser({ username: identifier, password });
             if (!user) {
                 res.status(404).json(response(false, 'User not found', 'Failed to get user'));
                 return;
             }
-            const isLogin = await UserService.authLogin({ username, password }, user);
+            const isLogin = await UserService.authLogin({ username: identifier, password }, user);
             if (!isLogin) {
                 res.status(401).json(response(false, 'Password do not match', 'Password comparation failed'));
                 return;

@@ -93,7 +93,7 @@ export type UserAuth = {
 }
 
 export const userAuthSchema = z.object({
-    username: z.string(),
+    identifier: z.string(),
     password: z.string().min(8)
 });
 

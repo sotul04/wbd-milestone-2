@@ -26,7 +26,7 @@ import { buttonStyles } from "@/components/button";
 
 const formSchema = z
     .object({
-        username: z
+        identifier: z
             .string()
             .min(1, { message: "Username can not be empty." }),
         password: z
@@ -41,7 +41,7 @@ export default function Register() {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            identifier: "",
             password: "",
         },
     });
@@ -83,7 +83,7 @@ export default function Register() {
                                 {/* Username or Email*/}
                                 <FormField
                                     control={form.control}
-                                    name="username"
+                                    name="identifier"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Username or Email</FormLabel>

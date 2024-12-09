@@ -5,7 +5,7 @@ import { prisma } from '../db';
 export const ProfileService = {
     publicAccess: async (data: UserModel.UserFindId): Promise<UserModel.UserProfile | null> => {
         try {
-            const profile = await prisma.user.findUnique({
+            const profile = await prisma.users.findUnique({
                 where: {
                     id: data.id
                 },
@@ -38,7 +38,7 @@ export const ProfileService = {
     authenticatedAccess: async (data: UserModel.UserFindConnection): Promise<UserModel.UserProfile | null> => {
         try {
 
-            const profile = await prisma.user.findUnique({
+            const profile = await prisma.users.findUnique({
                 where: {
                     id: data.idTarget
                 },
@@ -96,7 +96,7 @@ export const ProfileService = {
 
     selfAccess: async (data: UserModel.UserFindId): Promise<UserModel.UserProfile | null> => {
         try {
-            const profile = await prisma.user.findUnique({
+            const profile = await prisma.users.findUnique({
                 where: {
                     id: data.id
                 },

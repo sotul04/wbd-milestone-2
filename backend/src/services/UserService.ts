@@ -5,7 +5,7 @@ import * as UserModel from '../model/User';
 import bcrypt from 'bcrypt';
 
 import { prisma } from '../db';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 
 import path from 'path';
 import { createImageFile, deleteFile } from '../utils/file';
@@ -19,7 +19,7 @@ export const UserService = {
             }
             const username = xss(data.username);
             const password = xss(data.password);
-            const existedUsername = await prisma.user.findUnique({
+            const existedUsername = await prisma.users.findUnique({
                 where: {
                     username: username
                 }
@@ -28,7 +28,7 @@ export const UserService = {
                 throw new Error('Username has been used');
             }
 
-            const existedEmail = await prisma.user.findUnique({
+            const existedEmail = await prisma.users.findUnique({
                 where: {
                     email: data.email
                 }
@@ -37,7 +37,7 @@ export const UserService = {
                 throw new Error('Email has been used');
             }
             const password_hash = await bcrypt.hash(password, 10);
-            const newUser = await prisma.user.create({
+            const newUser = await prisma.users.create({
                 data: {
                     username: username,
                     email: data.email,
@@ -59,7 +59,7 @@ export const UserService = {
         try {
 
             if (data.username) {
-                const existed = await prisma.user.findUnique({
+                const existed = await prisma.users.findUnique({
                 where: {
                     username: data.username
                     }
@@ -80,7 +80,7 @@ export const UserService = {
             const skills = data.skills && xss(data.skills);
             const work_history = data.work_history && xss(data.work_history);
 
-            const user = await prisma.user.findUnique({
+            const user = await prisma.users.findUnique({
                 where: { id: data.id }
             });
 
@@ -114,7 +114,7 @@ export const UserService = {
                 }
             }
 
-            const updatedUser = await prisma.user.update({
+            const updatedUser = await prisma.users.update({
                 where: {
                     id: data.id
                 },
@@ -133,7 +133,7 @@ export const UserService = {
             throw error;
         }
     },
-    authLogin: async (authData: UserModel.UserAuth, user: User) => {
+    authLogin: async (authData: UserModel.UserAuth, user: Users) => {
         try {
             const validpass = await bcrypt.compare(authData.password, user.password_hash);
             return validpass;
@@ -143,7 +143,7 @@ export const UserService = {
         }
     },
     getUser: async (data: UserModel.UserAuth) => {
-        return await prisma.user.findFirst({
+        return await prisma.users.findFirst({
             where: {
                 OR: [
                     { email: data.username },
@@ -153,7 +153,7 @@ export const UserService = {
         })
     },
     userProfile: async (data: UserModel.UserFindId) => {
-        const user =  await prisma.user.findUnique({
+        const user =  await prisma.users.findUnique({
             where: {
                 id: data.id
             },

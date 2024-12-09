@@ -14,13 +14,13 @@ async function seedDatabase() {
     const users: User[] = [];
 
     // Create 10 users
-    for (let i = 0; i < 10; i++) {
-        const username = `user${i + 1}`;
+    for (let i = 0; i < 100; i++) {
+        const username = `user${i + 1}wbd`;
         const email = `user${i + 1}@user.com`;
 
         // Hash a consistent password 
         const saltRounds = 10;
-        const password = 'password';
+        const password = `password${i + 1}`;
         const password_hash = await bcrypt.hash(password, saltRounds);
 
         // Create user
@@ -35,9 +35,9 @@ async function seedDatabase() {
                 skills: faker.lorem.paragraphs(),
                 profile_photo_path: '',
                 feeds: {
-                    create: Array.from({ length: 15 }).map((_, index) => {
+                    create: Array.from({ length: 150 }).map((_, index) => {
                         const baseTime = new Date();
-                        const created_at = new Date(baseTime.getTime() + (i * 10 + index) * 60 * 60 * 1000 - 10 * 24 * 60 * 60 * 1000); // Increment by 1 hour
+                        const created_at = new Date(baseTime.getTime() + (i * 10 + index) * 60 * 60 * 1000 - 100 * 24 * 60 * 60 * 1000); // Increment by 1 hour
                         return {
                             content: faker.lorem.paragraph(),
                             created_at,
