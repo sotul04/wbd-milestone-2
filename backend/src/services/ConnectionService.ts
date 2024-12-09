@@ -377,17 +377,16 @@ export const ConnectionService = {
         try {
             const directConnections = await prisma.connection.findMany({
                 where: {
-                    OR: [{ from_id: param.id }, { to_id: param.id }],
+                    from_id: param.id
                 },
                 select: {
-                    from_id: true,
                     to_id: true,
                 },
             });
 
             const directIds = new Set(
                 directConnections.map((conn) =>
-                    conn.from_id === param.id ? conn.to_id : conn.from_id
+                    conn.to_id
                 )
             );
 
@@ -416,33 +415,24 @@ export const ConnectionService = {
             const secondDegreeConnections = await prisma.connection.findMany({
                 where: {
                     AND: [
-                        {
-                            OR: [
-                                { from_id: { in: directs } },
-                                { to_id: { in: directs } },
-                            ],
-                        },
+                        { from_id: { in: directs } },
                         {
                             NOT: {
                                 OR: [
-                                    { from_id: param.id },
                                     { to_id: param.id },
-                                    { from_id: { in: directs } },
-                                    { to_id: { in: directs } },
                                 ],
                             },
                         },
                     ],
                 },
                 select: {
-                    from_id: true,
                     to_id: true,
                 },
             });
 
             const secondDegreeIds = new Set(
                 secondDegreeConnections.map((conn) =>
-                    directIds.has(conn.from_id) ? conn.to_id : conn.from_id
+                    conn.to_id
                 )
             );
 
@@ -454,17 +444,13 @@ export const ConnectionService = {
                         {
                             OR: [
                                 { from_id: { in: secondDirects } },
-                                { to_id: { in: secondDirects } },
                             ],
                         },
                         {
                             NOT: {
                                 OR: [
-                                    { from_id: param.id },
                                     { to_id: param.id },
-                                    { from_id: { in: directs } },
                                     { to_id: { in: directs } },
-                                    { from_id: { in: secondDirects } },
                                     { to_id: { in: secondDirects } },
                                 ],
                             },
@@ -482,6 +468,8 @@ export const ConnectionService = {
                     secondDegreeIds.has(conn.from_id) ? conn.to_id : conn.from_id
                 )
             );
+
+            console.log("3rd", thirdDegreeIds)
 
             const allRecommendations = new Set([
                 ...secondDegreeIds,

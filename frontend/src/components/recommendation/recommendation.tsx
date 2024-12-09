@@ -46,7 +46,7 @@ export function Recommendations() {
             }
             {recss.length > 0 &&
                 <>
-                    <h1 className="mt-2 text-lg text-[#808080] font-semibold">Recommendations for you</h1>
+                    <h1 className="mt-3 mb-2 text-lg text-[#808080] font-semibold">Connections for you</h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {
                             recss.map((rec, idx) =>

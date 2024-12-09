@@ -55,7 +55,7 @@ export default function HomePage() {
                         >
                             Welcome, {auth.name}
                         </h1>
-                        <p className="text-lg text-[#404040] font-semibold">
+                        <p className="text-[#404040] font-semibold">
                             Explore feeds and updates from your network!
                         </p>
 

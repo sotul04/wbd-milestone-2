@@ -57,7 +57,7 @@ const router: Router = Router();
  *                   type: boolean
  *                 message:
  *                   type: string
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     token:
@@ -66,7 +66,7 @@ const router: Router = Router();
  *               example:
  *                 success: true
  *                 message: "Login successful"
- *                 data:
+ *                 body:
  *                   token: "eyJhbGciOiJIUzI1..."
  *       401:
  *         description: Invalid credentials.
@@ -166,7 +166,7 @@ router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserC
  *                   type: boolean
  *                 message:
  *                   type: string
- *                 data: 
+ *                 body: 
  *                   type: object
  *                   properties:
  *                     token:
@@ -175,7 +175,7 @@ router.post('/login', uploads.none(), validateRequestBody(userAuthSchema), UserC
  *               example:
  *                 success: true
  *                 message: "Authenticated"
- *                 data:
+ *                 body:
  *                   token: "eyJhbGciOiJIUzI1..."  
  *       400:
  *         description: Bad request (e.g., missing fields).
@@ -235,7 +235,7 @@ router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), 
  *                   type: boolean
  *                 message:
  *                   type: string
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     id:
@@ -251,7 +251,7 @@ router.post('/register', uploads.none(), validateRequestBody(userCreateSchema), 
  *               example:
  *                 success: true
  *                 message: "Authenticated"
- *                 data:
+ *                 body:
  *                   id: "1"
  *                   username: johndoe
  *                   email: johndoe@example.com
@@ -364,7 +364,7 @@ router.get('/logout', UserController.logout);
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved user data.
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     name:
@@ -589,7 +589,7 @@ router.put('/profile/:userId', authJWT, upload.single('profile_photo'), validate
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved the data.
- *                 data:
+ *                 body:
  *                   type: array
  *                   items:
  *                     type: object
@@ -915,7 +915,7 @@ router.post('/connection/connect', authJWT, uploads.none(), validateRequestBody(
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved the data.
- *                 data:
+ *                 body:
  *                   type: array
  *                   items:
  *                     type: object
@@ -1166,7 +1166,7 @@ router.get("/connection/recommendation", authJWT, ConnectionController.getRecomm
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved the user chats.
- *                 data:
+ *                 body:
  *                   type: array
  *                   items:
  *                     type: object
@@ -1256,7 +1256,7 @@ router.get('/chat/history', authJWT, ChatController.getUserChats);
  *                 message:
  *                   type: string
  *                   example: Load Chat Success
- *                 data:
+ *                 body:
  *                   type: array
  *                   items:
  *                     type: object
@@ -1332,7 +1332,7 @@ router.get('/chat/room/:roomId', authJWT, validateRequestParams(ChatLoadParams),
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved the room data.
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     first_user_id:
@@ -1436,7 +1436,7 @@ router.get('/chat/room/users/:roomId', authJWT, validateRequestParams(RoomChatSe
  *                 message:
  *                   type: string
  *                   example: Get Feeds Success.
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     feeds:
@@ -1529,7 +1529,7 @@ router.get('/feed', authJWT, validateQueryParams(GetFeedsQuery), FeedController.
  *                 message:
  *                   type: string
  *                   example: Successfully created feed.
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     id:
@@ -1598,7 +1598,7 @@ router.post('/feed', authJWT, uploads.none(), validateRequestBody(FeedCreateSche
  *                 message:
  *                   type: string
  *                   example: Successfully retrieved the Feed.
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     id:
@@ -1701,7 +1701,7 @@ router.get('/feed/:id', authJWT, validateRequestParams(FeedReadParams), FeedCont
  *                 message:
  *                   type: string
  *                   example: Update Feed Success.
- *                 data:
+ *                 body:
  *                   type: object
  *                   properties:
  *                     id:
