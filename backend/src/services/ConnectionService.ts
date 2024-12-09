@@ -395,7 +395,16 @@ export const ConnectionService = {
             if (directConnections.length === 0) {
                 const fallbackUsers = await prisma.users.findMany({
                     where: {
-                        NOT: { id: param.id },
+                        AND: [
+                            { NOT: { id: param.id } },
+                            {
+                                received_connection_requests: {
+                                    none: {
+                                        from_id: param.id
+                                    }
+                                }
+                            }
+                        ],
                     },
                     select: {
                         id: true,
@@ -406,11 +415,24 @@ export const ConnectionService = {
                     take: 10,
                 });
 
+                console.log("Last last");
+
                 return fallbackUsers.map(user => ({
                     ...user,
                     id: user.id.toString(),
                 }));
             }
+
+            const sentRequest = await prisma.connectionRequest.findMany({
+                where: {
+                    from_id: param.id
+                },
+                select: {
+                    to_id: true
+                }
+            });
+
+            const sents = sentRequest.map(item => item.to_id);
 
             const secondDegreeConnections = await prisma.connection.findMany({
                 where: {
@@ -420,6 +442,7 @@ export const ConnectionService = {
                             NOT: {
                                 OR: [
                                     { to_id: param.id },
+                                    { to_id: { in: sents } }
                                 ],
                             },
                         },
@@ -441,17 +464,13 @@ export const ConnectionService = {
             const thirdDegreeConnections = await prisma.connection.findMany({
                 where: {
                     AND: [
-                        {
-                            OR: [
-                                { from_id: { in: secondDirects } },
-                            ],
-                        },
+                        { from_id: { in: secondDirects } },
                         {
                             NOT: {
                                 OR: [
                                     { to_id: param.id },
                                     { to_id: { in: directs } },
-                                    { to_id: { in: secondDirects } },
+                                    { to_id: { in: sents } }
                                 ],
                             },
                         },
@@ -479,11 +498,14 @@ export const ConnectionService = {
             if (allRecommendations.size === 0) {
                 const fallbackUsers = await prisma.users.findMany({
                     where: {
-                        NOT: {
-                            id: {
-                                in: [param.id, ...directs],
-                            },
-                        },
+                        AND: [
+                            { NOT: { id: { in: [param.id, ...directs], }, }, },
+                            {
+                                received_connection_requests: {
+                                    none: { from_id: param.id }
+                                }
+                            }
+                        ],
                     },
                     select: {
                         id: true,
@@ -493,6 +515,8 @@ export const ConnectionService = {
                     },
                     take: 10,
                 });
+
+                console.log("Second last");
 
                 return fallbackUsers.map(user => ({
                     ...user,
@@ -504,6 +528,11 @@ export const ConnectionService = {
             const recs = await prisma.users.findMany({
                 where: {
                     id: { in: recommendedUsers },
+                    received_connection_requests: {
+                        none: {
+                            from_id: param.id
+                        }
+                    }
                 },
                 select: {
                     id: true,
@@ -513,6 +542,8 @@ export const ConnectionService = {
                 },
                 take: 10,
             });
+
+            console.log("Last");
 
             return recs.map(user => ({
                 ...user,
