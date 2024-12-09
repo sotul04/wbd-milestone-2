@@ -50,9 +50,9 @@ export function UserRecommendationCard(props: RecProps) {
                     <AvatarFallback className="font-bold">{props.full_name?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="grow flex flex-col gap-0">
-                    <h3 onClick={() => {
+                    <h1 onClick={() => {
                         navigate(`/profile/${props.id}`);
-                    }} className="text-lg cursor-pointer hover:underline underline-offset-4 font-semibold">{props.full_name}</h3>
+                    }} className="text-lg cursor-pointer hover:underline underline-offset-4 font-semibold">{props.full_name}</h1>
                     <p className="text-gray-500 text-sm">@{props.username}</p>
                 </div>
             </div>
