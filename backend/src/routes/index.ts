@@ -1664,7 +1664,7 @@ router.get('/feed/:id', authJWT, validateRequestParams(FeedReadParams), FeedCont
 /**
  * @swagger
  * /api/feed/{id}:
- *   patch:
+ *   put:
  *     summary: Update a feed
  *     description: Allows the authenticated user to update the content of a feed post they own.
  *     tags:
