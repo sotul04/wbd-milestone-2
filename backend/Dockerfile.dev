@@ -1,5 +1,6 @@
 FROM node:20-alpine
 
+RUN apk add --no-cache curl openssl
 RUN mkdir -p /home/app/node_modules && chown -R node:node /home/app
 
 WORKDIR /home/app
